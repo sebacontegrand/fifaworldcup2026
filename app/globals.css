@@ -1,0 +1,176 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── FIFA World Cup 2026 / EA Sports FC Theme ─── */
+:root {
+  /* Deep navy base */
+  --background: oklch(0.13 0.02 260);
+  --foreground: oklch(0.95 0 0);
+
+  /* Card: slightly lighter navy with subtle blue tint */
+  --card: oklch(0.17 0.02 260);
+  --card-foreground: oklch(0.95 0 0);
+
+  --popover: oklch(0.17 0.02 260);
+  --popover-foreground: oklch(0.95 0 0);
+
+  /* Primary: Neon green (#00ff87) */
+  --primary: oklch(0.85 0.22 155);
+  --primary-foreground: oklch(0.13 0.02 260);
+
+  /* Secondary: Muted navy */
+  --secondary: oklch(0.22 0.02 260);
+  --secondary-foreground: oklch(0.85 0 0);
+
+  /* Muted */
+  --muted: oklch(0.22 0.02 260);
+  --muted-foreground: oklch(0.6 0 0);
+
+  /* Accent: Electric gold (#ffd700) */
+  --accent: oklch(0.87 0.17 85);
+  --accent-foreground: oklch(0.13 0.02 260);
+
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.95 0 0);
+
+  --border: oklch(0.28 0.02 260);
+  --input: oklch(0.22 0.02 260);
+  --ring: oklch(0.85 0.22 155);
+
+  /* Chart colors: Neon green, Cyan, Gold, Orange, Pink */
+  --chart-1: oklch(0.85 0.22 155);
+  --chart-2: oklch(0.78 0.15 200);
+  --chart-3: oklch(0.87 0.17 85);
+  --chart-4: oklch(0.75 0.18 50);
+  --chart-5: oklch(0.7 0.2 350);
+
+  --radius: 0.75rem;
+
+  --sidebar: oklch(0.11 0.02 260);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.85 0.22 155);
+  --sidebar-primary-foreground: oklch(0.13 0.02 260);
+  --sidebar-accent: oklch(0.22 0.02 260);
+  --sidebar-accent-foreground: oklch(0.95 0 0);
+  --sidebar-border: oklch(0.28 0.02 260);
+  --sidebar-ring: oklch(0.85 0.22 155);
+
+  /* Custom tokens for the FIFA theme */
+  --neon: oklch(0.85 0.22 155);
+  --gold: oklch(0.87 0.17 85);
+  --cyan: oklch(0.78 0.15 200);
+  --surface: oklch(0.15 0.02 260);
+  --surface-elevated: oklch(0.2 0.02 260);
+}
+
+@theme inline {
+  --font-sans: 'Inter', 'Geist', 'Geist Fallback', sans-serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-neon: var(--neon);
+  --color-gold: var(--gold);
+  --color-cyan: var(--cyan);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ─── Custom utility classes ─── */
+.glow-neon {
+  box-shadow: 0 0 20px oklch(0.85 0.22 155 / 0.3),
+              0 0 60px oklch(0.85 0.22 155 / 0.1);
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px oklch(0.87 0.17 85 / 0.3),
+              0 0 60px oklch(0.87 0.17 85 / 0.1);
+}
+
+.text-glow-neon {
+  text-shadow: 0 0 10px oklch(0.85 0.22 155 / 0.5),
+               0 0 30px oklch(0.85 0.22 155 / 0.2);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 10px oklch(0.87 0.17 85 / 0.5),
+               0 0 30px oklch(0.87 0.17 85 / 0.2);
+}
+
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, oklch(0.85 0.22 155), oklch(0.78 0.15 200), oklch(0.87 0.17 85));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Subtle grid background */
+.bg-grid {
+  background-image:
+    linear-gradient(oklch(0.28 0.02 260 / 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.28 0.02 260 / 0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Animated pulse for live indicators */
+@keyframes pulse-neon {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-neon {
+  animation: pulse-neon 2s ease-in-out infinite;
+}
