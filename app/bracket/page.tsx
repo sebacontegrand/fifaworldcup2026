@@ -68,13 +68,6 @@ export default function BracketPage() {
                                     teamProbabilities={result.teamProbabilities}
                                 />
                             </div>
-
-                            <div className="pt-8 border-t border-white/5">
-                                <h2 className="text-2xl font-black uppercase tracking-tight text-foreground mb-6">
-                                    Simulation <span className="text-blue-500 text-glow-blue">Analytics</span>
-                                </h2>
-                                <SimulationAnalytics />
-                            </div>
                         </div>
                     )}
                 </div>
@@ -83,6 +76,15 @@ export default function BracketPage() {
                     <SimulationControls />
                 </div>
             </div>
+
+            {!isRunning && result && (
+                <div className="mt-12 pt-12 border-t border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <h2 className="text-3xl font-black uppercase tracking-tight text-foreground mb-8 text-center lg:text-left">
+                        Simulation <span className="text-blue-500 text-glow-blue">Analytics</span>
+                    </h2>
+                    <SimulationAnalytics />
+                </div>
+            )}
         </div>
     )
 }
