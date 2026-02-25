@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server"
-import { runFullSimulation } from "@/lib/simulation"
+import { runFullSimulation, DEFAULT_CONFIG } from "@/lib/simulation"
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
-    const chaosFactor = searchParams.get("chaosFactor")
-    
-    const config = chaosFactor ? {
-      teamSettings: {},
-      globalSettings: {
-        chaosFactor: parseFloat(chaosFactor)
-      }
-    } : undefined
+    const targetUpsetIndex = searchParams.get("targetUpsetIndex")
+
+    // Deep clone to avoid mutating the exported default
+    const config = JSON.parse(JSON.stringify(DEFAULT_CONFIG))
+    if (targetUpsetIndex) {
+      config.globalSettings.targetUpsetIndex = parseFloat(targetUpsetIndex)
+    }
 
     const results = runFullSimulation(config)
-    
+
     return NextResponse.json(results)
   } catch (error) {
     console.error("Simulation API Error:", error)

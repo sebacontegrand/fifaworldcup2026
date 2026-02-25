@@ -3,840 +3,1596 @@
     "id": "mex",
     "name": "Mexico",
     "code": "MEX",
-    "flag": "\ud83c\uddf2\ud83c\uddfd",
+    "flag": "🇲🇽",
     "group": "A",
     "fifaRanking": 14,
     "confederation": "CONCACAF",
     "eloRating": 1805,
     "topPlayers": [
-      { "name": "Edson Alvarez", "position": "MF", "club": "West Ham United", "age": 27 },
-      { "name": "Hirving Lozano", "position": "FW", "club": "PSV Eindhoven", "age": 30 },
-      { "name": "Santiago Gimenez", "position": "FW", "club": "Feyenoord", "age": 23 }
+      {
+        "name": "Edson Alvarez",
+        "position": "MF",
+        "club": "West Ham United",
+        "age": 27
+      },
+      {
+        "name": "Hirving Lozano",
+        "position": "FW",
+        "club": "PSV Eindhoven",
+        "age": 30
+      },
+      {
+        "name": "Santiago Gimenez",
+        "position": "FW",
+        "club": "Feyenoord",
+        "age": 23
+      }
     ],
     "stats": {
       "worldCupAppearances": 17,
       "bestFinish": "Quarter-finals",
       "recentForm": "WDWWL"
-    }
+    },
+    "attackStrength": 0.12,
+    "defenseStrength": -0.02,
+    "eloSigma": 40
   },
   {
     "id": "rsa",
     "name": "South Africa",
     "code": "RSA",
-    "flag": "\ud83c\uddff\ud83c\udde6",
+    "flag": "🇿🇦",
     "group": "A",
     "fifaRanking": 57,
     "confederation": "CAF",
     "eloRating": 1570,
     "topPlayers": [
-      { "name": "Percy Tau", "position": "FW", "club": "Al Ahly", "age": 31 },
-      { "name": "Ronwen Williams", "position": "GK", "club": "Mamelodi Sundowns", "age": 32 },
-      { "name": "Themba Zwane", "position": "MF", "club": "Mamelodi Sundowns", "age": 35 }
+      {
+        "name": "Percy Tau",
+        "position": "FW",
+        "club": "Al Ahly",
+        "age": 31
+      },
+      {
+        "name": "Ronwen Williams",
+        "position": "GK",
+        "club": "Mamelodi Sundowns",
+        "age": 32
+      },
+      {
+        "name": "Themba Zwane",
+        "position": "MF",
+        "club": "Mamelodi Sundowns",
+        "age": 35
+      }
     ],
     "stats": {
       "worldCupAppearances": 3,
       "bestFinish": "Group Stage",
       "recentForm": "WLDWW"
-    }
+    },
+    "attackStrength": -0.04,
+    "defenseStrength": 0.09,
+    "eloSigma": 65
   },
   {
     "id": "kor",
     "name": "South Korea",
     "code": "KOR",
-    "flag": "\ud83c\uddf0\ud83c\uddf7",
+    "flag": "🇰🇷",
     "group": "A",
     "fifaRanking": 22,
     "confederation": "AFC",
     "eloRating": 1748,
     "topPlayers": [
-      { "name": "Son Heung-min", "position": "FW", "club": "Tottenham Hotspur", "age": 33 },
-      { "name": "Kim Min-jae", "position": "DF", "club": "Bayern Munich", "age": 29 },
-      { "name": "Lee Kang-in", "position": "MF", "club": "Paris Saint-Germain", "age": 25 }
+      {
+        "name": "Son Heung-min",
+        "position": "FW",
+        "club": "Tottenham Hotspur",
+        "age": 33
+      },
+      {
+        "name": "Kim Min-jae",
+        "position": "DF",
+        "club": "Bayern Munich",
+        "age": 29
+      },
+      {
+        "name": "Lee Kang-in",
+        "position": "MF",
+        "club": "Paris Saint-Germain",
+        "age": 25
+      }
     ],
     "stats": {
       "worldCupAppearances": 11,
       "bestFinish": "Semi-finals",
       "recentForm": "WWDWL"
-    }
+    },
+    "attackStrength": 0.08,
+    "defenseStrength": 0.01,
+    "eloSigma": 40
   },
   {
     "id": "can",
     "name": "Canada",
     "code": "CAN",
-    "flag": "\ud83c\udde8\ud83c\udde6",
+    "flag": "🇨🇦",
     "group": "B",
     "fifaRanking": 40,
     "confederation": "CONCACAF",
     "eloRating": 1650,
     "topPlayers": [
-      { "name": "Alphonso Davies", "position": "DF", "club": "Real Madrid", "age": 25 },
-      { "name": "Jonathan David", "position": "FW", "club": "Barcelona", "age": 26 },
-      { "name": "Cyle Larin", "position": "FW", "club": "Real Valladolid", "age": 29 }
+      {
+        "name": "Alphonso Davies",
+        "position": "DF",
+        "club": "Real Madrid",
+        "age": 25
+      },
+      {
+        "name": "Jonathan David",
+        "position": "FW",
+        "club": "Barcelona",
+        "age": 26
+      },
+      {
+        "name": "Cyle Larin",
+        "position": "FW",
+        "club": "Real Valladolid",
+        "age": 29
+      }
     ],
     "stats": {
       "worldCupAppearances": 2,
       "bestFinish": "Group Stage",
       "recentForm": "WDWLW"
-    }
+    },
+    "attackStrength": 0.01,
+    "defenseStrength": 0.05,
+    "eloSigma": 65
   },
   {
     "id": "qat",
     "name": "Qatar",
     "code": "QAT",
-    "flag": "\ud83c\uddf6\ud83c\udde6",
+    "flag": "🇶🇦",
     "group": "B",
     "fifaRanking": 44,
     "confederation": "AFC",
     "eloRating": 1600,
     "topPlayers": [
-      { "name": "Akram Afif", "position": "FW", "club": "Al Sadd", "age": 27 },
-      { "name": "Almoez Ali", "position": "FW", "club": "Al Duhail", "age": 28 },
-      { "name": "Hassan Al-Haydos", "position": "MF", "club": "Al Sadd", "age": 35 }
+      {
+        "name": "Akram Afif",
+        "position": "FW",
+        "club": "Al Sadd",
+        "age": 27
+      },
+      {
+        "name": "Almoez Ali",
+        "position": "FW",
+        "club": "Al Duhail",
+        "age": 28
+      },
+      {
+        "name": "Hassan Al-Haydos",
+        "position": "MF",
+        "club": "Al Sadd",
+        "age": 35
+      }
     ],
     "stats": {
       "worldCupAppearances": 2,
       "bestFinish": "Group Stage",
       "recentForm": "WDLDW"
-    }
+    },
+    "attackStrength": -0.04,
+    "defenseStrength": 0.07,
+    "eloSigma": 65
   },
   {
     "id": "sui",
     "name": "Switzerland",
     "code": "SUI",
-    "flag": "\ud83c\udde8\ud83c\udded",
+    "flag": "🇨🇭",
     "group": "B",
     "fifaRanking": 19,
     "confederation": "UEFA",
     "eloRating": 1770,
     "topPlayers": [
-      { "name": "Granit Xhaka", "position": "MF", "club": "Bayer Leverkusen", "age": 33 },
-      { "name": "Manuel Akanji", "position": "DF", "club": "Manchester City", "age": 30 },
-      { "name": "Breel Embolo", "position": "FW", "club": "AS Monaco", "age": 29 }
+      {
+        "name": "Granit Xhaka",
+        "position": "MF",
+        "club": "Bayer Leverkusen",
+        "age": 33
+      },
+      {
+        "name": "Manuel Akanji",
+        "position": "DF",
+        "club": "Manchester City",
+        "age": 30
+      },
+      {
+        "name": "Breel Embolo",
+        "position": "FW",
+        "club": "AS Monaco",
+        "age": 29
+      }
     ],
     "stats": {
       "worldCupAppearances": 12,
       "bestFinish": "Quarter-finals",
       "recentForm": "WWDLW"
-    }
+    },
+    "attackStrength": 0.09,
+    "defenseStrength": 0,
+    "eloSigma": 40
   },
   {
     "id": "bra",
     "name": "Brazil",
     "code": "BRA",
-    "flag": "\ud83c\udde7\ud83c\uddf7",
+    "flag": "🇧🇷",
     "group": "C",
     "fifaRanking": 5,
     "confederation": "CONMEBOL",
     "eloRating": 1920,
     "topPlayers": [
-      { "name": "Vinicius Junior", "position": "FW", "club": "Real Madrid", "age": 25 },
-      { "name": "Rodrygo", "position": "FW", "club": "Real Madrid", "age": 25 },
-      { "name": "Endrick", "position": "FW", "club": "Real Madrid", "age": 19 }
+      {
+        "name": "Vinicius Junior",
+        "position": "FW",
+        "club": "Real Madrid",
+        "age": 25
+      },
+      {
+        "name": "Rodrygo",
+        "position": "FW",
+        "club": "Real Madrid",
+        "age": 25
+      },
+      {
+        "name": "Endrick",
+        "position": "FW",
+        "club": "Real Madrid",
+        "age": 19
+      }
     ],
     "stats": {
       "worldCupAppearances": 22,
       "bestFinish": "Champions (5x)",
       "recentForm": "WDWWW"
-    }
+    },
+    "attackStrength": 0.23,
+    "defenseStrength": -0.05,
+    "eloSigma": 40
   },
   {
     "id": "mar",
     "name": "Morocco",
     "code": "MAR",
-    "flag": "\ud83c\uddf2\ud83c\udde6",
+    "flag": "🇲🇦",
     "group": "C",
     "fifaRanking": 13,
     "confederation": "CAF",
     "eloRating": 1810,
     "topPlayers": [
-      { "name": "Achraf Hakimi", "position": "DF", "club": "Paris Saint-Germain", "age": 27 },
-      { "name": "Hakim Ziyech", "position": "MF", "club": "Galatasaray", "age": 33 },
-      { "name": "Youssef En-Nesyri", "position": "FW", "club": "Fenerbahce", "age": 29 }
+      {
+        "name": "Achraf Hakimi",
+        "position": "DF",
+        "club": "Paris Saint-Germain",
+        "age": 27
+      },
+      {
+        "name": "Hakim Ziyech",
+        "position": "MF",
+        "club": "Galatasaray",
+        "age": 33
+      },
+      {
+        "name": "Youssef En-Nesyri",
+        "position": "FW",
+        "club": "Fenerbahce",
+        "age": 29
+      }
     ],
     "stats": {
       "worldCupAppearances": 6,
       "bestFinish": "Semi-finals",
       "recentForm": "WWWDW"
-    }
+    },
+    "attackStrength": 0.16,
+    "defenseStrength": 0,
+    "eloSigma": 50
   },
   {
     "id": "hai",
     "name": "Haiti",
     "code": "HAI",
-    "flag": "\ud83c\udded\ud83c\uddf9",
+    "flag": "🇭🇹",
     "group": "C",
     "fifaRanking": 86,
     "confederation": "CONCACAF",
     "eloRating": 1420,
     "topPlayers": [
-      { "name": "Duckens Nazon", "position": "FW", "club": "Beveren", "age": 32 },
-      { "name": "Derrick Etienne Jr.", "position": "FW", "club": "Columbus Crew", "age": 29 },
-      { "name": "Frantzdy Pierrot", "position": "FW", "club": "Goztepe", "age": 31 }
+      {
+        "name": "Duckens Nazon",
+        "position": "FW",
+        "club": "Beveren",
+        "age": 32
+      },
+      {
+        "name": "Derrick Etienne Jr.",
+        "position": "FW",
+        "club": "Columbus Crew",
+        "age": 29
+      },
+      {
+        "name": "Frantzdy Pierrot",
+        "position": "FW",
+        "club": "Goztepe",
+        "age": 31
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
       "bestFinish": "Group Stage",
       "recentForm": "LDWLW"
-    }
+    },
+    "attackStrength": -0.18,
+    "defenseStrength": 0.14,
+    "eloSigma": 85
   },
   {
     "id": "sco",
     "name": "Scotland",
     "code": "SCO",
-    "flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f",
+    "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "group": "C",
     "fifaRanking": 52,
     "confederation": "UEFA",
     "eloRating": 1595,
     "topPlayers": [
-      { "name": "John McGinn", "position": "MF", "club": "Aston Villa", "age": 31 },
-      { "name": "Andrew Robertson", "position": "DF", "club": "Liverpool", "age": 32 },
-      { "name": "Scott McTominay", "position": "MF", "club": "Napoli", "age": 29 }
+      {
+        "name": "John McGinn",
+        "position": "MF",
+        "club": "Aston Villa",
+        "age": 31
+      },
+      {
+        "name": "Andrew Robertson",
+        "position": "DF",
+        "club": "Liverpool",
+        "age": 32
+      },
+      {
+        "name": "Scott McTominay",
+        "position": "MF",
+        "club": "Napoli",
+        "age": 29
+      }
     ],
     "stats": {
       "worldCupAppearances": 8,
       "bestFinish": "Group Stage",
       "recentForm": "DLWDL"
-    }
+    },
+    "attackStrength": -0.08,
+    "defenseStrength": 0.05,
+    "eloSigma": 50
   },
   {
     "id": "usa",
     "name": "United States",
     "code": "USA",
-    "flag": "\ud83c\uddfa\ud83c\uddf8",
+    "flag": "🇺🇸",
     "group": "D",
     "fifaRanking": 11,
     "confederation": "CONCACAF",
     "eloRating": 1825,
     "topPlayers": [
-      { "name": "Christian Pulisic", "position": "FW", "club": "AC Milan", "age": 27 },
-      { "name": "Weston McKennie", "position": "MF", "club": "Juventus", "age": 27 },
-      { "name": "Gio Reyna", "position": "MF", "club": "Borussia Dortmund", "age": 23 }
+      {
+        "name": "Christian Pulisic",
+        "position": "FW",
+        "club": "AC Milan",
+        "age": 27
+      },
+      {
+        "name": "Weston McKennie",
+        "position": "MF",
+        "club": "Juventus",
+        "age": 27
+      },
+      {
+        "name": "Gio Reyna",
+        "position": "MF",
+        "club": "Borussia Dortmund",
+        "age": 23
+      }
     ],
     "stats": {
       "worldCupAppearances": 11,
       "bestFinish": "Semi-finals",
       "recentForm": "WWDWW"
-    }
+    },
+    "attackStrength": 0.17,
+    "defenseStrength": -0.01,
+    "eloSigma": 40
   },
   {
     "id": "par",
     "name": "Paraguay",
     "code": "PAR",
-    "flag": "\ud83c\uddf5\ud83c\uddfe",
+    "flag": "🇵🇾",
     "group": "D",
     "fifaRanking": 55,
     "confederation": "CONMEBOL",
     "eloRating": 1580,
     "topPlayers": [
-      { "name": "Miguel Almiron", "position": "MF", "club": "Atlanta United", "age": 32 },
-      { "name": "Julio Enciso", "position": "FW", "club": "Brighton", "age": 21 },
-      { "name": "Gustavo Gomez", "position": "DF", "club": "Palmeiras", "age": 31 }
+      {
+        "name": "Miguel Almiron",
+        "position": "MF",
+        "club": "Atlanta United",
+        "age": 32
+      },
+      {
+        "name": "Julio Enciso",
+        "position": "FW",
+        "club": "Brighton",
+        "age": 21
+      },
+      {
+        "name": "Gustavo Gomez",
+        "position": "DF",
+        "club": "Palmeiras",
+        "age": 31
+      }
     ],
     "stats": {
       "worldCupAppearances": 8,
       "bestFinish": "Quarter-finals",
       "recentForm": "LDWDW"
-    }
+    },
+    "attackStrength": -0.05,
+    "defenseStrength": 0.07,
+    "eloSigma": 50
   },
   {
     "id": "aus",
     "name": "Australia",
     "code": "AUS",
-    "flag": "\ud83c\udde6\ud83c\uddfa",
+    "flag": "🇦🇺",
     "group": "D",
     "fifaRanking": 24,
     "confederation": "AFC",
     "eloRating": 1740,
     "topPlayers": [
-      { "name": "Jackson Irvine", "position": "MF", "club": "St. Pauli", "age": 32 },
-      { "name": "Awer Mabil", "position": "FW", "club": "Grasshopper", "age": 29 },
-      { "name": "Harry Souttar", "position": "DF", "club": "Sheffield United", "age": 27 }
+      {
+        "name": "Jackson Irvine",
+        "position": "MF",
+        "club": "St. Pauli",
+        "age": 32
+      },
+      {
+        "name": "Awer Mabil",
+        "position": "FW",
+        "club": "Grasshopper",
+        "age": 29
+      },
+      {
+        "name": "Harry Souttar",
+        "position": "DF",
+        "club": "Sheffield United",
+        "age": 27
+      }
     ],
     "stats": {
       "worldCupAppearances": 6,
       "bestFinish": "Round of 16",
       "recentForm": "WDWLW"
-    }
+    },
+    "attackStrength": 0.07,
+    "defenseStrength": 0.01,
+    "eloSigma": 50
   },
   {
     "id": "ger",
     "name": "Germany",
     "code": "GER",
-    "flag": "\ud83c\udde9\ud83c\uddea",
+    "flag": "🇩🇪",
     "group": "E",
     "fifaRanking": 3,
     "confederation": "UEFA",
     "eloRating": 1940,
     "topPlayers": [
-      { "name": "Florian Wirtz", "position": "MF", "club": "Bayer Leverkusen", "age": 22 },
-      { "name": "Jamal Musiala", "position": "MF", "club": "Bayern Munich", "age": 23 },
-      { "name": "Kai Havertz", "position": "FW", "club": "Arsenal", "age": 26 }
+      {
+        "name": "Florian Wirtz",
+        "position": "MF",
+        "club": "Bayer Leverkusen",
+        "age": 22
+      },
+      {
+        "name": "Jamal Musiala",
+        "position": "MF",
+        "club": "Bayern Munich",
+        "age": 23
+      },
+      {
+        "name": "Kai Havertz",
+        "position": "FW",
+        "club": "Arsenal",
+        "age": 26
+      }
     ],
     "stats": {
       "worldCupAppearances": 20,
       "bestFinish": "Champions (4x)",
       "recentForm": "WWWDW"
-    }
+    },
+    "attackStrength": 0.25,
+    "defenseStrength": -0.06,
+    "eloSigma": 40
   },
   {
     "id": "cur",
     "name": "Curacao",
     "code": "CUW",
-    "flag": "\ud83c\udde8\ud83c\uddfc",
+    "flag": "🇨🇼",
     "group": "E",
     "fifaRanking": 82,
     "confederation": "CONCACAF",
     "eloRating": 1440,
     "topPlayers": [
-      { "name": "Rangelo Janga", "position": "FW", "club": "Aris Thessaloniki", "age": 33 },
-      { "name": "Kenji Gorre", "position": "FW", "club": "NAC Breda", "age": 31 },
-      { "name": "Juninho Bacuna", "position": "MF", "club": "Rangers", "age": 28 }
+      {
+        "name": "Rangelo Janga",
+        "position": "FW",
+        "club": "Aris Thessaloniki",
+        "age": 33
+      },
+      {
+        "name": "Kenji Gorre",
+        "position": "FW",
+        "club": "NAC Breda",
+        "age": 31
+      },
+      {
+        "name": "Juninho Bacuna",
+        "position": "MF",
+        "club": "Rangers",
+        "age": 28
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
       "bestFinish": "Debut",
       "recentForm": "WDLWW"
-    }
+    },
+    "attackStrength": -0.13,
+    "defenseStrength": 0.15,
+    "eloSigma": 85
   },
   {
     "id": "civ",
     "name": "Ivory Coast",
     "code": "CIV",
-    "flag": "\ud83c\udde8\ud83c\uddee",
+    "flag": "🇨🇮",
     "group": "E",
     "fifaRanking": 38,
     "confederation": "CAF",
     "eloRating": 1660,
     "topPlayers": [
-      { "name": "Sebastien Haller", "position": "FW", "club": "Borussia Dortmund", "age": 31 },
-      { "name": "Franck Kessie", "position": "MF", "club": "Al-Ahli", "age": 29 },
-      { "name": "Simon Adingra", "position": "FW", "club": "Brighton", "age": 23 }
+      {
+        "name": "Sebastien Haller",
+        "position": "FW",
+        "club": "Borussia Dortmund",
+        "age": 31
+      },
+      {
+        "name": "Franck Kessie",
+        "position": "MF",
+        "club": "Al-Ahli",
+        "age": 29
+      },
+      {
+        "name": "Simon Adingra",
+        "position": "FW",
+        "club": "Brighton",
+        "age": 23
+      }
     ],
     "stats": {
       "worldCupAppearances": 3,
       "bestFinish": "Group Stage",
       "recentForm": "WWDWW"
-    }
+    },
+    "attackStrength": 0.06,
+    "defenseStrength": 0.07,
+    "eloSigma": 65
   },
   {
     "id": "ecu",
     "name": "Ecuador",
     "code": "ECU",
-    "flag": "\ud83c\uddea\ud83c\udde8",
+    "flag": "🇪🇨",
     "group": "E",
     "fifaRanking": 31,
     "confederation": "CONMEBOL",
     "eloRating": 1695,
     "topPlayers": [
-      { "name": "Moises Caicedo", "position": "MF", "club": "Chelsea", "age": 24 },
-      { "name": "Enner Valencia", "position": "FW", "club": "Internacional", "age": 35 },
-      { "name": "Piero Hincapie", "position": "DF", "club": "Bayer Leverkusen", "age": 23 }
+      {
+        "name": "Moises Caicedo",
+        "position": "MF",
+        "club": "Chelsea",
+        "age": 24
+      },
+      {
+        "name": "Enner Valencia",
+        "position": "FW",
+        "club": "Internacional",
+        "age": 35
+      },
+      {
+        "name": "Piero Hincapie",
+        "position": "DF",
+        "club": "Bayer Leverkusen",
+        "age": 23
+      }
     ],
     "stats": {
       "worldCupAppearances": 4,
       "bestFinish": "Round of 16",
       "recentForm": "WDLWW"
-    }
+    },
+    "attackStrength": 0.04,
+    "defenseStrength": 0.03,
+    "eloSigma": 65
   },
   {
     "id": "ned",
     "name": "Netherlands",
     "code": "NED",
-    "flag": "\ud83c\uddf3\ud83c\uddf1",
+    "flag": "🇳🇱",
     "group": "F",
     "fifaRanking": 7,
     "confederation": "UEFA",
     "eloRating": 1900,
     "topPlayers": [
-      { "name": "Virgil van Dijk", "position": "DF", "club": "Liverpool", "age": 34 },
-      { "name": "Cody Gakpo", "position": "FW", "club": "Liverpool", "age": 25 },
-      { "name": "Xavi Simons", "position": "MF", "club": "RB Leipzig", "age": 23 }
+      {
+        "name": "Virgil van Dijk",
+        "position": "DF",
+        "club": "Liverpool",
+        "age": 34
+      },
+      {
+        "name": "Cody Gakpo",
+        "position": "FW",
+        "club": "Liverpool",
+        "age": 25
+      },
+      {
+        "name": "Xavi Simons",
+        "position": "MF",
+        "club": "RB Leipzig",
+        "age": 23
+      }
     ],
     "stats": {
       "worldCupAppearances": 11,
       "bestFinish": "Runners-up (3x)",
       "recentForm": "DWWWW"
-    }
+    },
+    "attackStrength": 0.22,
+    "defenseStrength": -0.04,
+    "eloSigma": 40
   },
   {
     "id": "jpn",
     "name": "Japan",
     "code": "JPN",
-    "flag": "\ud83c\uddef\ud83c\uddf5",
+    "flag": "🇯🇵",
     "group": "F",
     "fifaRanking": 15,
     "confederation": "AFC",
     "eloRating": 1800,
     "topPlayers": [
-      { "name": "Takefusa Kubo", "position": "FW", "club": "Real Sociedad", "age": 24 },
-      { "name": "Wataru Endo", "position": "MF", "club": "Liverpool", "age": 33 },
-      { "name": "Kaoru Mitoma", "position": "FW", "club": "Brighton", "age": 28 }
+      {
+        "name": "Takefusa Kubo",
+        "position": "FW",
+        "club": "Real Sociedad",
+        "age": 24
+      },
+      {
+        "name": "Wataru Endo",
+        "position": "MF",
+        "club": "Liverpool",
+        "age": 33
+      },
+      {
+        "name": "Kaoru Mitoma",
+        "position": "FW",
+        "club": "Brighton",
+        "age": 28
+      }
     ],
     "stats": {
       "worldCupAppearances": 7,
       "bestFinish": "Round of 16",
       "recentForm": "WWWDW"
-    }
+    },
+    "attackStrength": 0.15,
+    "defenseStrength": 0,
+    "eloSigma": 50
   },
   {
     "id": "tun",
     "name": "Tunisia",
     "code": "TUN",
-    "flag": "\ud83c\uddf9\ud83c\uddf3",
+    "flag": "🇹🇳",
     "group": "F",
     "fifaRanking": 36,
     "confederation": "CAF",
     "eloRating": 1670,
     "topPlayers": [
-      { "name": "Youssef Msakni", "position": "FW", "club": "Al-Arabi", "age": 36 },
-      { "name": "Aissa Laidouni", "position": "MF", "club": "Union Berlin", "age": 29 },
-      { "name": "Hannibal Mejbri", "position": "MF", "club": "Manchester United", "age": 23 }
+      {
+        "name": "Youssef Msakni",
+        "position": "FW",
+        "club": "Al-Arabi",
+        "age": 36
+      },
+      {
+        "name": "Aissa Laidouni",
+        "position": "MF",
+        "club": "Union Berlin",
+        "age": 29
+      },
+      {
+        "name": "Hannibal Mejbri",
+        "position": "MF",
+        "club": "Manchester United",
+        "age": 23
+      }
     ],
     "stats": {
       "worldCupAppearances": 6,
       "bestFinish": "Group Stage",
       "recentForm": "WDWDL"
-    }
+    },
+    "attackStrength": 0.01,
+    "defenseStrength": 0.03,
+    "eloSigma": 50
   },
   {
     "id": "bel",
     "name": "Belgium",
     "code": "BEL",
-    "flag": "\ud83c\udde7\ud83c\uddea",
+    "flag": "🇧🇪",
     "group": "G",
     "fifaRanking": 6,
     "confederation": "UEFA",
     "eloRating": 1910,
     "topPlayers": [
-      { "name": "Kevin De Bruyne", "position": "MF", "club": "Manchester City", "age": 34 },
-      { "name": "Jeremy Doku", "position": "FW", "club": "Manchester City", "age": 23 },
-      { "name": "Lois Openda", "position": "FW", "club": "RB Leipzig", "age": 26 }
+      {
+        "name": "Kevin De Bruyne",
+        "position": "MF",
+        "club": "Manchester City",
+        "age": 34
+      },
+      {
+        "name": "Jeremy Doku",
+        "position": "FW",
+        "club": "Manchester City",
+        "age": 23
+      },
+      {
+        "name": "Lois Openda",
+        "position": "FW",
+        "club": "RB Leipzig",
+        "age": 26
+      }
     ],
     "stats": {
       "worldCupAppearances": 14,
       "bestFinish": "Semi-finals",
       "recentForm": "WDLWW"
-    }
+    },
+    "attackStrength": 0.19,
+    "defenseStrength": -0.07,
+    "eloSigma": 40
   },
   {
     "id": "egy",
     "name": "Egypt",
     "code": "EGY",
-    "flag": "\ud83c\uddea\ud83c\uddec",
+    "flag": "🇪🇬",
     "group": "G",
     "fifaRanking": 33,
     "confederation": "CAF",
     "eloRating": 1685,
     "topPlayers": [
-      { "name": "Mohamed Salah", "position": "FW", "club": "Liverpool", "age": 33 },
-      { "name": "Omar Marmoush", "position": "FW", "club": "Manchester City", "age": 26 },
-      { "name": "Mohamed Elneny", "position": "MF", "club": "Al Ahly", "age": 33 }
+      {
+        "name": "Mohamed Salah",
+        "position": "FW",
+        "club": "Liverpool",
+        "age": 33
+      },
+      {
+        "name": "Omar Marmoush",
+        "position": "FW",
+        "club": "Manchester City",
+        "age": 26
+      },
+      {
+        "name": "Mohamed Elneny",
+        "position": "MF",
+        "club": "Al Ahly",
+        "age": 33
+      }
     ],
     "stats": {
       "worldCupAppearances": 3,
       "bestFinish": "Group Stage",
       "recentForm": "WWDWW"
-    }
+    },
+    "attackStrength": 0.08,
+    "defenseStrength": 0.06,
+    "eloSigma": 65
   },
   {
     "id": "irn",
     "name": "Iran",
     "code": "IRN",
-    "flag": "\ud83c\uddee\ud83c\uddf7",
+    "flag": "🇮🇷",
     "group": "G",
     "fifaRanking": 21,
     "confederation": "AFC",
     "eloRating": 1755,
     "topPlayers": [
-      { "name": "Mehdi Taremi", "position": "FW", "club": "Inter Milan", "age": 33 },
-      { "name": "Sardar Azmoun", "position": "FW", "club": "AS Roma", "age": 31 },
-      { "name": "Alireza Jahanbakhsh", "position": "FW", "club": "Feyenoord", "age": 32 }
+      {
+        "name": "Mehdi Taremi",
+        "position": "FW",
+        "club": "Inter Milan",
+        "age": 33
+      },
+      {
+        "name": "Sardar Azmoun",
+        "position": "FW",
+        "club": "AS Roma",
+        "age": 31
+      },
+      {
+        "name": "Alireza Jahanbakhsh",
+        "position": "FW",
+        "club": "Feyenoord",
+        "age": 32
+      }
     ],
     "stats": {
       "worldCupAppearances": 6,
       "bestFinish": "Group Stage",
       "recentForm": "WDWWL"
-    }
+    },
+    "attackStrength": 0.08,
+    "defenseStrength": 0,
+    "eloSigma": 50
   },
   {
     "id": "nzl",
     "name": "New Zealand",
     "code": "NZL",
-    "flag": "\ud83c\uddf3\ud83c\uddff",
+    "flag": "🇳🇿",
     "group": "G",
     "fifaRanking": 93,
     "confederation": "OFC",
     "eloRating": 1390,
     "topPlayers": [
-      { "name": "Chris Wood", "position": "FW", "club": "Nottingham Forest", "age": 34 },
-      { "name": "Sarpreet Singh", "position": "MF", "club": "Salzburg", "age": 25 },
-      { "name": "Liberato Cacace", "position": "DF", "club": "Empoli", "age": 24 }
+      {
+        "name": "Chris Wood",
+        "position": "FW",
+        "club": "Nottingham Forest",
+        "age": 34
+      },
+      {
+        "name": "Sarpreet Singh",
+        "position": "MF",
+        "club": "Salzburg",
+        "age": 25
+      },
+      {
+        "name": "Liberato Cacace",
+        "position": "DF",
+        "club": "Empoli",
+        "age": 24
+      }
     ],
     "stats": {
       "worldCupAppearances": 2,
       "bestFinish": "Group Stage",
       "recentForm": "WDWLD"
-    }
+    },
+    "attackStrength": -0.18,
+    "defenseStrength": 0.16,
+    "eloSigma": 65
   },
   {
     "id": "esp",
     "name": "Spain",
     "code": "ESP",
-    "flag": "\ud83c\uddea\ud83c\uddf8",
+    "flag": "🇪🇸",
     "group": "H",
     "fifaRanking": 2,
     "confederation": "UEFA",
     "eloRating": 1960,
     "topPlayers": [
-      { "name": "Lamine Yamal", "position": "FW", "club": "FC Barcelona", "age": 18 },
-      { "name": "Pedri", "position": "MF", "club": "FC Barcelona", "age": 23 },
-      { "name": "Rodri", "position": "MF", "club": "Manchester City", "age": 29 }
+      {
+        "name": "Lamine Yamal",
+        "position": "FW",
+        "club": "FC Barcelona",
+        "age": 18
+      },
+      {
+        "name": "Pedri",
+        "position": "MF",
+        "club": "FC Barcelona",
+        "age": 23
+      },
+      {
+        "name": "Rodri",
+        "position": "MF",
+        "club": "Manchester City",
+        "age": 29
+      }
     ],
     "stats": {
       "worldCupAppearances": 16,
       "bestFinish": "Champions (1x)",
       "recentForm": "WWWWW"
-    }
+    },
+    "attackStrength": 0.28,
+    "defenseStrength": -0.06,
+    "eloSigma": 40
   },
   {
     "id": "cpv",
     "name": "Cape Verde",
     "code": "CPV",
-    "flag": "\ud83c\udde8\ud83c\uddfb",
+    "flag": "🇨🇻",
     "group": "H",
     "fifaRanking": 62,
     "confederation": "CAF",
     "eloRating": 1530,
     "topPlayers": [
-      { "name": "Garry Rodrigues", "position": "FW", "club": "Olympiacos", "age": 35 },
-      { "name": "Ryan Mendes", "position": "FW", "club": "Caykur Rizespor", "age": 35 },
-      { "name": "Kenny Rocha Santos", "position": "MF", "club": "Al-Ahli", "age": 30 }
+      {
+        "name": "Garry Rodrigues",
+        "position": "FW",
+        "club": "Olympiacos",
+        "age": 35
+      },
+      {
+        "name": "Ryan Mendes",
+        "position": "FW",
+        "club": "Caykur Rizespor",
+        "age": 35
+      },
+      {
+        "name": "Kenny Rocha Santos",
+        "position": "MF",
+        "club": "Al-Ahli",
+        "age": 30
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
       "bestFinish": "Debut",
       "recentForm": "WDLWW"
-    }
+    },
+    "attackStrength": -0.07,
+    "defenseStrength": 0.11,
+    "eloSigma": 85
   },
   {
     "id": "ksa",
     "name": "Saudi Arabia",
     "code": "KSA",
-    "flag": "\ud83c\uddf8\ud83c\udde6",
+    "flag": "🇸🇦",
     "group": "H",
     "fifaRanking": 56,
     "confederation": "AFC",
     "eloRating": 1575,
     "topPlayers": [
-      { "name": "Salem Al-Dawsari", "position": "FW", "club": "Al Hilal", "age": 33 },
-      { "name": "Firas Al-Buraikan", "position": "FW", "club": "Al Hilal", "age": 26 },
-      { "name": "Mohammed Kanno", "position": "MF", "club": "Al Hilal", "age": 32 }
+      {
+        "name": "Salem Al-Dawsari",
+        "position": "FW",
+        "club": "Al Hilal",
+        "age": 33
+      },
+      {
+        "name": "Firas Al-Buraikan",
+        "position": "FW",
+        "club": "Al Hilal",
+        "age": 26
+      },
+      {
+        "name": "Mohammed Kanno",
+        "position": "MF",
+        "club": "Al Hilal",
+        "age": 32
+      }
     ],
     "stats": {
       "worldCupAppearances": 7,
       "bestFinish": "Round of 16",
       "recentForm": "WDWWL"
-    }
+    },
+    "attackStrength": -0.04,
+    "defenseStrength": 0.09,
+    "eloSigma": 50
   },
   {
     "id": "uru",
     "name": "Uruguay",
     "code": "URU",
-    "flag": "\ud83c\uddfa\ud83c\uddfe",
+    "flag": "🇺🇾",
     "group": "H",
     "fifaRanking": 10,
     "confederation": "CONMEBOL",
     "eloRating": 1830,
     "topPlayers": [
-      { "name": "Federico Valverde", "position": "MF", "club": "Real Madrid", "age": 27 },
-      { "name": "Darwin Nunez", "position": "FW", "club": "Liverpool", "age": 26 },
-      { "name": "Ronald Araujo", "position": "DF", "club": "FC Barcelona", "age": 27 }
+      {
+        "name": "Federico Valverde",
+        "position": "MF",
+        "club": "Real Madrid",
+        "age": 27
+      },
+      {
+        "name": "Darwin Nunez",
+        "position": "FW",
+        "club": "Liverpool",
+        "age": 26
+      },
+      {
+        "name": "Ronald Araujo",
+        "position": "DF",
+        "club": "FC Barcelona",
+        "age": 27
+      }
     ],
     "stats": {
       "worldCupAppearances": 14,
       "bestFinish": "Champions (2x)",
       "recentForm": "WDWWW"
-    }
+    },
+    "attackStrength": 0.17,
+    "defenseStrength": -0.01,
+    "eloSigma": 40
   },
   {
     "id": "fra",
     "name": "France",
     "code": "FRA",
-    "flag": "\ud83c\uddeb\ud83c\uddf7",
+    "flag": "🇫🇷",
     "group": "I",
     "fifaRanking": 1,
     "confederation": "UEFA",
     "eloRating": 1985,
     "topPlayers": [
-      { "name": "Kylian Mbappe", "position": "FW", "club": "Real Madrid", "age": 27 },
-      { "name": "Antoine Griezmann", "position": "FW", "club": "Atletico Madrid", "age": 35 },
-      { "name": "Aurelien Tchouameni", "position": "MF", "club": "Real Madrid", "age": 26 }
+      {
+        "name": "Kylian Mbappe",
+        "position": "FW",
+        "club": "Real Madrid",
+        "age": 27
+      },
+      {
+        "name": "Antoine Griezmann",
+        "position": "FW",
+        "club": "Atletico Madrid",
+        "age": 35
+      },
+      {
+        "name": "Aurelien Tchouameni",
+        "position": "MF",
+        "club": "Real Madrid",
+        "age": 26
+      }
     ],
     "stats": {
       "worldCupAppearances": 16,
       "bestFinish": "Champions (2x)",
       "recentForm": "DWWWW"
-    }
+    },
+    "attackStrength": 0.28,
+    "defenseStrength": -0.08,
+    "eloSigma": 40
   },
   {
     "id": "sen",
     "name": "Senegal",
     "code": "SEN",
-    "flag": "\ud83c\uddf8\ud83c\uddf3",
+    "flag": "🇸🇳",
     "group": "I",
     "fifaRanking": 18,
     "confederation": "CAF",
     "eloRating": 1780,
     "topPlayers": [
-      { "name": "Sadio Mane", "position": "FW", "club": "Al-Nassr", "age": 34 },
-      { "name": "Kalidou Koulibaly", "position": "DF", "club": "Al-Hilal", "age": 34 },
-      { "name": "Ismaila Sarr", "position": "FW", "club": "Crystal Palace", "age": 28 }
+      {
+        "name": "Sadio Mane",
+        "position": "FW",
+        "club": "Al-Nassr",
+        "age": 34
+      },
+      {
+        "name": "Kalidou Koulibaly",
+        "position": "DF",
+        "club": "Al-Hilal",
+        "age": 34
+      },
+      {
+        "name": "Ismaila Sarr",
+        "position": "FW",
+        "club": "Crystal Palace",
+        "age": 28
+      }
     ],
     "stats": {
       "worldCupAppearances": 3,
       "bestFinish": "Quarter-finals",
       "recentForm": "WWDWL"
-    }
+    },
+    "attackStrength": 0.1,
+    "defenseStrength": -0.01,
+    "eloSigma": 65
   },
   {
     "id": "nor",
     "name": "Norway",
     "code": "NOR",
-    "flag": "\ud83c\uddf3\ud83c\uddf4",
+    "flag": "🇳🇴",
     "group": "I",
     "fifaRanking": 46,
     "confederation": "UEFA",
     "eloRating": 1620,
     "topPlayers": [
-      { "name": "Erling Haaland", "position": "FW", "club": "Manchester City", "age": 25 },
-      { "name": "Martin Odegaard", "position": "MF", "club": "Arsenal", "age": 27 },
-      { "name": "Alexander Sorloth", "position": "FW", "club": "Atletico Madrid", "age": 30 }
+      {
+        "name": "Erling Haaland",
+        "position": "FW",
+        "club": "Manchester City",
+        "age": 25
+      },
+      {
+        "name": "Martin Odegaard",
+        "position": "MF",
+        "club": "Arsenal",
+        "age": 27
+      },
+      {
+        "name": "Alexander Sorloth",
+        "position": "FW",
+        "club": "Atletico Madrid",
+        "age": 30
+      }
     ],
     "stats": {
       "worldCupAppearances": 3,
       "bestFinish": "Group Stage",
       "recentForm": "WWDWW"
-    }
+    },
+    "attackStrength": 0.03,
+    "defenseStrength": 0.09,
+    "eloSigma": 65
   },
   {
     "id": "arg",
     "name": "Argentina",
     "code": "ARG",
-    "flag": "\ud83c\udde6\ud83c\uddf7",
+    "flag": "🇦🇷",
     "group": "J",
     "fifaRanking": 4,
     "confederation": "CONMEBOL",
     "eloRating": 1930,
     "topPlayers": [
-      { "name": "Lionel Messi", "position": "FW", "club": "Inter Miami", "age": 38 },
-      { "name": "Julian Alvarez", "position": "FW", "club": "Atletico Madrid", "age": 26 },
-      { "name": "Enzo Fernandez", "position": "MF", "club": "Chelsea", "age": 25 }
+      {
+        "name": "Lionel Messi",
+        "position": "FW",
+        "club": "Inter Miami",
+        "age": 38
+      },
+      {
+        "name": "Julian Alvarez",
+        "position": "FW",
+        "club": "Atletico Madrid",
+        "age": 26
+      },
+      {
+        "name": "Enzo Fernandez",
+        "position": "MF",
+        "club": "Chelsea",
+        "age": 25
+      }
     ],
     "stats": {
       "worldCupAppearances": 18,
       "bestFinish": "Champions (3x)",
       "recentForm": "WWWDW"
-    }
+    },
+    "attackStrength": 0.24,
+    "defenseStrength": -0.06,
+    "eloSigma": 40
   },
   {
     "id": "alg",
     "name": "Algeria",
     "code": "ALG",
-    "flag": "\ud83c\udde9\ud83c\uddff",
+    "flag": "🇩🇿",
     "group": "J",
     "fifaRanking": 35,
     "confederation": "CAF",
     "eloRating": 1675,
     "topPlayers": [
-      { "name": "Riyad Mahrez", "position": "FW", "club": "Al-Ahli", "age": 35 },
-      { "name": "Ismael Bennacer", "position": "MF", "club": "AC Milan", "age": 28 },
-      { "name": "Said Benrahma", "position": "FW", "club": "Lyon", "age": 30 }
+      {
+        "name": "Riyad Mahrez",
+        "position": "FW",
+        "club": "Al-Ahli",
+        "age": 35
+      },
+      {
+        "name": "Ismael Bennacer",
+        "position": "MF",
+        "club": "AC Milan",
+        "age": 28
+      },
+      {
+        "name": "Said Benrahma",
+        "position": "FW",
+        "club": "Lyon",
+        "age": 30
+      }
     ],
     "stats": {
       "worldCupAppearances": 4,
       "bestFinish": "Round of 16",
       "recentForm": "WDWWL"
-    }
+    },
+    "attackStrength": 0.03,
+    "defenseStrength": 0.04,
+    "eloSigma": 65
   },
   {
     "id": "aut",
     "name": "Austria",
     "code": "AUT",
-    "flag": "\ud83c\udde6\ud83c\uddf9",
+    "flag": "🇦🇹",
     "group": "J",
     "fifaRanking": 23,
     "confederation": "UEFA",
     "eloRating": 1745,
     "topPlayers": [
-      { "name": "David Alaba", "position": "DF", "club": "Real Madrid", "age": 33 },
-      { "name": "Marcel Sabitzer", "position": "MF", "club": "Borussia Dortmund", "age": 32 },
-      { "name": "Christoph Baumgartner", "position": "MF", "club": "RB Leipzig", "age": 26 }
+      {
+        "name": "David Alaba",
+        "position": "DF",
+        "club": "Real Madrid",
+        "age": 33
+      },
+      {
+        "name": "Marcel Sabitzer",
+        "position": "MF",
+        "club": "Borussia Dortmund",
+        "age": 32
+      },
+      {
+        "name": "Christoph Baumgartner",
+        "position": "MF",
+        "club": "RB Leipzig",
+        "age": 26
+      }
     ],
     "stats": {
       "worldCupAppearances": 7,
       "bestFinish": "Semi-finals",
       "recentForm": "WWDLW"
-    }
+    },
+    "attackStrength": 0.08,
+    "defenseStrength": 0.01,
+    "eloSigma": 50
   },
   {
     "id": "jor",
     "name": "Jordan",
     "code": "JOR",
-    "flag": "\ud83c\uddef\ud83c\uddf4",
+    "flag": "🇯🇴",
     "group": "J",
     "fifaRanking": 68,
     "confederation": "AFC",
     "eloRating": 1500,
     "topPlayers": [
-      { "name": "Musa Al-Taamari", "position": "FW", "club": "Montpellier", "age": 28 },
-      { "name": "Yazan Al-Naimat", "position": "FW", "club": "Young Boys", "age": 25 },
-      { "name": "Mousa Tamari", "position": "MF", "club": "Standard Liege", "age": 27 }
+      {
+        "name": "Musa Al-Taamari",
+        "position": "FW",
+        "club": "Montpellier",
+        "age": 28
+      },
+      {
+        "name": "Yazan Al-Naimat",
+        "position": "FW",
+        "club": "Young Boys",
+        "age": 25
+      },
+      {
+        "name": "Mousa Tamari",
+        "position": "MF",
+        "club": "Standard Liege",
+        "age": 27
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
       "bestFinish": "Debut",
       "recentForm": "WDLWW"
-    }
+    },
+    "attackStrength": -0.09,
+    "defenseStrength": 0.12,
+    "eloSigma": 85
   },
   {
     "id": "por",
     "name": "Portugal",
     "code": "POR",
-    "flag": "\ud83c\uddf5\ud83c\uddf9",
+    "flag": "🇵🇹",
     "group": "K",
     "fifaRanking": 8,
     "confederation": "UEFA",
     "eloRating": 1890,
     "topPlayers": [
-      { "name": "Cristiano Ronaldo", "position": "FW", "club": "Al-Nassr", "age": 41 },
-      { "name": "Bruno Fernandes", "position": "MF", "club": "Manchester United", "age": 31 },
-      { "name": "Rafael Leao", "position": "FW", "club": "AC Milan", "age": 26 }
+      {
+        "name": "Cristiano Ronaldo",
+        "position": "FW",
+        "club": "Al-Nassr",
+        "age": 41
+      },
+      {
+        "name": "Bruno Fernandes",
+        "position": "MF",
+        "club": "Manchester United",
+        "age": 31
+      },
+      {
+        "name": "Rafael Leao",
+        "position": "FW",
+        "club": "AC Milan",
+        "age": 26
+      }
     ],
     "stats": {
       "worldCupAppearances": 8,
       "bestFinish": "Semi-finals",
       "recentForm": "WDWWW"
-    }
+    },
+    "attackStrength": 0.21,
+    "defenseStrength": -0.04,
+    "eloSigma": 50
   },
   {
     "id": "uzb",
     "name": "Uzbekistan",
     "code": "UZB",
-    "flag": "\ud83c\uddfa\ud83c\uddff",
+    "flag": "🇺🇿",
     "group": "K",
     "fifaRanking": 64,
     "confederation": "AFC",
     "eloRating": 1520,
     "topPlayers": [
-      { "name": "Eldor Shomurodov", "position": "FW", "club": "AS Roma", "age": 29 },
-      { "name": "Jaloliddin Masharipov", "position": "MF", "club": "Al-Shabab", "age": 33 },
-      { "name": "Abbosbek Fayzullaev", "position": "FW", "club": "CSKA Moscow", "age": 22 }
+      {
+        "name": "Eldor Shomurodov",
+        "position": "FW",
+        "club": "AS Roma",
+        "age": 29
+      },
+      {
+        "name": "Jaloliddin Masharipov",
+        "position": "MF",
+        "club": "Al-Shabab",
+        "age": 33
+      },
+      {
+        "name": "Abbosbek Fayzullaev",
+        "position": "FW",
+        "club": "CSKA Moscow",
+        "age": 22
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
       "bestFinish": "Debut",
       "recentForm": "WWDWL"
-    }
+    },
+    "attackStrength": -0.07,
+    "defenseStrength": 0.11,
+    "eloSigma": 85
   },
   {
     "id": "col",
     "name": "Colombia",
     "code": "COL",
-    "flag": "\ud83c\udde8\ud83c\uddf4",
+    "flag": "🇨🇴",
     "group": "K",
     "fifaRanking": 9,
     "confederation": "CONMEBOL",
     "eloRating": 1840,
     "topPlayers": [
-      { "name": "Luis Diaz", "position": "FW", "club": "Liverpool", "age": 29 },
-      { "name": "James Rodriguez", "position": "MF", "club": "Leon", "age": 34 },
-      { "name": "Jhon Arias", "position": "FW", "club": "Zenit", "age": 27 }
+      {
+        "name": "Luis Diaz",
+        "position": "FW",
+        "club": "Liverpool",
+        "age": 29
+      },
+      {
+        "name": "James Rodriguez",
+        "position": "MF",
+        "club": "Leon",
+        "age": 34
+      },
+      {
+        "name": "Jhon Arias",
+        "position": "FW",
+        "club": "Zenit",
+        "age": 27
+      }
     ],
     "stats": {
       "worldCupAppearances": 6,
       "bestFinish": "Quarter-finals",
       "recentForm": "WWWWW"
-    }
+    },
+    "attackStrength": 0.2,
+    "defenseStrength": -0.01,
+    "eloSigma": 50
   },
   {
     "id": "eng",
     "name": "England",
     "code": "ENG",
-    "flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f",
+    "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "group": "L",
     "fifaRanking": 4,
     "confederation": "UEFA",
     "eloRating": 1935,
     "topPlayers": [
-      { "name": "Jude Bellingham", "position": "MF", "club": "Real Madrid", "age": 22 },
-      { "name": "Bukayo Saka", "position": "FW", "club": "Arsenal", "age": 24 },
-      { "name": "Phil Foden", "position": "MF", "club": "Manchester City", "age": 25 }
+      {
+        "name": "Jude Bellingham",
+        "position": "MF",
+        "club": "Real Madrid",
+        "age": 22
+      },
+      {
+        "name": "Bukayo Saka",
+        "position": "FW",
+        "club": "Arsenal",
+        "age": 24
+      },
+      {
+        "name": "Phil Foden",
+        "position": "MF",
+        "club": "Manchester City",
+        "age": 25
+      }
     ],
     "stats": {
       "worldCupAppearances": 16,
       "bestFinish": "Champions (1x)",
       "recentForm": "WWDWW"
-    }
+    },
+    "attackStrength": 0.24,
+    "defenseStrength": -0.06,
+    "eloSigma": 40
   },
   {
     "id": "cro",
     "name": "Croatia",
     "code": "CRO",
-    "flag": "\ud83c\udded\ud83c\uddf7",
+    "flag": "🇭🇷",
     "group": "L",
     "fifaRanking": 12,
     "confederation": "UEFA",
     "eloRating": 1815,
     "topPlayers": [
-      { "name": "Luka Modric", "position": "MF", "club": "Real Madrid", "age": 40 },
-      { "name": "Mateo Kovacic", "position": "MF", "club": "Manchester City", "age": 32 },
-      { "name": "Josko Gvardiol", "position": "DF", "club": "Manchester City", "age": 24 }
+      {
+        "name": "Luka Modric",
+        "position": "MF",
+        "club": "Real Madrid",
+        "age": 40
+      },
+      {
+        "name": "Mateo Kovacic",
+        "position": "MF",
+        "club": "Manchester City",
+        "age": 32
+      },
+      {
+        "name": "Josko Gvardiol",
+        "position": "DF",
+        "club": "Manchester City",
+        "age": 24
+      }
     ],
     "stats": {
       "worldCupAppearances": 6,
       "bestFinish": "Runners-up",
       "recentForm": "WDWWL"
-    }
+    },
+    "attackStrength": 0.12,
+    "defenseStrength": -0.03,
+    "eloSigma": 50
   },
   {
     "id": "gha",
     "name": "Ghana",
     "code": "GHA",
-    "flag": "\ud83c\uddec\ud83c\udded",
+    "flag": "🇬🇭",
     "group": "L",
     "fifaRanking": 48,
     "confederation": "CAF",
     "eloRating": 1610,
     "topPlayers": [
-      { "name": "Mohammed Kudus", "position": "MF", "club": "West Ham United", "age": 25 },
-      { "name": "Thomas Partey", "position": "MF", "club": "Arsenal", "age": 32 },
-      { "name": "Inaki Williams", "position": "FW", "club": "Athletic Bilbao", "age": 31 }
+      {
+        "name": "Mohammed Kudus",
+        "position": "MF",
+        "club": "West Ham United",
+        "age": 25
+      },
+      {
+        "name": "Thomas Partey",
+        "position": "MF",
+        "club": "Arsenal",
+        "age": 32
+      },
+      {
+        "name": "Inaki Williams",
+        "position": "FW",
+        "club": "Athletic Bilbao",
+        "age": 31
+      }
     ],
     "stats": {
       "worldCupAppearances": 4,
       "bestFinish": "Quarter-finals",
       "recentForm": "WDWLW"
-    }
+    },
+    "attackStrength": -0.01,
+    "defenseStrength": 0.07,
+    "eloSigma": 65
   },
   {
     "id": "pan",
     "name": "Panama",
     "code": "PAN",
-    "flag": "\ud83c\uddf5\ud83c\udde6",
+    "flag": "🇵🇦",
     "group": "L",
     "fifaRanking": 59,
     "confederation": "CONCACAF",
     "eloRating": 1555,
     "topPlayers": [
-      { "name": "Eric Davis", "position": "DF", "club": "Universitario", "age": 34 },
-      { "name": "Jose Fajardo", "position": "FW", "club": "Saprissa", "age": 28 },
-      { "name": "Adalberto Carrasquilla", "position": "MF", "club": "Houston Dynamo", "age": 27 }
+      {
+        "name": "Eric Davis",
+        "position": "DF",
+        "club": "Universitario",
+        "age": 34
+      },
+      {
+        "name": "Jose Fajardo",
+        "position": "FW",
+        "club": "Saprissa",
+        "age": 28
+      },
+      {
+        "name": "Adalberto Carrasquilla",
+        "position": "MF",
+        "club": "Houston Dynamo",
+        "age": 27
+      }
     ],
     "stats": {
       "worldCupAppearances": 2,
       "bestFinish": "Group Stage",
       "recentForm": "WLLWW"
-    }
+    },
+    "attackStrength": -0.07,
+    "defenseStrength": 0.09,
+    "eloSigma": 65
   }
 ]

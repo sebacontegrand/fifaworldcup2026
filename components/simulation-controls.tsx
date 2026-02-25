@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
-import { Settings2, Users, Target, Globe, Zap, RotateCcw, Play } from "lucide-react"
+import { Settings2, Users, Target, Globe, Zap, RotateCcw, Play, Gauge } from "lucide-react"
 
 export function SimulationControls() {
     const { config, updateTeamConfig, updateGlobalConfig, resetConfig, simulate, isRunning } = useSimulation()
@@ -191,30 +191,117 @@ export function SimulationControls() {
                     </TabsContent>
 
                     <TabsContent value="global" className="p-4 m-0 space-y-8">
-                        {/* 5. Chaos Factor */}
+                        {/* Bayesian Elo Uncertainty Toggle */}
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                            <div className="space-y-0.5">
+                                <Label className="flex items-center gap-2 text-purple-300">
+                                    <Zap className="h-4 w-4" />
+                                    Propagate Elo Uncertainty
+                                </Label>
+                                <p className="text-[10px] text-purple-300/60">Sample Elo from Bayesian distributions each iteration (σ per team).</p>
+                            </div>
+                            <Switch
+                                checked={config.globalSettings.propagateUncertainty}
+                                onCheckedChange={(val) => updateGlobalConfig({ propagateUncertainty: val })}
+                            />
+                        </div>
+
+                        {/* Home Advantage Strength */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label className="flex items-center gap-2">
+                                    <Globe className="h-4 w-4 text-indigo-400" />
+                                    Home Advantage Strength
+                                </Label>
+                                <span className="text-sm font-bold text-indigo-400">
+                                    +{config.globalSettings.homeAdvantageStrength} Elo
+                                </span>
+                            </div>
+                            <Slider
+                                value={[config.globalSettings.homeAdvantageStrength]}
+                                min={0}
+                                max={150}
+                                step={10}
+                                onValueChange={([val]) => updateGlobalConfig({ homeAdvantageStrength: val })}
+                            />
+                            <div className="flex justify-between text-[10px] text-white/40 font-mono">
+                                <span>NO ADVANTAGE</span>
+                                <span>FORTRESS</span>
+                            </div>
+                        </div>
+
+                        {/* Target Upset Index */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <Label className="flex items-center gap-2">
                                     <Zap className="h-4 w-4 text-orange-400" />
-                                    Tournament Volatility (Chaos Factor)
+                                    Target Upset Index (Elo Flattening)
                                 </Label>
                                 <span className="text-sm font-bold text-orange-400">
-                                    {Math.round(config.globalSettings.chaosFactor * 100)}%
+                                    {config.globalSettings.targetUpsetIndex}%
                                 </span>
                             </div>
                             <Slider
-                                value={[config.globalSettings.chaosFactor * 100]}
-                                min={0}
-                                max={100}
-                                step={5}
-                                onValueChange={([val]) => updateGlobalConfig({ chaosFactor: val / 100 })}
+                                value={[config.globalSettings.targetUpsetIndex]}
+                                min={10}
+                                max={50}
+                                step={1}
+                                onValueChange={([val]) => updateGlobalConfig({ targetUpsetIndex: val })}
                             />
                             <div className="flex justify-between text-[10px] text-white/40 font-mono">
-                                <span>FAVORITES DOMINATE</span>
+                                <span>FAVORITES WIN</span>
                                 <span>TOTAL CHAOS</span>
                             </div>
-                            <p className="text-xs text-white/60 leading-relaxed bg-orange-500/5 p-3 rounded-lg border border-orange-500/10">
-                                Increasing the chaos factor reduces the mathematical impact of Elo differences, making upsets significantly more likely.
+                        </div>
+
+                        {/* Target Penalty Rate */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label className="flex items-center gap-2">
+                                    <Target className="h-4 w-4 text-amber-400" />
+                                    Target Penalty Rate (KO Draw Bias)
+                                </Label>
+                                <span className="text-sm font-bold text-amber-400">
+                                    {config.globalSettings.targetPenaltyRate}%
+                                </span>
+                            </div>
+                            <Slider
+                                value={[config.globalSettings.targetPenaltyRate]}
+                                min={10}
+                                max={50}
+                                step={1}
+                                onValueChange={([val]) => updateGlobalConfig({ targetPenaltyRate: val })}
+                            />
+                            <div className="flex justify-between text-[10px] text-white/40 font-mono">
+                                <span>RARE</span>
+                                <span>FREQUENT</span>
+                            </div>
+                        </div>
+
+                        {/* Tournament Entropy Multiplier */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label className="flex items-center gap-2">
+                                    <Gauge className="h-4 w-4 text-purple-400" />
+                                    Tournament Entropy (Elo Variance)
+                                </Label>
+                                <span className="text-sm font-bold text-purple-400">
+                                    {config.globalSettings.entropyMultiplier.toFixed(1)}x
+                                </span>
+                            </div>
+                            <Slider
+                                value={[config.globalSettings.entropyMultiplier]}
+                                min={0.1}
+                                max={3.0}
+                                step={0.1}
+                                onValueChange={([val]) => updateGlobalConfig({ entropyMultiplier: val })}
+                            />
+                            <div className="flex justify-between text-[10px] text-white/40 font-mono">
+                                <span>PREDICTABLE</span>
+                                <span>WILD</span>
+                            </div>
+                            <p className="text-xs text-white/60 leading-relaxed bg-white/5 p-3 rounded-lg border border-white/5 mt-4">
+                                Adjust these targets to manually control the emergent tournament analytics.
                             </p>
                         </div>
 
@@ -227,7 +314,7 @@ export function SimulationControls() {
                                 </div>
                                 <div className="p-3 bg-white/5 rounded-lg border border-white/5">
                                     <div className="text-[10px] text-white/40 uppercase">Model</div>
-                                    <div className="text-lg font-bold text-white">Elo/Poisson</div>
+                                    <div className="text-sm font-bold text-white">Dixon-Coles / Bayesian Elo</div>
                                 </div>
                             </div>
                         </div>

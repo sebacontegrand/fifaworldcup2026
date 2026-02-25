@@ -6,7 +6,11 @@ import { runFullSimulation, type SimulationResult, type SimulationConfig, type T
 const INITIAL_CONFIG: SimulationConfig = {
   teamSettings: {},
   globalSettings: {
-    chaosFactor: 0,
+    targetUpsetIndex: 15,    // Baseline upset frequency ~15%
+    targetPenaltyRate: 15,   // Baseline penalty rate ~15%
+    entropyMultiplier: 1.0,  // Baseline Elo uncertainty scalar
+    propagateUncertainty: true,
+    homeAdvantageStrength: 80,
   },
 }
 

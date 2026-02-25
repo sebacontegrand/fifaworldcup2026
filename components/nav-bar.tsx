@@ -10,8 +10,8 @@ const links = [
   { href: "/", label: "Dashboard" },
   { href: "/groups", label: "Groups" },
   { href: "/bracket", label: "Bracket" },
-  { href: "/timeline/prediction", label: "Predict" },
-  { href: "/timeline/live", label: "Live" },
+  { href: "/simulate", label: "Simulate" },
+  { href: "/analysis", label: "Analysis" },
   { href: "/players", label: "Players" },
 ]
 

@@ -59,9 +59,11 @@ export function HomePageContent() {
                 </h1>
 
                 <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                    Predict outcomes using Elo ratings and Monte Carlo simulation with
-                    10,000 iterations. Explore game theory matchup analysis, track your
-                    favorite team, and discover the most likely path to glory.
+                    Advanced predictions powered by{" "}
+                    <span className="font-semibold text-foreground">Dixon-Coles bivariate Poisson</span>{" "}
+                    and <span className="font-semibold text-foreground">Bayesian Elo</span> uncertainty
+                    propagation across 10,000 Monte Carlo iterations. Explore mixed-strategy Nash
+                    equilibria, control tournament chaos, and discover the most likely path to glory.
                 </p>
 
                 <div className="mt-6 flex items-center gap-8">
@@ -289,14 +291,15 @@ export function HomePageContent() {
                 <div className="grid grid-cols-1 gap-4 text-xs leading-relaxed text-muted-foreground md:grid-cols-2">
                     <div>
                         <h3 className="mb-1 font-semibold text-foreground">
-                            Prediction Model
+                            Dixon-Coles / Bayesian Elo Model
                         </h3>
                         <p>
-                            Uses an Elo rating system adapted for international football, with
-                            win probabilities derived from the formula E = 1/(1 +
-                            10^((Rb-Ra)/400)). Match scores are simulated using Poisson
-                            distribution calibrated to World Cup goal averages (~1.3 goals per
-                            team per match).
+                            Goal predictions use the Dixon-Coles bivariate Poisson model, which
+                            splits each team into per-team attack and defense strength parameters
+                            (λ<sub>home</sub> = exp(μ + attack − defense + home_adv)). A ρ correction
+                            adjusts low-scoring outcome probabilities (0-0, 1-0, 0-1, 1-1). Elo
+                            ratings are treated as Bayesian distributions (μ ± σ), sampled fresh
+                            each Monte Carlo iteration to propagate uncertainty.
                         </p>
                     </div>
                     <div>
@@ -304,20 +307,23 @@ export function HomePageContent() {
                             Monte Carlo Simulation
                         </h3>
                         <p>
-                            10,000 full tournament iterations (group stage through final)
-                            produce probability distributions for each team reaching any
-                            stage. Based on FiveThirtyEight Soccer Power Index methodology.
+                            10,000 full tournament iterations (group stage → Round of 32 → Final)
+                            produce probability distributions for advancement, championship, and
+                            elimination at each stage. Extended analytics include tournament
+                            entropy (bits), penalty shootout likelihood, upset index, and team
+                            volatility rankings based on Bayesian Elo variance.
                         </p>
                     </div>
                     <div>
                         <h3 className="mb-1 font-semibold text-foreground">
-                            Game Theory
+                            Game Theory — Mixed-Strategy Equilibria
                         </h3>
                         <p>
-                            Nash Equilibrium analysis with 3x3 payoff matrices (attacking,
-                            balanced, defensive strategies) reveals optimal tactical choices
-                            for each matchup. Minimax evaluation identifies risk-adjusted
-                            knockout paths.
+                            Nash Equilibrium analysis with 3×3 payoff matrices (attacking,
+                            balanced, defensive) now includes mixed-strategy equilibria via
+                            iterated softmax best-response. Context-aware utility functions
+                            differentiate group stage (draw = 1 pt) from knockout (draw ≈ coin
+                            flip) and adjust for scoreline urgency and match minute.
                         </p>
                     </div>
                     <div>
@@ -325,9 +331,11 @@ export function HomePageContent() {
                             Data Sources
                         </h3>
                         <p>
-                            FIFA World Rankings (Feb 2026), official FIFA World Cup 2026 draw
-                            results (Dec 2025), 2025-26 season player statistics from major
-                            European leagues, and historical World Cup performance data.
+                            FIFA/Coca-Cola World Rankings (Feb 2026), official FIFA World Cup 2026
+                            group draw (Dec 2025), club-level xG and defensive metrics from
+                            2024-25 and 2025-26 European league seasons (Opta/FBref), historical
+                            World Cup match data (1930–2022), and EloRatings.net international
+                            football Elo database.
                         </p>
                     </div>
                 </div>
