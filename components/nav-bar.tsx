@@ -8,11 +8,13 @@ import { RefreshCw } from "lucide-react"
 
 const links = [
   { href: "/", label: "Dashboard" },
+  { href: "/teams", label: "Teams" },
+  { href: "/players", label: "Players" },
   { href: "/groups", label: "Groups" },
-  { href: "/bracket", label: "Bracket" },
   { href: "/simulate", label: "Simulate" },
   { href: "/analysis", label: "Analysis" },
-  { href: "/players", label: "Players" },
+  { href: "/bracket", label: "Brackets" },
+  { href: "/methodology", label: "How It Works" },
 ]
 
 export function NavBar() {
