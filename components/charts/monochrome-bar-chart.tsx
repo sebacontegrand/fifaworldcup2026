@@ -3,7 +3,7 @@
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, XAxis } from "recharts";
 import React, { SVGProps } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import {
     Card,
     CardContent,
