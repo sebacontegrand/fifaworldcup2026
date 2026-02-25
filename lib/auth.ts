@@ -8,11 +8,7 @@ const prisma = new PrismaClient()
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     adapter: PrismaAdapter(prisma),
-    providers: [
-        Google({
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        }),
-    ],
+    providers: [Google], // Automatically uses AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET
+    session: { strategy: "jwt" },
     trustHost: true,
 })
