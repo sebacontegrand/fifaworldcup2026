@@ -80,34 +80,32 @@ export function MonochromeBarChart({
             </CardHeader>
             <CardContent>
                 <AnimatePresence mode="wait">
-                    <ChartContainer config={chartConfig} className="h-[200px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                                accessibilityLayer
-                                data={data}
-                                onMouseLeave={() => setActiveIndex(undefined)}
-                                margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
-                            >
-                                <XAxis
-                                    dataKey="label"
-                                    tickLine={false}
-                                    tickMargin={10}
-                                    axisLine={false}
-                                    tickFormatter={(value) => value.slice(0, 3).toUpperCase()}
-                                    tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 12 }}
-                                />
-                                <Bar
-                                    dataKey="value"
-                                    fill="var(--secondary-foreground)"
-                                    shape={
-                                        <CustomBar
-                                            setActiveIndex={setActiveIndex}
-                                            activeIndex={activeIndex}
-                                        />
-                                    }
-                                ></Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
+                    <ChartContainer config={chartConfig} className="h-[300px] w-full aspect-auto">
+                        <BarChart
+                            accessibilityLayer
+                            data={data}
+                            onMouseLeave={() => setActiveIndex(undefined)}
+                            margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
+                        >
+                            <XAxis
+                                dataKey="label"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                                tickFormatter={(value) => value.slice(0, 3).toUpperCase()}
+                                tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 12 }}
+                            />
+                            <Bar
+                                dataKey="value"
+                                fill="var(--secondary-foreground)"
+                                shape={
+                                    <CustomBar
+                                        setActiveIndex={setActiveIndex}
+                                        activeIndex={activeIndex}
+                                    />
+                                }
+                            ></Bar>
+                        </BarChart>
                     </ChartContainer>
                 </AnimatePresence>
             </CardContent>
