@@ -131,7 +131,7 @@ export function BracketView({
   }
 
   return (
-    <div className={cn("overflow-x-auto", className)}>
+    <div className={cn("overflow-x-auto overflow-y-hidden pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 hide-scrollbar", className)} style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
       <div className="flex items-start gap-3 min-w-[1100px] py-4 px-2">
         {rounds.map((round, roundIdx) => {
           // Vertical gap grows by 2^roundIdx so match cards align with parents
