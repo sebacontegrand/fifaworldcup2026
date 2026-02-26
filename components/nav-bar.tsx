@@ -40,7 +40,7 @@ export function NavBar() {
               WC
             </span>
           </div>
-          <div className="flex flex-col hidden sm:flex">
+          <div className="hidden lg:flex flex-col">
             <span className="text-sm font-bold uppercase tracking-wider text-foreground leading-none">
               World Cup 2026
             </span>
@@ -51,8 +51,8 @@ export function NavBar() {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-4">
-          <div className="flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-2 lg:gap-4 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-1 shrink-0">
             {links.map((link) => {
               const isActive =
                 link.href === "/"
@@ -94,7 +94,7 @@ export function NavBar() {
         </div>
 
         {/* Mobile Nav */}
-        <div className="flex lg:hidden items-center gap-2">
+        <div className="flex md:hidden items-center gap-2">
           <button
             onClick={simulate}
             disabled={isRunning}
