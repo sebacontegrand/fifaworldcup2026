@@ -1,9 +1,10 @@
-import { auth } from "@/lib/auth"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 import { SignIn, SignOut } from "@/components/auth-buttons"
 import { HomePageContent } from "@/components/home-page-content"
 
 export default async function HomePage() {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 relative">
