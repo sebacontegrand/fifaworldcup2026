@@ -6,6 +6,7 @@ import teamsData from "@/data/teams.json"
 import type { Team } from "@/lib/simulation"
 import { cn } from "@/lib/utils"
 import { ProbabilityBar } from "@/components/probability-bar"
+import { Play, Activity } from "lucide-react"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -23,7 +24,7 @@ function getGroups(): Record<string, Team[]> {
 }
 
 export default function GroupsPage() {
-  const { result, isRunning } = useSimulation()
+  const { result, isRunning, simulate } = useSimulation()
   const groups = getGroups()
 
   return (
@@ -37,6 +38,32 @@ export default function GroupsPage() {
           third-placed teams qualify for the Round of 32.
         </p>
       </div>
+
+      {/* Simulation Inactive Banner */}
+      {!result && !isRunning && (
+        <div className="mb-8 p-6 rounded-2xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-6 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="flex items-center gap-4 text-left">
+            <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 animate-pulse">
+              <Activity className="h-6 w-6 text-glow-neon" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                Monte Carlo Probabilities Stopped
+              </h3>
+              <p className="text-xs text-white/50 leading-relaxed mt-0.5 max-w-xl">
+                The predictive model is inactive, so team advancement percentages are hidden. Click below to run the Monte Carlo simulation and visualize group progression odds.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={simulate}
+            className="group relative flex items-center gap-2 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground px-5 py-3 text-xs font-black uppercase tracking-wider transition-all duration-300 hover:scale-105 shrink-0 shadow-lg shadow-primary/20 cursor-pointer"
+          >
+            <Play className="h-3.5 w-3.5 fill-current" />
+            Run Simulation
+          </button>
+        </div>
+      )}
 
       {isRunning && (
         <div className="mb-8 flex items-center justify-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-6">

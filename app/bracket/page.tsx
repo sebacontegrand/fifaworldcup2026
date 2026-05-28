@@ -9,7 +9,7 @@ import teamsData from "@/data/teams.json"
 import type { Team, GroupStanding, MatchResult } from "@/lib/simulation"
 import { getTeam } from "@/lib/simulation"
 import Link from "next/link"
-import { Settings2, Trophy, Users } from "lucide-react"
+import { Settings2, Trophy, Users, Play } from "lucide-react"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -159,7 +159,7 @@ function GroupTable({
 // ─── Page ───────────────────────────────────────────────────────────
 
 export default function BracketPage() {
-    const { result, isRunning } = useSimulation()
+    const { result, isRunning, simulate } = useSimulation()
 
     const groupKeys = result
         ? Object.keys(result.groupStandings).sort()
@@ -201,6 +201,36 @@ export default function BracketPage() {
                         <span className="text-xs text-white/40 uppercase tracking-widest font-mono">
                             Applying Elo &amp; Poisson Matrix...
                         </span>
+                    </div>
+                </div>
+            )}
+
+            {/* Simulation Inactive CTA */}
+            {!isRunning && !result && (
+                <div className="rounded-2xl border border-white/10 bg-zinc-900/20 backdrop-blur-md p-10 sm:p-16 text-center max-w-3xl mx-auto shadow-2xl relative overflow-hidden">
+                    {/* Background glow effects */}
+                    <div className="absolute -left-20 -top-20 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+                    <div className="absolute -right-20 -bottom-20 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+
+                    <div className="flex flex-col items-center space-y-6 relative z-10 animate-in fade-in duration-500">
+                        <div className="h-16 w-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-cyan shadow-lg shadow-cyan-950/20">
+                            <Trophy className="h-8 w-8 text-glow-neon text-cyan" />
+                        </div>
+                        <div className="space-y-3">
+                            <h2 className="text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
+                                Bracket Generation <span className="text-cyan text-glow-neon">Inactive</span>
+                            </h2>
+                            <p className="text-sm text-white/50 leading-relaxed max-w-xl mx-auto">
+                                The tournament bracket, group stage fixtures, and knockout advancement paths are currently not calculated. Run the Dixon-Coles Monte Carlo simulation to project the full tournament tree.
+                            </p>
+                        </div>
+                        <button
+                            onClick={simulate}
+                            className="group relative flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 text-sm font-black uppercase tracking-wider transition-all duration-300 hover:scale-105 shadow-xl shadow-blue-950/50 cursor-pointer overflow-hidden border border-blue-500/30"
+                        >
+                            <Play className="h-4 w-4 fill-current mr-1" />
+                            Run Tournament Simulation
+                        </button>
                     </div>
                 </div>
             )}

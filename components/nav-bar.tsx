@@ -23,13 +23,52 @@ const links = [
   { href: "/simulate", label: "Simulate" },
   { href: "/analysis", label: "Analysis" },
   { href: "/bracket", label: "Brackets" },
+  { href: "/timeline/live", label: "Live Results" },
   { href: "/methodology", label: "How It Works" },
 ]
 
 export function NavBar() {
   const pathname = usePathname()
-  const { simulate, isRunning } = useSimulation()
+  const { simulate, isRunning, result, tournamentState, currentTournamentDate } = useSimulation()
   const [open, setOpen] = useState(false)
+
+  // Calculate pending matches count
+  let pendingCount = 0
+  if (result) {
+    const currentLimit = new Date(currentTournamentDate + "T23:59:59.999Z").getTime()
+    
+    // 1. Group matches
+    Object.values(result.groupMatches).forEach((matches) => {
+      matches.forEach((match) => {
+        const matchTime = match.date ? new Date(match.date).getTime() : 0
+        if (matchTime <= currentLimit) {
+          const key = `${match.teamA}_${match.teamB}`
+          const reverseKey = `${match.teamB}_${match.teamA}`
+          const isOverridden = !!(tournamentState.matchOverrides[key] || tournamentState.matchOverrides[reverseKey])
+          if (!isOverridden) {
+            pendingCount++
+          }
+        }
+      })
+    })
+
+    // 2. Knockout matches
+    result.knockoutBracket.forEach((round) => {
+      round.matches.forEach((match) => {
+        if (match.teamA && match.teamB) {
+          const matchTime = match.date ? new Date(match.date).getTime() : 0
+          if (matchTime <= currentLimit) {
+            const key = `${match.teamA}_${match.teamB}`
+            const reverseKey = `${match.teamB}_${match.teamA}`
+            const isOverridden = !!(tournamentState.matchOverrides[key] || tournamentState.matchOverrides[reverseKey])
+            if (!isOverridden) {
+              pendingCount++
+            }
+          }
+        }
+      })
+    })
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-xl">
@@ -63,13 +102,16 @@ export function NavBar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "rounded-md px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all",
+                    "relative rounded-md px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1",
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   )}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {link.href === "/timeline/live" && pendingCount > 0 && (
+                    <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse shrink-0" />
+                  )}
                 </Link>
               )
             })}
@@ -134,13 +176,18 @@ export function NavBar() {
                       href={link.href}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        "rounded-md px-4 py-2 text-sm font-bold uppercase tracking-wider transition-all",
+                        "rounded-md px-4 py-2 text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-between",
                         isActive
                           ? "bg-primary text-primary-foreground"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       )}
                     >
-                      {link.label}
+                      <span>{link.label}</span>
+                      {link.href === "/timeline/live" && pendingCount > 0 && (
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shrink-0">
+                          {pendingCount}
+                        </span>
+                      )}
                     </Link>
                   )
                 })}

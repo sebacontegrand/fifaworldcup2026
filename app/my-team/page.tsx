@@ -5,6 +5,7 @@ import { useMyTeam } from "@/lib/hooks/use-my-team"
 import { TeamCard } from "@/components/team-card"
 import { TeamSelector } from "@/components/team-selector"
 import { ProbabilityBar } from "@/components/probability-bar"
+import { Play, Activity } from "lucide-react"
 import teamsData from "@/data/teams.json"
 import type { Team } from "@/lib/simulation"
 import Link from "next/link"
@@ -16,7 +17,7 @@ for (const team of allTeams) {
 }
 
 export default function MyTeamPage() {
-    const { result, isRunning } = useSimulation()
+    const { result, isRunning, simulate } = useSimulation()
     const { selectedTeam, setSelectedTeam, isLoaded } = useMyTeam()
 
     if (!isLoaded) return null
@@ -95,8 +96,25 @@ export default function MyTeamPage() {
                             </div>
                         </div>
                     ) : !isRunning ? (
-                        <div className="rounded-xl border border-border/50 bg-card p-6 text-center text-sm text-muted-foreground">
-                            Run the simulation to view forecast metrics for {team.name}.
+                        <div className="rounded-2xl border border-white/10 bg-zinc-950/40 p-8 text-center flex flex-col items-center justify-center space-y-4 relative overflow-hidden backdrop-blur-sm animate-in fade-in duration-300">
+                            <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary shadow-md">
+                                <Activity className="h-5 w-5 text-glow-neon" />
+                            </div>
+                            <div className="space-y-1.5 max-w-xs">
+                                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                                    Forecast Inactive
+                                </h3>
+                                <p className="text-xs text-white/40 leading-relaxed">
+                                    Run the Dixon-Coles Monte Carlo simulation to project {team.name}&apos;s advancement probabilities at each stage of the tournament.
+                                </p>
+                            </div>
+                            <button
+                                onClick={simulate}
+                                className="group relative flex items-center gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-3 text-xs font-black uppercase tracking-wider transition-all duration-300 hover:scale-105 shadow-md shadow-primary/10 cursor-pointer"
+                            >
+                                <Play className="h-3.5 w-3.5 fill-current" />
+                                Run Simulation
+                            </button>
                         </div>
                     ) : null}
                 </div>
