@@ -1594,5 +1594,143 @@
     "attackStrength": -0.07,
     "defenseStrength": 0.09,
     "eloSigma": 65
+  },
+  {
+    "id": "cze",
+    "name": "Czech Republic",
+    "code": "CZE",
+    "flag": "🇨🇿",
+    "group": "A",
+    "fifaRanking": 36,
+    "confederation": "UEFA",
+    "eloRating": 1650,
+    "topPlayers": [
+      { "name": "Patrik Schick", "position": "FW", "club": "Bayer Leverkusen", "age": 30 },
+      { "name": "Tomas Soucek", "position": "MF", "club": "West Ham United", "age": 31 },
+      { "name": "Vladimir Coufal", "position": "DF", "club": "West Ham United", "age": 33 }
+    ],
+    "stats": {
+      "worldCupAppearances": 1,
+      "bestFinish": "Group Stage",
+      "recentForm": "WLLWD"
+    },
+    "attackStrength": 0.08,
+    "defenseStrength": 0.02,
+    "eloSigma": 50
+  },
+  {
+    "id": "bih",
+    "name": "Bosnia and Herzegovina",
+    "code": "BIH",
+    "flag": "🇧🇦",
+    "group": "B",
+    "fifaRanking": 74,
+    "confederation": "UEFA",
+    "eloRating": 1505,
+    "topPlayers": [
+      { "name": "Edin Dzeko", "position": "FW", "club": "Fenerbahce", "age": 40 },
+      { "name": "Miralem Pjanic", "position": "MF", "club": "Sharjah FC", "age": 36 },
+      { "name": "Sead Kolasinac", "position": "DF", "club": "Atalanta", "age": 32 }
+    ],
+    "stats": {
+      "worldCupAppearances": 1,
+      "bestFinish": "Group Stage",
+      "recentForm": "LWLWD"
+    },
+    "attackStrength": 0.02,
+    "defenseStrength": 0.06,
+    "eloSigma": 65
+  },
+  {
+    "id": "tur",
+    "name": "Turkey",
+    "code": "TUR",
+    "flag": "🇹🇷",
+    "group": "D",
+    "fifaRanking": 42,
+    "confederation": "UEFA",
+    "eloRating": 1630,
+    "topPlayers": [
+      { "name": "Hakan Calhanoglu", "position": "MF", "club": "Inter Milan", "age": 32 },
+      { "name": "Cengiz Under", "position": "FW", "club": "Fenerbahce", "age": 28 },
+      { "name": "Merih Demiral", "position": "DF", "club": "Al-Ahli", "age": 28 }
+    ],
+    "stats": {
+      "worldCupAppearances": 2,
+      "bestFinish": "Third Place",
+      "recentForm": "WDLLW"
+    },
+    "attackStrength": 0.11,
+    "defenseStrength": 0.04,
+    "eloSigma": 55
+  },
+  {
+    "id": "swe",
+    "name": "Sweden",
+    "code": "SWE",
+    "flag": "🇸🇪",
+    "group": "F",
+    "fifaRanking": 27,
+    "confederation": "UEFA",
+    "eloRating": 1710,
+    "topPlayers": [
+      { "name": "Alexander Isak", "position": "FW", "club": "Newcastle United", "age": 27 },
+      { "name": "Dejan Kulusevski", "position": "MF", "club": "Tottenham Hotspur", "age": 26 },
+      { "name": "Victor Lindelof", "position": "DF", "club": "Manchester United", "age": 31 }
+    ],
+    "stats": {
+      "worldCupAppearances": 12,
+      "bestFinish": "Runners-up",
+      "recentForm": "WWDWL"
+    },
+    "attackStrength": 0.13,
+    "defenseStrength": 0.05,
+    "eloSigma": 45
+  },
+  {
+    "id": "irq",
+    "name": "Iraq",
+    "code": "IRQ",
+    "flag": "🇮🇶",
+    "group": "I",
+    "fifaRanking": 70,
+    "confederation": "AFC",
+    "eloRating": 1420,
+    "topPlayers": [
+      { "name": "Aymen Hussein", "position": "FW", "club": "Al-Quwa Al-Jawiya", "age": 30 },
+      { "name": "Ali Adnan", "position": "DF", "club": "Al Shorta", "age": 32 },
+      { "name": "Safaa Hadi", "position": "MF", "club": "Al-Zawraa", "age": 27 }
+    ],
+    "stats": {
+      "worldCupAppearances": 1,
+      "bestFinish": "Fourth Place",
+      "recentForm": "WDLWL"
+    },
+    "attackStrength": -0.03,
+    "defenseStrength": 0.10,
+    "eloSigma": 70
+  },
+  {
+    "id": "cod",
+    "name": "DR Congo",
+    "code": "COD",
+    "flag": "🇨🇩",
+    "group": "K",
+    "fifaRanking": 64,
+    "confederation": "CAF",
+    "eloRating": 1480,
+    "topPlayers": [
+      { "name": "Cedric Bakambu", "position": "FW", "club": "Galatasaray", "age": 35 },
+      { "name": "Yoane Wissa", "position": "FW", "club": "Brentford", "age": 30 },
+      { "name": "Chancel Mbemba", "position": "DF", "club": "Marseille", "age": 31 }
+    ],
+    "stats": {
+      "worldCupAppearances": 1,
+      "bestFinish": "Group Stage",
+      "recentForm": "LDWWL"
+    },
+    "attackStrength": 0.01,
+    "defenseStrength": 0.08,
+    "eloSigma": 68
   }
 ]

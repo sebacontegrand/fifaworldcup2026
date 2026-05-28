@@ -3,6 +3,7 @@ import { Inter, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { NavBar } from "@/components/nav-bar"
 import { SimulationProvider } from "@/lib/hooks/use-simulation"
+import { Providers } from "@/components/providers"
 import "./globals.css"
 
 const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -36,11 +37,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased min-h-screen bg-grid">
-        <SimulationProvider>
-          <NavBar />
-          <main>{children}</main>
-          <Analytics />
-        </SimulationProvider>
+        <Providers>
+          <SimulationProvider>
+            <NavBar />
+            <main>{children}</main>
+            <Analytics />
+          </SimulationProvider>
+        </Providers>
       </body>
     </html>
   )
