@@ -133,6 +133,8 @@ export default function LiveResultsPage() {
       if (res.ok) {
         await fetchMatches()
         await fetchLeaderboard()
+      } else if (res.status === 401) {
+        console.warn("Sign in required to save predictions")
       }
     } catch (e) {
       console.error("Failed to save guess", e)

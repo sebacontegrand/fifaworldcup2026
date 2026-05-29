@@ -729,6 +729,12 @@ export function getTeamByName(name: string): Team {
     if (usa) return usa
   }
 
+  // "Bosnia" maps to "Bosnia and Herzegovina" in teamsData
+  if (normalized === "bosnia") {
+    const real = (teamsData as Team[]).find(t => t.name.toLowerCase().includes("bosnia"))
+    if (real) return real
+  }
+
   const mockConfig = MOCK_TEAMS[normalized]
   const id = normalized.replace(/[^a-z0-9]/g, "").slice(0, 3)
 
@@ -1172,11 +1178,11 @@ export function runFullSimulation(
     // Count group advancement
     const bestThird = getBestThirdPlaced(standings)
     for (const groupStandings of Object.values(standings)) {
-      if (groupStandings[0]) probAccum[groupStandings[0].teamId].groupAdvance++
-      if (groupStandings[1]) probAccum[groupStandings[1].teamId].groupAdvance++
+      if (groupStandings[0] && probAccum[groupStandings[0].teamId]) probAccum[groupStandings[0].teamId].groupAdvance++
+      if (groupStandings[1] && probAccum[groupStandings[1].teamId]) probAccum[groupStandings[1].teamId].groupAdvance++
     }
     for (const id of bestThird) {
-      probAccum[id].groupAdvance++
+      if (probAccum[id]) probAccum[id].groupAdvance++
     }
 
     // Run knockout and accumulate
@@ -1207,7 +1213,7 @@ export function runFullSimulation(
       const stageIdx = stageOrder.indexOf(
         stage as (typeof stageOrder)[number]
       )
-      if (stageIdx >= 0) {
+      if (stageIdx >= 0 && probAccum[teamId]) {
         for (let s = 0; s <= stageIdx; s++) {
           probAccum[teamId][stageOrder[s]]++
         }
