@@ -18,6 +18,8 @@ import {
     Cell,
 } from "recharts"
 
+import { Play, Activity } from "lucide-react"
+
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
 for (const team of allTeams) {
@@ -25,7 +27,7 @@ for (const team of allTeams) {
 }
 
 export function HomePageContent() {
-    const { result, isRunning } = useSimulation()
+    const { result, isRunning, simulate } = useSimulation()
     const { selectedTeam, setSelectedTeam, isLoaded } = useMyTeam()
 
     // Top 10 favorites sorted by champion probability
@@ -109,6 +111,36 @@ export function HomePageContent() {
                         Running 10,000 Monte Carlo simulations...
                     </span>
                 </div>
+            )}
+
+            {/* Simulation Inactive CTA */}
+            {!result && !isRunning && (
+                <section className="mb-12 rounded-2xl border border-emerald-500/20 bg-zinc-950/60 p-8 text-center relative overflow-hidden backdrop-blur-md shadow-2xl">
+                    {/* Background glow effects */}
+                    <div className="absolute -left-20 -top-20 h-40 w-40 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+                    <div className="absolute -right-20 -bottom-20 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+                    
+                    <div className="flex flex-col items-center max-w-xl mx-auto space-y-6 relative z-10 animate-in fade-in duration-500">
+                        <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-950/20">
+                            <Activity className="h-7 w-7 text-glow-green animate-pulse" />
+                        </div>
+                        <div className="space-y-2">
+                            <h2 className="text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
+                                Simulation Engine <span className="text-emerald-400 text-glow-green">Stopped</span>
+                            </h2>
+                            <p className="text-xs sm:text-sm text-white/50 leading-relaxed">
+                                The pre-tournament predictive engine is currently inactive. Run the Monte Carlo simulation to process 10,000 tournament paths, compute champion odds, and identify the most likely outcomes.
+                            </p>
+                        </div>
+                        <button
+                            onClick={simulate}
+                            className="group relative flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 text-sm font-black uppercase tracking-wider transition-all duration-300 hover:scale-105 shadow-xl shadow-emerald-950/50 cursor-pointer overflow-hidden border border-emerald-500/30"
+                        >
+                            <Play className="h-4 w-4 fill-current mr-1" />
+                            Run 10,000 Monte Carlo Simulations
+                        </button>
+                    </div>
+                </section>
             )}
 
             {result && (

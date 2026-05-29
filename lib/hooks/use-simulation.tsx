@@ -28,6 +28,8 @@ interface SimulationContextType {
   isRunning: boolean
   config: SimulationConfig
   tournamentState: TournamentState
+  currentTournamentDate: string
+  setCurrentTournamentDate: (date: string) => void
   simulate: () => void
   updateTeamConfig: (teamId: string, settings: Partial<TeamSimulationConfig>) => void
   updateGlobalConfig: (settings: Partial<SimulationConfig["globalSettings"]>) => void
@@ -44,7 +46,7 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const [isRunning, setIsRunning] = useState(false)
   const [config, setConfig] = useState<SimulationConfig>(INITIAL_CONFIG)
   const [tournamentState, setTournamentState] = useState<TournamentState>(INITIAL_TOURNAMENT_STATE)
-  const hasRunInitial = useRef(false)
+  const [currentTournamentDate, setCurrentTournamentDate] = useState("2026-06-18")
 
   const simulate = useCallback(() => {
     setIsRunning(true)
@@ -119,18 +121,14 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
     setTournamentState(INITIAL_TOURNAMENT_STATE)
   }, [])
 
-  useEffect(() => {
-    if (hasRunInitial.current) return
-    hasRunInitial.current = true
-    simulate()
-  }, [simulate])
-
   return (
     <SimulationContext.Provider value={{
       result,
       isRunning,
       config,
       tournamentState,
+      currentTournamentDate,
+      setCurrentTournamentDate,
       simulate,
       updateTeamConfig,
       updateGlobalConfig,

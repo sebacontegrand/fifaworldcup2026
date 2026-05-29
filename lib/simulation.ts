@@ -1,4 +1,5 @@
 import teamsData from "@/data/teams.json"
+import matchesData from "../fifa_2026_group_stage.json"
 
 // ─── Types ───────────────────────────────────────────────────────────
 export interface Team {
@@ -25,6 +26,7 @@ export interface MatchResult {
   winner: string | null // null = draw
   wentToExtraTime?: boolean
   wentToPenalties?: boolean
+  date?: string
 }
 
 export interface GroupStanding {
@@ -65,6 +67,68 @@ export interface KnockoutMatch {
   teamA: string | null
   teamB: string | null
   winner: string | null
+  date?: string
+}
+
+export function getGroupMatchDate(group: string, matchIndex: number): Date {
+  const baseDate = new Date("2026-06-11T12:00:00Z")
+  const groupCharCode = group.charCodeAt(0) - 65 // A=0, B=1...
+  let dayOffset = 0
+  if (matchIndex < 2) {
+    dayOffset = (groupCharCode % 5) // Days 0-4 (June 11 - June 15)
+  } else if (matchIndex < 4) {
+    dayOffset = 6 + (groupCharCode % 5) // Days 6-10 (June 17 - June 21)
+  } else {
+    dayOffset = 12 + (groupCharCode % 5) // Days 12-16 (June 23 - June 27)
+  }
+  const matchDate = new Date(baseDate)
+  matchDate.setUTCDate(baseDate.getUTCDate() + dayOffset)
+  return matchDate
+}
+
+export function parseMatchDateTime(dateStr: string, timeStr: string): Date {
+  try {
+    const match = timeStr.toLowerCase().match(/(\d+):(\d+)\s*(a\.m\.|p\.m\.|m\.)?/)
+    if (!match) {
+      return new Date(dateStr)
+    }
+    const [_, hourStr, minStr, meridiem] = match
+    let hour = parseInt(hourStr, 10)
+    const minute = parseInt(minStr, 10)
+
+    if (meridiem === "p.m." && hour < 12) {
+      hour += 12
+    } else if (meridiem === "a.m." && hour === 12) {
+      hour = 0
+    } else if (meridiem === "m.") {
+      hour = 12
+    }
+    
+    const [year, month, day] = dateStr.split("-").map(Number)
+    return new Date(Date.UTC(year, month - 1, day, hour, minute))
+  } catch (e) {
+    return new Date(dateStr)
+  }
+}
+
+
+export function getKnockoutMatchDate(round: string, matchId: number): Date {
+  const baseDate = new Date("2026-06-11T12:00:00Z")
+  let dayOffset = 17
+  if (round === "Round of 32") {
+    dayOffset = 17 + (matchId % 6) // June 28 - July 3
+  } else if (round === "Round of 16") {
+    dayOffset = 24 + (matchId % 4) // July 4 - July 7
+  } else if (round === "Quarter-Finals") {
+    dayOffset = 29 + (matchId % 3) // July 9 - July 11
+  } else if (round === "Semi-Finals") {
+    dayOffset = 34 + (matchId % 2) // July 14 - July 15
+  } else if (round === "Final") {
+    dayOffset = 38 // July 19
+  }
+  const matchDate = new Date(baseDate)
+  matchDate.setUTCDate(baseDate.getUTCDate() + dayOffset)
+  return matchDate
 }
 
 export interface KnockoutRound {
@@ -493,13 +557,247 @@ export function simulateMatch(
 
 // ─── Group Stage Simulation ──────────────────────────────────────────
 
+const MOCK_TEAMS: Record<string, Omit<Team, "id" | "name" | "group">> = {
+  "czech republic": {
+    code: "CZE",
+    flag: "🇨🇿",
+    fifaRanking: 36,
+    confederation: "UEFA",
+    eloRating: 1720,
+    attackStrength: 0.10,
+    defenseStrength: 0.03,
+    eloSigma: 50,
+    topPlayers: [
+      { name: "Patrik Schick", position: "FW", club: "Bayer Leverkusen", age: 30 },
+      { name: "Tomas Soucek", position: "MF", club: "West Ham United", age: 31 }
+    ],
+    stats: { worldCupAppearances: 1, bestFinish: "Group Stage", recentForm: "WDWLW" }
+  },
+  "bosnia": {
+    code: "BIH",
+    flag: "🇧🇦",
+    fifaRanking: 74,
+    confederation: "UEFA",
+    eloRating: 1590,
+    attackStrength: 0.05,
+    defenseStrength: 0.07,
+    eloSigma: 50,
+    topPlayers: [
+      { name: "Edin Dzeko", position: "FW", club: "Fenerbahce", age: 40 }
+    ],
+    stats: { worldCupAppearances: 1, bestFinish: "Group Stage", recentForm: "LLWLD" }
+  },
+  "turkey": {
+    code: "TUR",
+    flag: "🇹🇷",
+    fifaRanking: 40,
+    confederation: "UEFA",
+    eloRating: 1735,
+    attackStrength: 0.12,
+    defenseStrength: 0.02,
+    eloSigma: 50,
+    topPlayers: [
+      { name: "Hakan Calhanoglu", position: "MF", club: "Inter Milan", age: 32 },
+      { name: "Arda Guler", position: "MF", club: "Real Madrid", age: 21 }
+    ],
+    stats: { worldCupAppearances: 2, bestFinish: "Third Place", recentForm: "WWLDW" }
+  },
+  "sweden": {
+    code: "SWE",
+    flag: "🇸🇪",
+    fifaRanking: 28,
+    confederation: "UEFA",
+    eloRating: 1780,
+    attackStrength: 0.14,
+    defenseStrength: -0.01,
+    eloSigma: 45,
+    topPlayers: [
+      { name: "Alexander Isak", position: "FW", club: "Newcastle United", age: 26 },
+      { name: "Dejan Kulusevski", position: "FW", club: "Tottenham Hotspur", age: 26 }
+    ],
+    stats: { worldCupAppearances: 12, bestFinish: "Runners-up", recentForm: "WLWWD" }
+  },
+  "new zealand": {
+    code: "NZL",
+    flag: "🇳🇿",
+    fifaRanking: 104,
+    confederation: "OFC",
+    eloRating: 1480,
+    attackStrength: -0.15,
+    defenseStrength: 0.18,
+    eloSigma: 60,
+    topPlayers: [
+      { name: "Chris Wood", position: "FW", club: "Nottingham Forest", age: 34 }
+    ],
+    stats: { worldCupAppearances: 2, bestFinish: "Group Stage", recentForm: "WWDWW" }
+  },
+  "iraq": {
+    code: "IRQ",
+    flag: "🇮🇶",
+    fifaRanking: 58,
+    confederation: "AFC",
+    eloRating: 1595,
+    attackStrength: -0.02,
+    defenseStrength: 0.08,
+    eloSigma: 55,
+    topPlayers: [
+      { name: "Aymen Hussein", position: "FW", club: "Al-Quwa Al-Jawiya", age: 30 }
+    ],
+    stats: { worldCupAppearances: 1, bestFinish: "Group Stage", recentForm: "WWWLW" }
+  },
+  "dr congo": {
+    code: "COD",
+    flag: "🇨🇩",
+    fifaRanking: 61,
+    confederation: "CAF",
+    eloRating: 1585,
+    attackStrength: -0.03,
+    defenseStrength: 0.07,
+    eloSigma: 55,
+    topPlayers: [
+      { name: "Chancel Mbemba", position: "DF", club: "Marseille", age: 31 },
+      { name: "Yoane Wissa", position: "FW", club: "Brentford", age: 29 }
+    ],
+    stats: { worldCupAppearances: 1, bestFinish: "Group Stage", recentForm: "WLDDW" }
+  }
+}
+
+export function getTeamByName(name: string): Team {
+  const rawLower = name.toLowerCase().trim()
+  
+  // Spanish translation mapping
+  const spanishMap: Record<string, string> = {
+    "méxico": "Mexico",
+    "sudáfrica": "South Africa",
+    "república de corea": "South Korea",
+    "república checa": "Czech Republic",
+    "canadá": "Canada",
+    "bosnia": "Bosnia",
+    "estados unidos": "United States",
+    "turquía": "Turkey",
+    "catar": "Qatar",
+    "suiza": "Switzerland",
+    "brasil": "Brazil",
+    "marruecos": "Morocco",
+    "haití": "Haiti",
+    "escocia": "Scotland",
+    "alemania": "Germany",
+    "curazao": "Curacao",
+    "países bajos": "Netherlands",
+    "japón": "Japan",
+    "costa de marfil": "Ivory Coast",
+    "suecia": "Sweden",
+    "túnez": "Tunisia",
+    "españa": "Spain",
+    "cabo verde": "Cape Verde",
+    "bélgica": "Belgium",
+    "egipto": "Egypt",
+    "arabia saudí": "Saudi Arabia",
+    "uruguay": "Uruguay",
+    "irán": "Iran",
+    "nueva zelanda": "New Zealand",
+    "jardania": "Jordan",
+    "jordania": "Jordan",
+    "francia": "France",
+    "irak": "Iraq",
+    "noruega": "Norway",
+    "argelia": "Algeria",
+    "rd de congo": "DR Congo",
+    "inglaterra": "England",
+    "croacia": "Croatia",
+    "panamá": "Panama",
+    "uzbekistán": "Uzbekistan",
+    "colombia": "Colombia",
+    "senegal": "Senegal",
+    "portugal": "Portugal",
+    "ghana": "Ghana",
+    "paraguay": "Paraguay",
+    "australia": "Australia",
+    "austria": "Austria",
+    "argentina": "Argentina"
+  }
+
+  const englishName = spanishMap[rawLower] || name
+  const normalized = englishName.toLowerCase().trim()
+
+  const found = (teamsData as Team[]).find(t => t.name.toLowerCase().trim() === normalized || t.code.toLowerCase() === normalized)
+  if (found) return found
+
+  // Special mappings (e.g. USA to United States)
+  if (normalized === "usa" || normalized === "estados unidos" || normalized === "united states") {
+    const usa = (teamsData as Team[]).find(t => t.code.toLowerCase() === "usa" || t.name.toLowerCase() === "united states")
+    if (usa) return usa
+  }
+
+  const mockConfig = MOCK_TEAMS[normalized]
+  const id = normalized.replace(/[^a-z0-9]/g, "").slice(0, 3)
+
+  if (mockConfig) {
+    return {
+      id,
+      name: englishName,
+      code: mockConfig.code,
+      flag: mockConfig.flag,
+      group: "A",
+      fifaRanking: mockConfig.fifaRanking,
+      confederation: mockConfig.confederation,
+      eloRating: mockConfig.eloRating,
+      attackStrength: mockConfig.attackStrength,
+      defenseStrength: mockConfig.defenseStrength,
+      eloSigma: mockConfig.eloSigma,
+      topPlayers: mockConfig.topPlayers,
+      stats: mockConfig.stats
+    }
+  }
+
+  return {
+    id,
+    name: englishName,
+    code: englishName.slice(0, 3).toUpperCase(),
+    flag: "🏳️",
+    group: "A",
+    fifaRanking: 50,
+    confederation: "FIFA",
+    eloRating: 1600,
+    attackStrength: 0,
+    defenseStrength: 0,
+    eloSigma: 50,
+    topPlayers: [],
+    stats: { worldCupAppearances: 5, bestFinish: "Round of 16", recentForm: "DDW" }
+  }
+}
+
 export function getTeamsByGroup(): Record<string, Team[]> {
   const groups: Record<string, Team[]> = {}
-  for (const team of teamsData as Team[]) {
-    if (!groups[team.group]) groups[team.group] = []
-    groups[team.group].push(team)
-  }
-  return groups
+  const addedTeams = new Set<string>()
+
+  matchesData.matches.forEach((match) => {
+    const groupName = match.group
+    if (!groups[groupName]) groups[groupName] = []
+
+    const homeTeam = getTeamByName(match.home_team)
+    const awayTeam = getTeamByName(match.away_team)
+
+    // Set their group dynamically to match the JSON
+    homeTeam.group = groupName
+    awayTeam.group = groupName
+
+    if (!addedTeams.has(homeTeam.id)) {
+      groups[groupName].push(homeTeam)
+      addedTeams.add(homeTeam.id)
+    }
+    if (!addedTeams.has(awayTeam.id)) {
+      groups[groupName].push(awayTeam)
+      addedTeams.add(awayTeam.id)
+    }
+  })
+
+  // Sort groups alphabetically
+  const sorted: Record<string, Team[]> = {}
+  Object.keys(groups).sort().forEach(key => {
+    sorted[key] = groups[key]
+  })
+  return sorted
 }
 
 function simulateGroupStage(
@@ -533,41 +831,46 @@ function simulateGroupStage(
       }
     }
 
-    // Round-robin matches
-    for (let i = 0; i < groupTeams.length; i++) {
-      for (let j = i + 1; j < groupTeams.length; j++) {
-        const teamA = groupTeams[i]
-        const teamB = groupTeams[j]
+    // Now, run the actual matches from matchesData for this group
+    const groupMatches = matchesData.matches.filter(m => m.group === group)
 
-        // Check for overrides
-        const overrideKey = `${teamA.id}_${teamB.id}`
-        const reverseKey = `${teamB.id}_${teamA.id}`
-        const override = tournamentState?.matchOverrides?.[overrideKey] || tournamentState?.matchOverrides?.[reverseKey]
+    for (const match of groupMatches) {
+      const teamA = getTeamByName(match.home_team)
+      const teamB = getTeamByName(match.away_team)
 
-        let result: MatchResult
-        if (override) {
-          const isReverse = !!tournamentState?.matchOverrides?.[reverseKey]
-          result = {
-            teamA: teamA.id,
-            teamB: teamB.id,
-            scoreA: isReverse ? override.scoreB : override.scoreA,
-            scoreB: isReverse ? override.scoreA : override.scoreB,
-            winner: override.winnerId || null,
-          }
-        } else {
-          const sampled = sampledElos
-            ? { [teamA.id]: sampledElos[teamA.id], [teamB.id]: sampledElos[teamB.id] }
-            : undefined
+      // Check for overrides
+      const overrideKey = `${teamA.id}_${teamB.id}`
+      const reverseKey = `${teamB.id}_${teamA.id}`
+      const override = tournamentState?.matchOverrides?.[overrideKey] || tournamentState?.matchOverrides?.[reverseKey]
 
-          result = simulateMatch(
-            teamA, teamB, false, config, sampled
-          )
+      let result: MatchResult
+      if (override) {
+        const isReverse = !!tournamentState?.matchOverrides?.[reverseKey]
+        result = {
+          teamA: teamA.id,
+          teamB: teamB.id,
+          scoreA: isReverse ? override.scoreB : override.scoreA,
+          scoreB: isReverse ? override.scoreA : override.scoreB,
+          winner: override.winnerId || null,
         }
-        matches[group].push(result)
+      } else {
+        const sampled = sampledElos
+          ? { [teamA.id]: sampledElos[teamA.id], [teamB.id]: sampledElos[teamB.id] }
+          : undefined
 
-        const sA = teamStandings[teamA.id]
-        const sB = teamStandings[teamB.id]
+        result = simulateMatch(
+          teamA, teamB, false, config, sampled
+        )
+      }
 
+      // Assign the official date and time
+      result.date = parseMatchDateTime(match.date, match.time).toISOString()
+      matches[group].push(result)
+
+      const sA = teamStandings[teamA.id]
+      const sB = teamStandings[teamB.id]
+
+      if (sA && sB) {
         sA.played++
         sB.played++
         sA.goalsFor += result.scoreA
@@ -595,7 +898,7 @@ function simulateGroupStage(
       }
     }
 
-    // Sort by points, then GD, then GF
+    // Sort standings
     standings[group] = Object.values(teamStandings).sort((a, b) => {
       if (b.points !== a.points) return b.points - a.points
       if (b.goalDifference !== a.goalDifference)
@@ -650,42 +953,59 @@ function simulateKnockout(
   totalKnockoutMatches: number
   upsets: { lower: string; higher: string; eloGap: number }[]
 } {
-  const bestThird = getBestThirdPlaced(standings)
+  const is32TeamFormat = Object.keys(standings).length <= 8
+  const bestThird = is32TeamFormat ? [] : getBestThirdPlaced(standings)
   const results: Record<string, string> = {}
   let penaltyCount = 0
   let totalKnockoutMatches = 0
   const upsets: { lower: string; higher: string; eloGap: number }[] = []
 
-  // Get advancing teams: top 2 from each group + 8 best thirds
+  // Get advancing teams: top 2 from each group + best thirds if 48-team format
   const advancingIds: string[] = []
   for (const groupStandings of Object.values(standings)) {
-    advancingIds.push(groupStandings[0].teamId) // 1st
-    advancingIds.push(groupStandings[1].teamId) // 2nd
+    if (groupStandings[0]) advancingIds.push(groupStandings[0].teamId) // 1st
+    if (groupStandings[1]) advancingIds.push(groupStandings[1].teamId) // 2nd
   }
-  advancingIds.push(...bestThird)
+  if (!is32TeamFormat) {
+    advancingIds.push(...bestThird)
+  }
 
   // Mark teams that advance from groups
   for (const id of advancingIds) {
-    results[id] = "roundOf32"
+    results[id] = is32TeamFormat ? "roundOf16" : "roundOf32"
   }
 
   let currentRound = [...advancingIds]
 
   const rounds: KnockoutRound[] = []
-  const roundNames = [
-    "Round of 32",
-    "Round of 16",
-    "Quarter-Finals",
-    "Semi-Finals",
-    "Final",
-  ]
-  const resultKeys = [
-    "roundOf16",
-    "quarterFinal",
-    "semiFinal",
-    "final",
-    "champion",
-  ]
+  const roundNames = is32TeamFormat
+    ? [
+        "Round of 16",
+        "Quarter-Finals",
+        "Semi-Finals",
+        "Final",
+      ]
+    : [
+        "Round of 32",
+        "Round of 16",
+        "Quarter-Finals",
+        "Semi-Finals",
+        "Final",
+      ]
+  const resultKeys = is32TeamFormat
+    ? [
+        "quarterFinal",
+        "semiFinal",
+        "final",
+        "champion",
+      ]
+    : [
+        "roundOf16",
+        "quarterFinal",
+        "semiFinal",
+        "final",
+        "champion",
+      ]
 
   for (let r = 0; r < roundNames.length; r++) {
     const matches: KnockoutMatch[] = []
@@ -758,6 +1078,7 @@ function simulateKnockout(
             teamA: teamA.id,
             teamB: teamB.id,
             winner: winnerId,
+            date: getKnockoutMatchDate(roundNames[r], i / 2).toISOString(),
           })
 
           nextRound.push(winnerId)
