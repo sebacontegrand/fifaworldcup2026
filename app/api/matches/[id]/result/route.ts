@@ -11,6 +11,14 @@ function calcGuessPoints(guessScoreA: number, guessScoreB: number, actualScoreA:
   return 0
 }
 
+function calcAccuracyMultiplier(scoreA: number, scoreB: number, actualA: number, actualB: number): number {
+  if (scoreA === actualA && scoreB === actualB) return 5
+  const diff = (scoreA - scoreB) - (actualA - actualB)
+  if (diff === 0) return 3
+  if ((scoreA > scoreB && actualA > actualB) || (scoreB > scoreA && actualB > actualA)) return 1.5
+  return 0
+}
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -50,5 +58,51 @@ export async function POST(
     })
   }
 
-  return NextResponse.json({ ok: true, guessesScored: guesses.length })
+  // Resolve chip bets on this match
+  const bets = await prisma.bet.findMany({
+    where: { matchId: id, payout: null },
+    include: { user: true },
+  })
+
+  for (const bet of bets) {
+    const accuracy = calcAccuracyMultiplier(bet.scoreA, bet.scoreB, scoreA, scoreB)
+    let payout = 0
+    if (accuracy > 0) {
+      let effectiveMultiplier = accuracy * bet.oddsMultiplier
+      payout = Math.round(bet.wagerAmount * effectiveMultiplier)
+    }
+
+    // Apply card effects
+    if (bet.cardId) {
+      const userCard = await prisma.userCard.findUnique({
+        where: { userId_cardTemplateId: { userId: bet.userId, cardTemplateId: bet.cardId } },
+        include: { card: true },
+      })
+      if (userCard?.card) {
+        if (userCard.card.effect === "hedge" && accuracy === 0) {
+          payout = Math.round(bet.wagerAmount * 0.5)
+        } else if (userCard.card.effect === "lock_in" && payout > 0) {
+          payout = Math.max(payout, bet.wagerAmount * 2)
+        } else if (userCard.card.effect === "boost" && payout > 0) {
+          payout = Math.round(payout * (userCard.card.multiplier ?? 1.5))
+        }
+      }
+    }
+
+    await prisma.$transaction([
+      prisma.bet.update({
+        where: { id: bet.id },
+        data: { payout },
+      }),
+      prisma.chipBalance.update({
+        where: { userId: bet.userId },
+        data: {
+          balance: { increment: payout },
+          lifetimeEarnings: payout > 0 ? { increment: payout } : undefined,
+        },
+      }),
+    ])
+  }
+
+  return NextResponse.json({ ok: true, guessesScored: guesses.length, betsResolved: bets.length })
 }

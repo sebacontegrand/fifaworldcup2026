@@ -22,10 +22,14 @@ type Team = {
 async function main() {
   const teams = teamsData as Team[]
 
-  // Clear existing matches and guesses before reseeding
+  // Clear existing data
   await prisma.guess.deleteMany()
+  await prisma.bet.deleteMany()
+  await prisma.userCard.deleteMany()
+  await prisma.chipBalance.deleteMany()
+  await prisma.cardTemplate.deleteMany()
   await prisma.match.deleteMany()
-  console.log("Cleared existing matches and guesses")
+  console.log("Cleared existing data")
 
   // Group teams by group
   const groups: Record<string, Team[]> = {}
@@ -99,6 +103,21 @@ async function main() {
 
   const total = groupMatches.length + knockoutTotal
   console.log(`Total matches created: ${total}`)
+
+  // --- Seed card templates ---
+  const cards = [
+    { name: "Double Down", description: "Double your wager on one pick", effect: "double_down", rarity: "common", cooldownHours: 0, multiplier: 2.0 },
+    { name: "Hedge", description: "Get 50% of your wager back if you lose", effect: "hedge", rarity: "common", cooldownHours: 0, multiplier: 0.5 },
+    { name: "Lock In", description: "Guarantee minimum 2x payout regardless of odds", effect: "lock_in", rarity: "uncommon", cooldownHours: 24, multiplier: 2.0 },
+    { name: "Scout", description: "Reveal the most-bet team this round", effect: "scout", rarity: "uncommon", cooldownHours: 24, multiplier: null },
+    { name: "Insurance", description: "If your pick wins, you get 50 chips even with wrong score", effect: "insurance", rarity: "rare", cooldownHours: 48, multiplier: 50.0 },
+    { name: "Boost", description: "Multiply your payout by 1.5x on top of everything", effect: "boost", rarity: "rare", cooldownHours: 48, multiplier: 1.5 },
+  ]
+
+  for (const card of cards) {
+    await prisma.cardTemplate.create({ data: card })
+  }
+  console.log(`Seeded ${cards.length} card templates`)
 }
 
 main()

@@ -17,6 +17,9 @@ model User {
   sessions      Session[]
   Authenticator Authenticator[]
   guesses       Guess[]
+  bets          Bet[]
+  chipBalance   ChipBalance?
+  userCards     UserCard[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -90,6 +93,7 @@ model Match {
   isFact     Boolean @default(false)
 
   guesses Guess[]
+  bets     Bet[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,6 +112,71 @@ model Guess {
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, matchId])
+}
+
+model CardTemplate {
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  effect        String   // machine-readable key: "double_down" | "hedge" | "lock_in" | "scout" | "insurance" | "boost"
+  rarity        String   // "common" | "uncommon" | "rare"
+  cooldownHours Int      @default(0)
+  multiplier    Float?   // optional numeric modifier
+
+  userCards UserCard[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserCard {
+  id              String       @id @default(cuid())
+  userId          String
+  cardTemplateId  String
+  quantity        Int          @default(1)
+  lastUsedAt      DateTime?
+
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card   CardTemplate @relation(fields: [cardTemplateId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, cardTemplateId])
+}
+
+model ChipBalance {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  balance       Int      @default(500)
+  lifetimeEarnings Int  @default(0)
+  dailyStreak   Int      @default(0)
+  lastDailyAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bet {
+  id          String   @id @default(cuid())
+  userId      String
+  matchId     String
+  scoreA      Int
+  scoreB      Int
+  wagerAmount Int
+  oddsMultiplier Float @default(1.0)
+  payout      Int?     // null = not resolved yet
+  cardId      String?  // userCard id if a card was used
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, matchId])
 }
