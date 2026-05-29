@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { RefreshCw, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useSession } from "next-auth/react"
 import {
   Sheet,
   SheetContent,
@@ -31,6 +32,12 @@ const links = [
 export function NavBar() {
   const pathname = usePathname()
   const { simulate, isRunning } = useSimulation()
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.email?.toLowerCase() === "sebacontegrand@gmail.com"
+
+  const navLinks = isAdmin 
+    ? [...links, { href: "/admin", label: "Admin" }] 
+    : links
   const [open, setOpen] = useState(false)
   const [isDesktop, setIsDesktop] = useState(true)
 
@@ -61,7 +68,7 @@ export function NavBar() {
         {isDesktop ? (
           <div className="flex items-center gap-2 lg:gap-4 overflow-x-auto scrollbar-hide">
             <div className="flex items-center gap-1 shrink-0">
-              {links.map((link) => {
+              {navLinks.map((link) => {
                 const isActive =
                   link.href === "/"
                     ? pathname === "/"
@@ -127,7 +134,7 @@ export function NavBar() {
                   <SheetTitle className="text-left">Navigation</SheetTitle>
                 </SheetHeader>
                 <div className="grid gap-2 py-6">
-                  {links.map((link) => {
+                  {navLinks.map((link) => {
                     const isActive =
                       link.href === "/"
                         ? pathname === "/"

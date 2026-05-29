@@ -16,7 +16,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.email || (ADMIN_EMAIL && session.user.email !== ADMIN_EMAIL)) {
+  if (!session?.user?.email || (ADMIN_EMAIL && session.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 

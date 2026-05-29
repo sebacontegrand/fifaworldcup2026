@@ -672,7 +672,7 @@ export function getTeamByName(name: string): Team {
     "república de corea": "South Korea",
     "república checa": "Czech Republic",
     "canadá": "Canada",
-    "bosnia": "Bosnia",
+    "bosnia": "Bosnia and Herzegovina",
     "estados unidos": "United States",
     "turquía": "Turkey",
     "catar": "Qatar",
@@ -1118,6 +1118,12 @@ export function runFullSimulation(
   for (const team of allTeams) {
     teamMap[team.id] = team
   }
+  // Ensure all teams from the tournament matches are in teamMap
+  for (const groupTeams of Object.values(teamsByGroup)) {
+    for (const team of groupTeams) {
+      teamMap[team.id] = team
+    }
+  }
 
   const propagateUncertainty = config.globalSettings.propagateUncertainty ?? true
 
@@ -1143,6 +1149,22 @@ export function runFullSimulation(
       semiFinal: 0,
       final: 0,
       champion: 0,
+    }
+  }
+  // Ensure all teams from the tournament matches are initialized in probAccum
+  for (const groupTeams of Object.values(teamsByGroup)) {
+    for (const team of groupTeams) {
+      if (!probAccum[team.id]) {
+        probAccum[team.id] = {
+          groupAdvance: 0,
+          roundOf32: 0,
+          roundOf16: 0,
+          quarterFinal: 0,
+          semiFinal: 0,
+          final: 0,
+          champion: 0,
+        }
+      }
     }
   }
 
