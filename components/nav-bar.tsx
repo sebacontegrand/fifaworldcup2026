@@ -7,6 +7,7 @@ import { useSimulation } from "@/lib/hooks/use-simulation"
 import { RefreshCw, Menu, ChevronDown, Globe, Cpu, Gamepad2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSession } from "next-auth/react"
+import { CafecitoButton } from "@/components/cafecito-button"
 import {
   Sheet,
   SheetContent,
@@ -192,6 +193,8 @@ export function NavBar() {
                 </Link>
               )}
             </div>
+
+            <CafecitoButton />
 
             <div className="h-4 w-px bg-border shrink-0" />
 
