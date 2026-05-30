@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { RotateCcw, Trophy, User, ChevronLeft, Coins } from "lucide-react"
+import { RotateCcw, Trophy, User, ChevronLeft, Coins, Gamepad2 } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
@@ -41,12 +41,30 @@ interface PoolLeaderboardData {
   totalPlayers: number
 }
 
+interface ConnectionEntry {
+  rank: number
+  userId: string
+  name: string | null
+  image: string | null
+  totalScore: number
+  gamesPlayed: number
+  bestScore: number
+  fastedTime: number | null
+  avgChainLength: number
+}
+
+interface ConnectionLeaderboardData {
+  leaderboard: ConnectionEntry[]
+  totalPlayers: number
+}
+
 export default function RankingPage() {
   const { data: session } = useSession()
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
   const [poolLeaderboard, setPoolLeaderboard] = useState<PoolLeaderboardData | null>(null)
+  const [connectionLeaderboard, setConnectionLeaderboard] = useState<ConnectionLeaderboardData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<"guesses" | "pool">("guesses")
+  const [tab, setTab] = useState<"guesses" | "pool" | "connection">("guesses")
 
   const fetchLeaderboard = useCallback(async () => {
     setLoading(true)
@@ -74,10 +92,24 @@ export default function RankingPage() {
     }
   }, [])
 
+  const fetchConnectionLeaderboard = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/connection/leaderboard")
+      const data = await res.json()
+      setConnectionLeaderboard(data)
+    } catch (e) {
+      console.error("Failed to fetch connection leaderboard", e)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
   const refresh = useCallback(() => {
     if (tab === "guesses") fetchLeaderboard()
-    else fetchPoolLeaderboard()
-  }, [tab, fetchLeaderboard, fetchPoolLeaderboard])
+    else if (tab === "pool") fetchPoolLeaderboard()
+    else fetchConnectionLeaderboard()
+  }, [tab, fetchLeaderboard, fetchPoolLeaderboard, fetchConnectionLeaderboard])
 
   useEffect(() => {
     refresh()
@@ -125,6 +157,16 @@ export default function RankingPage() {
         >
           <Coins className="h-3 w-3 inline mr-1.5" />
           Confidence Pool
+        </button>
+        <button
+          onClick={() => setTab("connection")}
+          className={cn(
+            "rounded-md px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all",
+            tab === "connection" ? "bg-zinc-800 text-white" : "text-white/40 hover:text-white/70"
+          )}
+        >
+          <Gamepad2 className="h-3 w-3 inline mr-1.5" />
+          Connections
         </button>
       </div>
 
@@ -301,6 +343,90 @@ export default function RankingPage() {
               <Link href="/pool">
                 <Button className="mt-6 bg-yellow-600 hover:bg-yellow-500">
                   Go to Confidence Pool
+                </Button>
+              </Link>
+            </div>
+          )}
+        </>
+      )}
+
+      {tab === "connection" && (
+        <>
+          {loading ? (
+            <div className="flex items-center justify-center py-24">
+              <div className="h-8 w-8 border-2 border-white/20 border-t-yellow-400 animate-spin rounded-full" />
+            </div>
+          ) : connectionLeaderboard && connectionLeaderboard.leaderboard.length > 0 ? (
+            <div className="rounded-xl border border-white/10 overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-white/5 border-b border-white/10">
+                    <th className="text-left px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 w-16">Rank</th>
+                    <th className="text-left px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40">User</th>
+                    <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Total</th>
+                    <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden sm:table-cell">Best</th>
+                    <th className="text-center px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden sm:table-cell">Games</th>
+                    <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden md:table-cell">Avg Chain</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {connectionLeaderboard.leaderboard.map((entry) => {
+                    const isMe = session?.user?.id === entry.userId
+                    return (
+                      <tr key={entry.userId} className={cn(
+                        "border-b border-white/5 last:border-0 transition-colors",
+                        isMe ? "bg-yellow-500/5 hover:bg-yellow-500/10" : "hover:bg-white/5"
+                      )}>
+                        <td className="px-4 sm:px-6 py-4">
+                          <span className={cn(
+                            "font-bold text-sm",
+                            entry.rank === 1 ? "text-yellow-400" : entry.rank === 2 ? "text-zinc-300" : entry.rank === 3 ? "text-amber-600" : "text-white/30"
+                          )}>
+                            {entry.rank <= 3 ? ["🥇", "🥈", "🥉"][entry.rank - 1] : `#${entry.rank}`}
+                          </span>
+                        </td>
+                        <td className="px-4 sm:px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={entry.image ?? undefined} />
+                              <AvatarFallback className="text-xs bg-zinc-800">
+                                <User className="h-4 w-4" />
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <span className={cn("font-semibold", isMe ? "text-yellow-400" : "text-white/80")}>
+                                {entry.name ?? "Anonymous"}
+                              </span>
+                              {isMe && <span className="text-[10px] text-yellow-400/60 ml-2">(you)</span>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 text-right">
+                          <span className="font-black text-lg text-neon">{entry.totalScore.toLocaleString()}</span>
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 text-right text-white/60 font-bold hidden sm:table-cell tabular-nums">
+                          {entry.bestScore.toLocaleString()}
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 text-center text-white/40 hidden sm:table-cell">{entry.gamesPlayed}</td>
+                        <td className="px-4 sm:px-6 py-4 text-right text-white/40 hidden md:table-cell tabular-nums">
+                          {entry.avgChainLength.toFixed(1)}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-24 text-white/30">
+              <Gamepad2 className="h-16 w-16 mx-auto mb-4 opacity-20" />
+              <h2 className="text-xl font-bold mb-2">No connection games yet</h2>
+              <p className="text-sm max-w-md mx-auto">
+                Play the Football Connections game. Your scores will appear here once you solve your first puzzle.
+              </p>
+              <Link href="/connection">
+                <Button className="mt-6 bg-yellow-600 hover:bg-yellow-500">
+                  Play Connections
                 </Button>
               </Link>
             </div>

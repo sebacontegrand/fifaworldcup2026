@@ -152,6 +152,22 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
         score,
         attempts: newAttempts,
       })
+
+      fetch("/api/connection/score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          score,
+          difficulty,
+          mode,
+          chainLength: chain.length,
+          shortestPossible,
+          attempts: newAttempts,
+          timeSeconds,
+          playerA: playerA.name,
+          playerB: playerB.name,
+        }),
+      }).catch(() => {})
     } else {
       set({
         isCorrect: false,

@@ -16,10 +16,11 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]
-  guesses       Guess[]
-  bets          Bet[]
-  chipBalance   ChipBalance?
-  userCards     UserCard[]
+  guesses         Guess[]
+  bets            Bet[]
+  chipBalance     ChipBalance?
+  userCards       UserCard[]
+  connectionScores ConnectionScore[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -179,4 +180,26 @@ model Bet {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, matchId])
+}
+
+model ConnectionScore {
+  id        String   @id @default(cuid())
+  userId    String
+  score     Int
+  difficulty String  // "easy" | "medium" | "hard" | "expert"
+  mode      String   // "daily" | "infinite" | "hardcore" | "timed"
+  chainLength Int
+  shortestPossible Int
+  attempts  Int
+  timeSeconds Int
+  playerA   String   // player name
+  playerB   String   // player name
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([score])
 }
