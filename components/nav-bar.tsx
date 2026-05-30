@@ -40,6 +40,7 @@ const groups = [
     label: "Games",
     icon: <Gamepad2 className="h-3 w-3" />,
     links: [
+      { href: "/connection", label: "Connections" },
       { href: "/timeline/live", label: "Live Results" },
       { href: "/pool", label: "Confidence Pool" },
       { href: "/ranking", label: "Rankings" },
