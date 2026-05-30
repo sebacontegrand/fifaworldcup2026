@@ -53,6 +53,8 @@ export function getMaxConnectionsForDifficulty(difficulty: Difficulty): number {
   }
 }
 
+export type HintType = "path" | "direct" | "unavailable"
+
 export interface GameState {
   playerA: Player | null
   playerB: Player | null
@@ -66,4 +68,5 @@ export interface GameState {
   validationResult: ValidationResult | null
   showHint: boolean
   hintChain: Player[] | null
+  hintType: HintType | null
 }

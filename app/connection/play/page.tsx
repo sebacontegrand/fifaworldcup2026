@@ -27,6 +27,7 @@ function PlayContent() {
     isCorrect,
     validationResult,
     hintChain,
+    hintType,
     gameStarted,
     score,
     difficulty,
@@ -103,8 +104,8 @@ function PlayContent() {
 
           {!isComplete && (
             <div className="flex flex-col items-center gap-3">
-              {hintChain && (
-                <HintDisplay players={hintChain} playerAName={playerA.name} playerBName={playerB.name} />
+              {(hintChain || hintType === "direct" || hintType === "unavailable") && (
+                <HintDisplay players={hintChain ?? []} playerAName={playerA.name} playerBName={playerB.name} hintType={hintType} />
               )}
 
               {isCorrect === false && validationResult && (

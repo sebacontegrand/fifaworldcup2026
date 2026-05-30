@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import { getFlagByCode } from "@/lib/team-flags"
 
 interface Player {
   rank: number
@@ -42,6 +43,9 @@ export function PlayerCard({ player, className }: PlayerCardProps) {
           <div className="flex flex-col">
             <span className="text-base font-bold text-card-foreground">
               {player.name}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {getFlagByCode(player.nationalTeamCode)} {player.nationality}
             </span>
             <span className="text-xs text-muted-foreground">{player.club}</span>
           </div>

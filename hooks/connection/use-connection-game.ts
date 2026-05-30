@@ -1,7 +1,7 @@
 "use client"
 
 import { create } from "zustand"
-import type { Player, Difficulty, GameMode, GameConfig, ValidationResult } from "@/lib/connection/types"
+import type { Player, Difficulty, GameMode, GameConfig, ValidationResult, HintType } from "@/lib/connection/types"
 import { getMaxConnectionsForDifficulty } from "@/lib/connection/types"
 import { getGraphInstance } from "@/lib/connection/graph"
 import { validateSolution, getHint, calculateScore } from "@/lib/connection/game-logic"
@@ -19,6 +19,7 @@ interface ConnectionGameStore {
   validationResult: ValidationResult | null
   showHint: boolean
   hintChain: Player[] | null
+  hintType: HintType | null
   difficulty: Difficulty
   mode: GameMode
   gameStarted: boolean
@@ -51,6 +52,7 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
   validationResult: null,
   showHint: false,
   hintChain: null,
+  hintType: null,
   difficulty: "medium",
   mode: "infinite",
   gameStarted: false,
@@ -96,6 +98,7 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
       validationResult: null,
       showHint: false,
       hintChain: null,
+      hintType: null,
       difficulty,
       mode,
       gameStarted: true,
@@ -181,8 +184,23 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
     const { playerA, playerB, difficulty } = get()
     if (!playerA || !playerB) return
 
-    const hint = getHint(playerA, playerB, difficulty)
-    set({ hintChain: hint })
+    const graph = getGraphInstance()
+    const maxConn = getMaxConnectionsForDifficulty(difficulty)
+    const result = graph.findShortestPath(playerA.id, playerB.id, maxConn)
+
+    if (!result) {
+      set({ hintChain: null, hintType: "unavailable" })
+      return
+    }
+
+    const intermediates = result.path.slice(1, -1).map((id) => graph.getPlayer(id)!).filter(Boolean)
+
+    if (intermediates.length > 0) {
+      set({ hintChain: intermediates, hintType: "path" })
+    } else {
+      const sharedTeam = result.sharedTeams[0]?.[0]
+      set({ hintChain: [], hintType: "direct" })
+    }
   },
 
   resetGame: () => {
@@ -203,6 +221,7 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
       validationResult: null,
       showHint: false,
       hintChain: null,
+      hintType: null,
       gameStarted: false,
       error: null,
       loading: false,
