@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-  const { score, difficulty, mode, chainLength, shortestPossible, attempts, timeSeconds, playerA, playerB } = body
+  const { score, difficulty, mode, chainLength, shortestPossible, attempts, timeSeconds, playerA, playerB, usedHint } = body
 
   if (!score || !difficulty || !mode || !playerA || !playerB) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
       shortestPossible: shortestPossible ?? 0,
       attempts: attempts ?? 1,
       timeSeconds: timeSeconds ?? 0,
+      usedHint: usedHint ?? false,
       playerA,
       playerB,
     },

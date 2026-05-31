@@ -69,4 +69,6 @@ export interface GameState {
   showHint: boolean
   hintChain: Player[] | null
   hintType: HintType | null
+  usedHint: boolean
+  hasValidPath: boolean
 }

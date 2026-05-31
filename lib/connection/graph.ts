@@ -156,18 +156,18 @@ export class PlayerGraph {
 
     const candidates: { playerA: Player; playerB: Player; pathLen: number }[] = []
 
-    const sampleSize = Math.min(30, allPlayers.length)
+    const sampleSize = Math.min(allPlayers.length, maxIntermediaries >= 4 ? allPlayers.length : 60)
     const shuffled = [...allPlayers].sort(() => Math.random() - 0.5).slice(0, sampleSize)
 
-    const maxHops = maxIntermediaries + 1
+    const requiredHops = maxIntermediaries + 1
 
     for (let i = 0; i < shuffled.length; i++) {
       for (let j = i + 1; j < shuffled.length; j++) {
         const a = shuffled[i].id
         const b = shuffled[j].id
-        const result = this.findShortestPath(a, b, maxHops)
+        const result = this.findShortestPath(a, b, requiredHops)
         const hops = result ? result.path.length - 1 : 0
-        if (result && hops >= 2 && hops <= maxHops) {
+        if (result && hops === requiredHops) {
           candidates.push({
             playerA: shuffled[i],
             playerB: shuffled[j],
@@ -180,6 +180,33 @@ export class PlayerGraph {
     if (candidates.length > 0) {
       const pick = candidates[Math.floor(Math.random() * candidates.length)]
       return { playerA: pick.playerA, playerB: pick.playerB }
+    }
+
+    return null
+  }
+
+  getRandomNoConnectionPair(maxIntermediaries: number): { playerA: Player; playerB: Player } | null {
+    const allPlayers = this.getAllPlayers()
+    if (allPlayers.length < 2) return null
+
+    const candidates: { playerA: Player; playerB: Player }[] = []
+    const maxHops = maxIntermediaries + 1
+
+    for (let i = 0; i < allPlayers.length; i++) {
+      for (let j = i + 1; j < allPlayers.length; j++) {
+        const a = allPlayers[i].id
+        const b = allPlayers[j].id
+        const result = this.findShortestPath(a, b, maxHops)
+        if (!result) {
+          candidates.push({ playerA: allPlayers[i], playerB: allPlayers[j] })
+          if (candidates.length >= 20) break
+        }
+      }
+      if (candidates.length >= 20) break
+    }
+
+    if (candidates.length > 0) {
+      return candidates[Math.floor(Math.random() * candidates.length)]
     }
 
     return null

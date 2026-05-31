@@ -2,33 +2,16 @@ import type { Player, ValidationResult, Difficulty, GameConfig, GameMode } from 
 import { getMaxConnectionsForDifficulty } from "./types"
 import { getGraphInstance } from "./graph"
 
-export function calculateScore(params: {
-  chainLength: number
-  shortestPossible: number
-  attempts: number
-  timeSeconds: number
-  difficulty: Difficulty
-  mode: GameMode
-}): number {
-  const { chainLength, shortestPossible, attempts, timeSeconds, difficulty } = params
+const CHIP_REWARDS: Record<Difficulty, number> = {
+  easy: 100,
+  medium: 200,
+  hard: 400,
+  expert: 800,
+}
 
-  const difficultyMultiplier: Record<Difficulty, number> = {
-    easy: 1,
-    medium: 2,
-    hard: 3,
-    expert: 5,
-  }
-
-  const optimalBonus = chainLength === shortestPossible ? 200 : Math.max(0, 100 - (chainLength - shortestPossible) * 50)
-
-  const timeBonus = Math.max(0, Math.floor((300 - timeSeconds) / 10) * 5)
-
-  const attemptsPenalty = Math.max(0, (attempts - 1) * 25)
-
-  const base = 500
-  const diff = difficultyMultiplier[difficulty]
-
-  return Math.max(0, (base + optimalBonus + timeBonus - attemptsPenalty) * diff)
+export function calculateChipReward(difficulty: Difficulty, usedHint: boolean): number {
+  if (usedHint) return 0
+  return CHIP_REWARDS[difficulty]
 }
 
 export function validateSolution(
@@ -49,7 +32,6 @@ export function validateSolution(
           { player: playerA },
           { player: playerB, sharedTeam: sharedTeam[0] },
         ],
-        score: 1000,
       }
     }
     return {

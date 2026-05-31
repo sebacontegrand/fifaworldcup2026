@@ -155,6 +155,7 @@ model ChipBalance {
   lifetimeEarnings Int  @default(0)
   dailyStreak   Int      @default(0)
   lastDailyAt   DateTime?
+  rankingAdjustment Int  @default(0)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -192,6 +193,7 @@ model ConnectionScore {
   shortestPossible Int
   attempts  Int
   timeSeconds Int
+  usedHint  Boolean  @default(false)
   playerA   String   // player name
   playerB   String   // player name
 

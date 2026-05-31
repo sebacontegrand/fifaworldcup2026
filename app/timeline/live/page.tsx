@@ -188,6 +188,8 @@ export default function LiveResultsPage() {
     }
   }, [factMatchesExist])
 
+  const chipReward = useRef<number>(0)
+
   const saveGuessToServer = useCallback(async (matchId: string, scoreA: number, scoreB: number) => {
     setSavingGuess(matchId)
     try {
@@ -197,6 +199,14 @@ export default function LiveResultsPage() {
         body: JSON.stringify({ scoreA, scoreB }),
       })
       if (res.ok) {
+        const reward = chipReward.current
+        if (reward > 0) {
+          fetch("/api/chips/earn", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount: reward, source: "live_guess" }),
+          }).catch(() => {})
+        }
         await fetchMatches()
         await fetchLeaderboard()
       }
@@ -244,10 +254,12 @@ export default function LiveResultsPage() {
     const parsedA = parseInt(inputs.scoreA)
     const parsedB = parseInt(inputs.scoreB)
     if (isNaN(parsedA) || isNaN(parsedB)) return
+    chipReward.current = 400
     saveGuessToServer(matchId, parsedA, parsedB)
   }
 
   const handleQuickPick = (matchId: string, homeWins: boolean) => {
+    chipReward.current = 200
     saveGuessToServer(matchId, homeWins ? 1 : 0, homeWins ? 0 : 1)
   }
 

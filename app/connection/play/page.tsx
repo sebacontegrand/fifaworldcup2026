@@ -28,6 +28,7 @@ function PlayContent() {
     validationResult,
     hintChain,
     hintType,
+    hasValidPath,
     gameStarted,
     score,
     difficulty,
@@ -36,6 +37,7 @@ function PlayContent() {
     addToChain,
     removeFromChain,
     submitSolution,
+    submitNoConnection,
     resetGame,
     error,
     loading,
@@ -95,6 +97,8 @@ function PlayContent() {
         <div className="flex flex-col items-center gap-4">
           {isComplete && isCorrect && validationResult ? (
             <ResultDisplay result={validationResult} />
+          ) : isComplete && !isCorrect && validationResult ? (
+            <ResultDisplay result={validationResult} />
           ) : (
             <>
               <PlayerCard player={playerA} label="PLAYER 1" variant="start" />
@@ -121,6 +125,21 @@ function PlayContent() {
                   Hardcore mode: manual entry disabled
                 </p>
               )}
+
+              <div className="flex items-center gap-3">
+                <div className="h-px w-12 bg-white/10" />
+                <span className="text-[9px] text-white/20 font-bold uppercase tracking-wider">or</span>
+                <div className="h-px w-12 bg-white/10" />
+              </div>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={submitNoConnection}
+                className="border-orange-500/30 text-orange-400/70 hover:text-orange-300 hover:border-orange-400/50 text-[10px] font-bold uppercase tracking-wider"
+              >
+                No connection exists
+              </Button>
             </div>
           )}
         </div>
@@ -189,7 +208,7 @@ function PlayContent() {
               {isCorrect && (
                 <div className="rounded-xl border border-neon/30 bg-neon/5 p-6 text-center">
                   <div className="text-3xl font-black text-neon text-glow-neon">+{score}</div>
-                  <p className="mt-1 text-[10px] text-muted-foreground">POINTS EARNED</p>
+                  <p className="mt-1 text-[10px] text-muted-foreground">CHIPS EARNED</p>
                 </div>
               )}
               <Button
@@ -212,7 +231,7 @@ function PlayContent() {
         </Badge>
         {!isComplete && (
           <Badge variant="outline" className="text-[9px] text-muted-foreground">
-            Find the path
+            Find the path or guess no connection
           </Badge>
         )}
       </div>

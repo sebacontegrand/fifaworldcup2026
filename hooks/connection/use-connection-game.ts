@@ -4,7 +4,7 @@ import { create } from "zustand"
 import type { Player, Difficulty, GameMode, GameConfig, ValidationResult, HintType } from "@/lib/connection/types"
 import { getMaxConnectionsForDifficulty } from "@/lib/connection/types"
 import { getGraphInstance } from "@/lib/connection/graph"
-import { validateSolution, getHint, calculateScore } from "@/lib/connection/game-logic"
+import { validateSolution, getHint, calculateChipReward } from "@/lib/connection/game-logic"
 
 interface ConnectionGameStore {
   playerA: Player | null
@@ -20,6 +20,8 @@ interface ConnectionGameStore {
   showHint: boolean
   hintChain: Player[] | null
   hintType: HintType | null
+  usedHint: boolean
+  hasValidPath: boolean
   difficulty: Difficulty
   mode: GameMode
   gameStarted: boolean
@@ -33,6 +35,7 @@ interface ConnectionGameStore {
   addToChain: (player: Player) => void
   removeFromChain: (index: number) => void
   submitSolution: () => void
+  submitNoConnection: () => void
   getHintAction: () => void
   resetGame: () => void
   tick: () => void
@@ -53,6 +56,8 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
   showHint: false,
   hintChain: null,
   hintType: null,
+  usedHint: false,
+  hasValidPath: true,
   difficulty: "medium",
   mode: "infinite",
   gameStarted: false,
@@ -66,14 +71,27 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
     let maxConn = getMaxConnectionsForDifficulty(difficulty)
     let pair = graph.getRandomPair(maxConn)
 
+    let hasValidPath = true
+    let noConnectionPair: { playerA: Player; playerB: Player } | null = null
+
     if (!pair) {
-      for (let d = maxConn + 1; d <= 4; d++) {
+      for (let d = maxConn - 1; d >= 1; d--) {
         pair = graph.getRandomPair(d)
         if (pair) break
       }
     }
 
     if (!pair) {
+      const graph = getGraphInstance()
+      noConnectionPair = graph.getRandomNoConnectionPair(maxConn)
+      if (noConnectionPair) {
+        hasValidPath = false
+      }
+    }
+
+    const chosenPair = pair ?? noConnectionPair
+
+    if (!chosenPair) {
       set({ loading: false, error: "Could not generate a puzzle. Try a different difficulty.", gameStarted: false })
       return
     }
@@ -86,8 +104,8 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
     }, 1000)
 
     set({
-      playerA: pair.playerA,
-      playerB: pair.playerB,
+      playerA: chosenPair.playerA,
+      playerB: chosenPair.playerB,
       chain: [],
       score: 0,
       attempts: 0,
@@ -99,6 +117,8 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
       showHint: false,
       hintChain: null,
       hintType: null,
+      usedHint: false,
+      hasValidPath,
       difficulty,
       mode,
       gameStarted: true,
@@ -123,7 +143,7 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
   },
 
   submitSolution: () => {
-    const { playerA, playerB, chain, attempts, difficulty, mode, startTime } = get()
+    const { playerA, playerB, chain, attempts, difficulty, mode, startTime, usedHint } = get()
     if (!playerA || !playerB) return
 
     const result = validateSolution(playerA, playerB, chain)
@@ -139,14 +159,8 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
       )
       const shortestPossible = shortestResult ? shortestResult.path.length - 1 : chain.length
 
-      const score = calculateScore({
-        chainLength: chain.length,
-        shortestPossible,
-        attempts: newAttempts,
-        timeSeconds,
-        difficulty,
-        mode,
-      })
+      const chipReward = calculateChipReward(difficulty, usedHint)
+      const score = chipReward
 
       set({
         isComplete: true,
@@ -167,10 +181,19 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
           shortestPossible,
           attempts: newAttempts,
           timeSeconds,
+          usedHint,
           playerA: playerA.name,
           playerB: playerB.name,
         }),
       }).catch(() => {})
+
+      if (chipReward > 0) {
+        fetch("/api/chips/earn", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: chipReward, source: "connection" }),
+        }).catch(() => {})
+      }
     } else {
       set({
         isCorrect: false,
@@ -180,9 +203,62 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
     }
   },
 
+  submitNoConnection: () => {
+    const { playerA, playerB, difficulty, mode, hasValidPath, startTime } = get()
+    if (!playerA || !playerB) return
+    if (hasValidPath) {
+      set({
+        isComplete: true,
+        isCorrect: false,
+        validationResult: {
+          valid: false,
+          chain: [],
+          errors: ["There IS a connection between these players — find it!"],
+        },
+      })
+      return
+    }
+
+    const chipReward = calculateChipReward(difficulty, false)
+    const timeSeconds = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0
+
+    set({
+      isComplete: true,
+      isCorrect: true,
+      score: chipReward,
+    })
+
+    fetch("/api/connection/score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        score: chipReward,
+        difficulty,
+        mode,
+        chainLength: 0,
+        shortestPossible: 0,
+        attempts: 1,
+        timeSeconds,
+        usedHint: false,
+        playerA: playerA.name,
+        playerB: playerB.name,
+      }),
+    }).catch(() => {})
+
+    if (chipReward > 0) {
+      fetch("/api/chips/earn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: chipReward, source: "connection" }),
+      }).catch(() => {})
+    }
+  },
+
   getHintAction: () => {
     const { playerA, playerB, difficulty } = get()
     if (!playerA || !playerB) return
+
+    set({ usedHint: true })
 
     const graph = getGraphInstance()
     const maxHops = getMaxConnectionsForDifficulty(difficulty) + 1
@@ -222,6 +298,7 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
       showHint: false,
       hintChain: null,
       hintType: null,
+      hasValidPath: true,
       gameStarted: false,
       error: null,
       loading: false,
