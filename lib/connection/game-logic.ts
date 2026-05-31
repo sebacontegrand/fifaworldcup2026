@@ -86,8 +86,8 @@ export function getHint(
   difficulty: Difficulty
 ): Player[] | null {
   const graph = getGraphInstance()
-  const maxConnections = getMaxConnectionsForDifficulty(difficulty)
-  const result = graph.findShortestPath(playerA.id, playerB.id, maxConnections)
+  const maxHops = getMaxConnectionsForDifficulty(difficulty) + 1
+  const result = graph.findShortestPath(playerA.id, playerB.id, maxHops)
 
   if (!result) return null
 

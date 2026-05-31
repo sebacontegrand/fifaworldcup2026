@@ -70,6 +70,29 @@ export class PlayerGraph {
     return Array.from(this.players.values())
   }
 
+  addPlayer(player: Player) {
+    if (this.players.has(player.id)) return
+    this.players.set(player.id, player)
+    for (const t of player.teams) {
+      if (!this.teamPlayers.has(t.teamId)) {
+        this.teamPlayers.set(t.teamId, [])
+      }
+      this.teamPlayers.get(t.teamId)!.push(player)
+      const teamMates = this.teamPlayers.get(t.teamId)!
+      for (const mate of teamMates) {
+        if (mate.id === player.id) continue
+        if (!this.adjacency.has(player.id)) this.adjacency.set(player.id, new Map())
+        if (!this.adjacency.has(mate.id)) this.adjacency.set(mate.id, new Map())
+        const pConn = this.adjacency.get(player.id)!
+        const mConn = this.adjacency.get(mate.id)!
+        if (!pConn.has(mate.id)) pConn.set(mate.id, [])
+        if (!mConn.has(player.id)) mConn.set(player.id, [])
+        pConn.get(mate.id)!.push(t.teamId)
+        mConn.get(player.id)!.push(t.teamId)
+      }
+    }
+  }
+
   getConnectedPlayers(playerId: string): Map<string, string[]> {
     return this.adjacency.get(playerId) ?? new Map()
   }
@@ -127,7 +150,7 @@ export class PlayerGraph {
     return { valid: errors.length === 0, sharedTeams, errors }
   }
 
-  getRandomPair(difficulty: number): { playerA: Player; playerB: Player } | null {
+  getRandomPair(maxIntermediaries: number): { playerA: Player; playerB: Player } | null {
     const allPlayers = this.getAllPlayers()
     if (allPlayers.length < 2) return null
 
@@ -136,16 +159,19 @@ export class PlayerGraph {
     const sampleSize = Math.min(30, allPlayers.length)
     const shuffled = [...allPlayers].sort(() => Math.random() - 0.5).slice(0, sampleSize)
 
+    const maxHops = maxIntermediaries + 1
+
     for (let i = 0; i < shuffled.length; i++) {
       for (let j = i + 1; j < shuffled.length; j++) {
         const a = shuffled[i].id
         const b = shuffled[j].id
-        const result = this.findShortestPath(a, b, difficulty)
-        if (result && result.path.length - 1 >= 1 && result.path.length - 1 <= difficulty) {
+        const result = this.findShortestPath(a, b, maxHops)
+        const hops = result ? result.path.length - 1 : 0
+        if (result && hops >= 2 && hops <= maxHops) {
           candidates.push({
             playerA: shuffled[i],
             playerB: shuffled[j],
-            pathLen: result.path.length - 1,
+            pathLen: hops,
           })
         }
       }

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Activity, RotateCcw, Play, CheckCircle2, ChevronRight, Trophy, Save, User, Target, Lock, Zap, Share2, ShieldCheck, Search } from "lucide-react"
+import { Activity, RotateCcw, Play, CheckCircle2, ChevronRight, Trophy, Save, User, Lock, Zap, Share2, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -81,7 +81,6 @@ export default function LiveResultsPage() {
   const [predictMode, setPredictMode] = useState<PredictMode>("quick")
   const [now, setNow] = useState(Date.now())
   const guessInputs = useRef<Record<string, { scoreA: string; scoreB: string }>>({})
-  const guessTimers = useRef<Record<string, NodeJS.Timeout>>({})
 
   const isAdmin = session?.user?.email?.toLowerCase() === "sebacontegrand@gmail.com"
   const [submittingAdminId, setSubmittingAdminId] = useState<string | null>(null)
@@ -131,6 +130,31 @@ export default function LiveResultsPage() {
     }
   }, [fetchMatches, fetchLeaderboard])
 
+  const handleAdminDeleteFact = useCallback(async (matchId: string) => {
+    if (!window.confirm("Delete this official result? All scores, guess points, and bet payouts for this match will be reset.")) return
+    setSubmittingAdminId(matchId)
+    try {
+      const res = await fetch(`/api/matches/${matchId}/result`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reset: true }),
+      })
+      if (res.ok) {
+        toast.success("Official result deleted!")
+        setUnlockedFacts(prev => ({ ...prev, [matchId]: false }))
+        await fetchMatches()
+        await fetchLeaderboard()
+      } else {
+        const err = await res.json()
+        toast.error(err.error || "Failed to delete official result")
+      }
+    } catch (e) {
+      toast.error("Failed to connect to server")
+    } finally {
+      setSubmittingAdminId(null)
+    }
+  }, [fetchMatches, fetchLeaderboard])
+
   const handleUnlockFact = (teamAId: string, teamBId: string, matchDTO: MatchDTO) => {
     updateMatchResult(teamAId, teamBId, {
       scoreA: matchDTO.scoreA ?? 0,
@@ -157,12 +181,12 @@ export default function LiveResultsPage() {
   }, [fetchMatches, fetchLeaderboard])
 
   useEffect(() => {
-    if (factMatchesExist && activeTab !== "leaderboard") {
+    if (factMatchesExist) {
       setActiveTab("leaderboard")
-    } else if (!factMatchesExist && activeTab === "leaderboard") {
+    } else {
       setActiveTab(defaultTab)
     }
-  }, [factMatchesExist, activeTab])
+  }, [factMatchesExist])
 
   const saveGuessToServer = useCallback(async (matchId: string, scoreA: number, scoreB: number) => {
     setSavingGuess(matchId)
@@ -212,15 +236,15 @@ export default function LiveResultsPage() {
       }
     }
     guessInputs.current[matchId][side === "A" ? "scoreA" : "scoreB"] = value
-    if (guessTimers.current[matchId]) clearTimeout(guessTimers.current[matchId])
-    const newA = guessInputs.current[matchId].scoreA
-    const newB = guessInputs.current[matchId].scoreB
-    const parsedA = parseInt(newA)
-    const parsedB = parseInt(newB)
+  }
+
+  const handleSubmitGuess = (matchId: string) => {
+    const inputs = guessInputs.current[matchId]
+    if (!inputs) return
+    const parsedA = parseInt(inputs.scoreA)
+    const parsedB = parseInt(inputs.scoreB)
     if (isNaN(parsedA) || isNaN(parsedB)) return
-    guessTimers.current[matchId] = setTimeout(() => {
-      saveGuessToServer(matchId, parsedA, parsedB)
-    }, 800)
+    saveGuessToServer(matchId, parsedA, parsedB)
   }
 
   const handleQuickPick = (matchId: string, homeWins: boolean) => {
@@ -287,11 +311,6 @@ export default function LiveResultsPage() {
         <div className="lg:col-span-8 space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="bg-white/5 border border-white/10 p-1 mb-4 flex-wrap gap-0.5">
-              {isAdmin && (
-                <TabsTrigger value="admin-input" className="data-[state=active]:bg-zinc-800 data-[state=active]:text-red-400 gap-1 text-[10px] px-2.5 py-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-red-500" /> Admin Panel
-                </TabsTrigger>
-              )}
               <TabsTrigger value="leaderboard" className={cn("data-[state=active]:bg-zinc-800 data-[state=active]:text-yellow-400 gap-1 text-[10px] px-2 py-1", !factMatchesExist && "hidden")}>
                 <Trophy className="h-3 w-3" /> <span className="hidden sm:inline">Leaderboard</span>
               </TabsTrigger>
@@ -305,21 +324,6 @@ export default function LiveResultsPage() {
             <TabsContent value="leaderboard" className={cn("animate-in fade-in slide-in-from-left-2 duration-300", !factMatchesExist && "hidden")}>
               <LeaderboardPanel leaderboard={leaderboard} onRefresh={fetchLeaderboard} />
             </TabsContent>
-
-            {isAdmin && (
-              <TabsContent value="admin-input" className="animate-in fade-in slide-in-from-left-2 duration-300">
-                <AdminTimelinePanel 
-                  matches={matches} 
-                  unlockedFacts={unlockedFacts}
-                  submittingAdminId={submittingAdminId}
-                  handleUnlockFact={handleUnlockFact}
-                  handleCancelUnlock={handleCancelUnlock}
-                  handleAdminSubmitFact={handleAdminSubmitFact}
-                  tournamentState={tournamentState}
-                  handleScoreChange={handleScoreChange}
-                />
-              </TabsContent>
-            )}
 
             {scheduleDays.map((day) => (
               <TabsContent key={day.date} value={day.date} className="animate-in fade-in slide-in-from-left-2 duration-300">
@@ -480,8 +484,19 @@ export default function LiveResultsPage() {
                                     className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90"
                                     placeholder="-"
                                   />
-                                  {savingGuess === guessKey && <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />}
-                                  {savingGuess !== guessKey && hasGuess && <CheckCircle2 className="h-3 w-3 text-green-400/70 shrink-0" />}
+                                  {savingGuess === guessKey ? (
+                                    <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />
+                                  ) : hasGuess ? (
+                                    <CheckCircle2 className="h-3 w-3 text-green-400/70 shrink-0" />
+                                  ) : null}
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleSubmitGuess(guessKey)}
+                                    disabled={savingGuess === guessKey || gInputs.scoreA === "" || gInputs.scoreB === ""}
+                                    className="h-7 text-[10px] bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-2.5"
+                                  >
+                                    {savingGuess === guessKey ? "Saving..." : "Save"}
+                                  </Button>
                                 </div>
                               </div>
                             )}
@@ -540,6 +555,17 @@ export default function LiveResultsPage() {
                                       className="h-6 text-[9px] text-white/40 hover:text-white font-bold uppercase tracking-wider px-2"
                                     >
                                       Cancel
+                                    </Button>
+                                  )}
+                                  {unlockedFacts[matchDTO.id] && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleAdminDeleteFact(matchDTO.id)}
+                                      disabled={submittingAdminId === matchDTO.id}
+                                      className="h-6 text-[9px] text-red-400 hover:text-red-300 hover:bg-red-500/10 font-bold uppercase tracking-wider px-2"
+                                    >
+                                      Delete
                                     </Button>
                                   )}
                                   <Button
@@ -750,262 +776,3 @@ function getFlag(teamName: string | null): string {
   return teamFlagMap[teamName.toLowerCase().trim()] || "🏳️"
 }
 
-function AdminTimelinePanel({
-  matches,
-  unlockedFacts,
-  submittingAdminId,
-  handleUnlockFact,
-  handleCancelUnlock,
-  handleAdminSubmitFact,
-  tournamentState,
-  handleScoreChange,
-}: {
-  matches: MatchDTO[]
-  unlockedFacts: Record<string, boolean>
-  submittingAdminId: string | null
-  handleUnlockFact: (teamAId: string, teamBId: string, matchDTO: MatchDTO) => void
-  handleCancelUnlock: (teamAId: string, teamBId: string, matchId: string) => void
-  handleAdminSubmitFact: (matchId: string, scoreA: number, scoreB: number) => void
-  tournamentState: any
-  handleScoreChange: (teamAId: string, teamBId: string, side: "A" | "B", value: string) => void
-}) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedRound, setSelectedRound] = useState<string>("all")
-  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "fact">("all")
-
-  const roundLabels: Record<string, string> = {
-    "group": "Group Stage",
-    "roundOf32": "Round of 32",
-    "roundOf16": "Round of 16",
-    "quarterFinal": "Quarter-Finals",
-    "semiFinal": "Semi-Finals",
-    "final": "Final",
-  }
-
-  const filteredMatches = matches.filter(m => {
-    const matchesSearch = searchTerm === "" || 
-      (m.teamAName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-       m.teamBName?.toLowerCase().includes(searchTerm.toLowerCase()))
-       
-    const matchesRound = selectedRound === "all" || m.round === selectedRound
-    
-    const matchesStatus = statusFilter === "all" || 
-      (statusFilter === "fact" && m.isFact) || 
-      (statusFilter === "pending" && !m.isFact)
-
-    return matchesSearch && matchesRound && matchesStatus
-  })
-
-  // Group filtered matches by round
-  const matchesByRound: Record<string, MatchDTO[]> = {}
-  filteredMatches.forEach(m => {
-    if (!matchesByRound[m.round]) matchesByRound[m.round] = []
-    matchesByRound[m.round].push(m)
-  })
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
-        <div>
-          <h2 className="text-lg sm:text-xl font-black uppercase tracking-tight">
-            <span className="text-red-500">Official</span> Results Input
-          </h2>
-          <p className="text-[10px] text-muted-foreground">Input final scores to verify predictor guesses for all matches.</p>
-        </div>
-      </div>
-
-      {/* Control bar */}
-      <div className="flex flex-col md:flex-row gap-3 bg-white/[0.02] border border-white/10 p-3 rounded-xl">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/30" />
-          <Input
-            type="text"
-            placeholder="Search teams..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 h-8 bg-zinc-900 border-white/10 text-xs text-white"
-          />
-        </div>
-        
-        <div className="flex gap-2 shrink-0">
-          <select
-            value={selectedRound}
-            onChange={(e) => setSelectedRound(e.target.value)}
-            className="h-8 px-2 bg-zinc-900 border border-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider focus:outline-none"
-          >
-            <option value="all">All Rounds</option>
-            {Object.entries(roundLabels).map(([id, label]) => (
-              <option key={id} value={id}>{label}</option>
-            ))}
-          </select>
-
-          <div className="flex border border-white/10 bg-zinc-900 p-0.5 rounded-lg h-8">
-            <button
-              onClick={() => setStatusFilter("all")}
-              className={cn(
-                "px-2 text-[9px] font-bold uppercase tracking-wider rounded-md transition-all",
-                statusFilter === "all" ? "bg-white/15 text-white" : "text-white/40"
-              )}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setStatusFilter("pending")}
-              className={cn(
-                "px-2 text-[9px] font-bold uppercase tracking-wider rounded-md transition-all",
-                statusFilter === "pending" ? "bg-yellow-500/20 text-yellow-400" : "text-white/40"
-              )}
-            >
-              Pending
-            </button>
-            <button
-              onClick={() => setStatusFilter("fact")}
-              className={cn(
-                "px-2 text-[9px] font-bold uppercase tracking-wider rounded-md transition-all",
-                statusFilter === "fact" ? "bg-green-500/20 text-green-400" : "text-white/40"
-              )}
-            >
-              Fact
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {filteredMatches.length === 0 ? (
-        <div className="text-center py-10 border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
-          <p className="text-xs text-white/30">No matches found matching the filters.</p>
-        </div>
-      ) : (
-        <div className="space-y-6 max-h-[600px] overflow-y-auto pr-1">
-          {Object.entries(roundLabels).map(([roundId, roundLabel]) => {
-            const roundMatches = matchesByRound[roundId]
-            if (!roundMatches || roundMatches.length === 0) return null
-
-            return (
-              <div key={roundId} className="space-y-3">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-white/30 border-b border-white/5 pb-1">
-                  {roundLabel}
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {roundMatches.map((m) => {
-                    const overrideKey = m.teamAId && m.teamBId ? `${m.teamAId}_${m.teamBId}` : ""
-                    const override = overrideKey ? tournamentState.matchOverrides[overrideKey] : undefined
-                    const isCompleted = m.isFact
-                    const isEditing = unlockedFacts[m.id]
-                    const hasTeams = !!(m.teamAName && m.teamBName)
-
-                    return (
-                      <div 
-                        key={m.id} 
-                        className={cn(
-                          "rounded-xl border bg-card overflow-hidden transition-all p-3 flex flex-col justify-between h-[125px]",
-                          isCompleted && !isEditing ? "border-green-500/10 bg-green-500/[0.01]" : "border-white/10"
-                        )}
-                      >
-                        <div className="flex items-center justify-between gap-1 mb-2">
-                          <span className="text-[9px] font-bold text-white/30 uppercase tracking-wider">
-                            Match #{m.matchOrder + 1} {m.groupId ? `• Group ${m.groupId}` : ""}
-                          </span>
-                          {isCompleted && !isEditing ? (
-                            <Badge className="bg-green-500/10 text-green-400 border-green-500/20 text-[8px] px-1 py-0">Fact</Badge>
-                          ) : (
-                            <Badge className="bg-yellow-500/10 text-yellow-400 border-yellow-500/20 text-[8px] px-1 py-0">Pending</Badge>
-                          )}
-                        </div>
-
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-1.5 w-[85px] truncate">
-                            <span className="text-sm">{getFlag(m.teamAName)}</span>
-                            <span className="text-[11px] font-bold truncate">{m.teamAName || "TBD"}</span>
-                          </div>
-
-                          <div className="flex items-center gap-1.5">
-                            {isCompleted && !isEditing ? (
-                              <div className="flex items-center gap-2">
-                                <span className="text-base font-black text-green-400">{m.scoreA}</span>
-                                <span className="text-white/20 font-black text-[10px]">VS</span>
-                                <span className="text-base font-black text-green-400">{m.scoreB}</span>
-                              </div>
-                            ) : (
-                              <>
-                                <Input
-                                  type="number"
-                                  min="0"
-                                  value={override?.scoreA ?? ""}
-                                  onChange={(e) => m.teamAId && m.teamBId && handleScoreChange(m.teamAId, m.teamBId, "A", e.target.value)}
-                                  className="w-8 h-8 text-center text-xs font-bold bg-zinc-900 border-white/10 p-0"
-                                  placeholder="-"
-                                />
-                                <span className="text-white/20 font-black text-[10px]">VS</span>
-                                <Input
-                                  type="number"
-                                  min="0"
-                                  value={override?.scoreB ?? ""}
-                                  onChange={(e) => m.teamAId && m.teamBId && handleScoreChange(m.teamAId, m.teamBId, "B", e.target.value)}
-                                  className="w-8 h-8 text-center text-xs font-bold bg-zinc-900 border-white/10 p-0"
-                                  placeholder="-"
-                                />
-                              </>
-                            )}
-                          </div>
-
-                          <div className="flex items-center justify-end gap-1.5 w-[85px] truncate">
-                            <span className="text-[11px] font-bold truncate text-right">{m.teamBName || "TBD"}</span>
-                            <span className="text-sm">{getFlag(m.teamBName)}</span>
-                          </div>
-                        </div>
-
-                        {/* Admin Submit Row */}
-                        {hasTeams && (
-                          <div className="mt-3 pt-2 border-t border-white/5 flex justify-end gap-1.5">
-                            {isCompleted && !isEditing ? (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => m.teamAId && m.teamBId && handleUnlockFact(m.teamAId, m.teamBId, m)}
-                                className="h-5 text-[8px] text-red-400 hover:bg-red-500/10 font-bold uppercase tracking-wider px-1.5"
-                              >
-                                Modify
-                              </Button>
-                            ) : (
-                              <>
-                                {isEditing && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => m.teamAId && m.teamBId && handleCancelUnlock(m.teamAId, m.teamBId, m.id)}
-                                    className="h-5 text-[8px] text-white/40 hover:text-white font-bold uppercase tracking-wider px-1.5"
-                                  >
-                                    Cancel
-                                  </Button>
-                                )}
-                                <Button
-                                  size="sm"
-                                  disabled={submittingAdminId === m.id || override?.scoreA === undefined || override?.scoreB === undefined}
-                                  onClick={() => handleAdminSubmitFact(m.id, override!.scoreA, override!.scoreB)}
-                                  className="h-5 text-[8px] bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest px-2"
-                                >
-                                  {submittingAdminId === m.id ? (
-                                    <div className="h-3 w-3 border-2 border-white/20 border-t-white animate-spin rounded-full mx-auto" />
-                                  ) : isEditing ? (
-                                    "Save Update"
-                                  ) : (
-                                    "Save Fact"
-                                  )}
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </div>
-  )
-}

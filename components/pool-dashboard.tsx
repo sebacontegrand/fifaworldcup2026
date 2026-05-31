@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useSession } from "next-auth/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -108,40 +108,63 @@ export function PoolDashboard() {
   const [activeTab, setActiveTab] = useState<"bet" | "cards" | "history">("bet")
 
   const fetchAll = useCallback(async () => {
-    const [balRes, cardRes, betRes, pulseRes, matchRes] = await Promise.all([
-      fetch("/api/pool/balance"),
-      fetch("/api/pool/cards"),
-      fetch("/api/pool/bets"),
-      fetch("/api/pool/pulse"),
-      fetch("/api/matches"),
-    ])
-    const balData = await balRes.json()
-    setBalance(balData.balance ?? 0)
-    setDailyStreak(balData.dailyStreak ?? 0)
-    setLifetimeEarnings(balData.lifetimeEarnings ?? 0)
-    setCards(await cardRes.json())
-    setBets(await betRes.json())
-    setPulse(await pulseRes.json())
-    const matchData = await matchRes.json()
-    setMatches(matchData.filter((m: MatchDTO) => !m.isFact && m.teamAId && m.teamBId))
+    try {
+      const [balRes, cardRes, betRes, pulseRes, matchRes] = await Promise.all([
+        fetch("/api/pool/balance"),
+        fetch("/api/pool/cards"),
+        fetch("/api/pool/bets"),
+        fetch("/api/pool/pulse"),
+        fetch("/api/matches"),
+      ])
+      if (balRes.ok) {
+        const balData = await balRes.json()
+        setBalance(balData.balance ?? 0)
+        setDailyStreak(balData.dailyStreak ?? 0)
+        setLifetimeEarnings(balData.lifetimeEarnings ?? 0)
+      }
+      const cardData = await cardRes.json()
+      setCards(Array.isArray(cardData) ? cardData : [])
+      const betData = await betRes.json()
+      setBets(Array.isArray(betData) ? betData : [])
+      const pulseData = await pulseRes.json()
+      setPulse(Array.isArray(pulseData) ? pulseData : [])
+      const matchData = await matchRes.json()
+      setMatches(Array.isArray(matchData) ? matchData.filter((m: MatchDTO) => !m.isFact && m.teamAId && m.teamBId) : [])
+    } catch (e) {
+      console.error("Failed to fetch pool data", e)
+    }
   }, [])
 
   useEffect(() => {
     if (session?.user) fetchAll()
+    return () => {
+      if (messageTimer.current) clearTimeout(messageTimer.current)
+    }
   }, [session, fetchAll])
+
+  const messageTimer = useRef<NodeJS.Timeout | null>(null)
 
   const handleClaim = async () => {
     setClaiming(true)
-    const res = await fetch("/api/pool/balance", { method: "POST" })
-    if (res.ok) {
-      const data = await res.json()
-      setBalance(data.balance)
-      setDailyStreak(data.dailyStreak)
-      setClaimed(true)
-      setMessage({ type: "success", text: `Claimed ${data.bonus} chips! 🔥` })
-      setTimeout(() => setMessage(null), 3000)
+    try {
+      const res = await fetch("/api/pool/balance", { method: "POST" })
+      if (res.ok) {
+        const data = await res.json()
+        setBalance(data.balance)
+        setDailyStreak(data.dailyStreak)
+        setClaimed(true)
+        setMessage({ type: "success", text: `Claimed ${data.bonus} chips! 🔥` })
+      } else {
+        const data = await res.json()
+        setMessage({ type: "error", text: data.error ?? "Failed to claim" })
+      }
+    } catch {
+      setMessage({ type: "error", text: "Network error" })
+    } finally {
+      setClaiming(false)
     }
-    setClaiming(false)
+    if (messageTimer.current) clearTimeout(messageTimer.current)
+    messageTimer.current = setTimeout(() => setMessage(null), 3000)
   }
 
   const handlePlaceBet = async () => {
@@ -153,30 +176,36 @@ export function PoolDashboard() {
 
     setPlacing(true)
     setMessage(null)
-    const res = await fetch("/api/pool/bet", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        matchId: selectedMatch.id,
-        scoreA, scoreB,
-        wagerAmount: wager,
-        cardId: selectedCard,
-      }),
-    })
-    const data = await res.json()
-    if (res.ok) {
-      setMessage({ type: "success", text: "Bet placed! 🎯" })
-      setBalance(data.remainingBalance)
-      setBetScoreA("")
-      setBetScoreB("")
-      setSelectedMatch(null)
-      setSelectedCard(null)
-      fetchAll()
-    } else {
-      setMessage({ type: "error", text: data.error ?? "Failed to place bet" })
+    try {
+      const res = await fetch("/api/pool/bet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matchId: selectedMatch.id,
+          scoreA, scoreB,
+          wagerAmount: wager,
+          cardId: selectedCard,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setMessage({ type: "success", text: "Bet placed! 🎯" })
+        setBalance(data.remainingBalance)
+        setBetScoreA("")
+        setBetScoreB("")
+        setSelectedMatch(null)
+        setSelectedCard(null)
+        fetchAll()
+      } else {
+        setMessage({ type: "error", text: data.error ?? "Failed to place bet" })
+      }
+    } catch {
+      setMessage({ type: "error", text: "Network error" })
+    } finally {
+      setPlacing(false)
     }
-    setPlacing(false)
-    setTimeout(() => setMessage(null), 3000)
+    if (messageTimer.current) clearTimeout(messageTimer.current)
+    messageTimer.current = setTimeout(() => setMessage(null), 3000)
   }
 
   const totalChips = pulse.reduce((s, p) => s + p.totalChips, 0)

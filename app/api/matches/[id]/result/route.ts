@@ -19,60 +19,50 @@ function calcAccuracyMultiplier(scoreA: number, scoreB: number, actualA: number,
   return 0
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.email || (ADMIN_EMAIL && session.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase())) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
-  const { id } = await params
-  const body = await req.json()
-  const { scoreA, scoreB } = body
-
-  if (typeof scoreA !== "number" || typeof scoreB !== "number") {
-    return NextResponse.json({ error: "Invalid scores" }, { status: 400 })
-  }
-
-  const match = await prisma.match.findUnique({ where: { id } })
-  if (!match) {
-    return NextResponse.json({ error: "Match not found" }, { status: 404 })
-  }
-
-  // Update match with real result and mark as fact
-  await prisma.match.update({
-    where: { id },
-    data: { scoreA, scoreB, isFact: true },
+async function reverseMatchPayouts(matchId: string) {
+  const paidBets = await prisma.bet.findMany({
+    where: { matchId, payout: { not: null } },
   })
 
-  // Calculate points for all guesses on this match
-  const guesses = await prisma.guess.findMany({ where: { matchId: id } })
+  if (paidBets.length === 0) return
 
-  for (const guess of guesses) {
-    const points = calcGuessPoints(guess.scoreA, guess.scoreB, scoreA, scoreB)
-    await prisma.guess.update({
-      where: { id: guess.id },
-      data: { points },
-    })
+  const ops: any[] = []
+  for (const bet of paidBets) {
+    const payout = bet.payout ?? 0
+    ops.push(
+      prisma.bet.update({
+        where: { id: bet.id },
+        data: { payout: null },
+      }),
+      prisma.chipBalance.update({
+        where: { userId: bet.userId },
+        data: {
+          balance: { decrement: payout },
+          ...(payout > 0 ? { lifetimeEarnings: { decrement: payout } } : {}),
+        },
+      }),
+    )
   }
 
-  // Resolve chip bets on this match
+  await prisma.$transaction(ops)
+}
+
+async function resolveMatchBets(matchId: string, actualA: number, actualB: number) {
   const bets = await prisma.bet.findMany({
-    where: { matchId: id, payout: null },
+    where: { matchId, payout: null },
     include: { user: true },
   })
 
+  if (bets.length === 0) return 0
+
   for (const bet of bets) {
-    const accuracy = calcAccuracyMultiplier(bet.scoreA, bet.scoreB, scoreA, scoreB)
+    const accuracy = calcAccuracyMultiplier(bet.scoreA, bet.scoreB, actualA, actualB)
     let payout = 0
     if (accuracy > 0) {
       let effectiveMultiplier = accuracy * bet.oddsMultiplier
       payout = Math.round(bet.wagerAmount * effectiveMultiplier)
     }
 
-    // Apply card effects
     if (bet.cardId) {
       const userCard = await prisma.userCard.findUnique({
         where: { userId_cardTemplateId: { userId: bet.userId, cardTemplateId: bet.cardId } },
@@ -104,5 +94,77 @@ export async function POST(
     ])
   }
 
-  return NextResponse.json({ ok: true, guessesScored: guesses.length, betsResolved: bets.length })
+  return bets.length
+}
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email || (ADMIN_EMAIL && session.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase())) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const { id } = await params
+  const body = await req.json()
+  const { scoreA, scoreB, reset } = body
+
+  const match = await prisma.match.findUnique({ where: { id } })
+  if (!match) {
+    return NextResponse.json({ error: "Match not found" }, { status: 404 })
+  }
+
+  // === RESET MODE: erase the fact result ===
+  if (reset) {
+    await reverseMatchPayouts(id)
+
+    await prisma.guess.updateMany({
+      where: { matchId: id },
+      data: { points: null },
+    })
+
+    await prisma.match.update({
+      where: { id },
+      data: { scoreA: null, scoreB: null, isFact: false },
+    })
+
+    return NextResponse.json({ ok: true, reset: true })
+  }
+
+  // === SAVE / UPDATE MODE ===
+  if (typeof scoreA !== "number" || typeof scoreB !== "number") {
+    return NextResponse.json({ error: "Invalid scores" }, { status: 400 })
+  }
+
+  // If the match was already a fact, reverse existing payouts and reset guess points
+  if (match.isFact) {
+    await reverseMatchPayouts(id)
+    await prisma.guess.updateMany({
+      where: { matchId: id },
+      data: { points: null },
+    })
+  }
+
+  // Update match with real result and mark as fact
+  await prisma.match.update({
+    where: { id },
+    data: { scoreA, scoreB, isFact: true },
+  })
+
+  // Calculate points for all guesses on this match
+  const guesses = await prisma.guess.findMany({ where: { matchId: id } })
+
+  for (const guess of guesses) {
+    const points = calcGuessPoints(guess.scoreA, guess.scoreB, scoreA, scoreB)
+    await prisma.guess.update({
+      where: { id: guess.id },
+      data: { points },
+    })
+  }
+
+  // Resolve chip bets on this match (finds bets with payout: null)
+  const betsResolved = await resolveMatchBets(id, scoreA, scoreB)
+
+  return NextResponse.json({ ok: true, guessesScored: guesses.length, betsResolved })
 }

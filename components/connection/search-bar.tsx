@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search, X } from "lucide-react"
+import { Search, X, Loader2 } from "lucide-react"
 import { getGraphInstance } from "@/lib/connection/graph"
+import { searchWikidataPlayers, fetchPlayerFromWikidata, fetchAndSetPlayerName } from "@/lib/connection/wikidata"
 import type { Player } from "@/lib/connection/types"
-import { cn } from "@/lib/utils"
+
+
+const searchCache = new Map<string, Player[]>()
 
 interface SearchBarProps {
   onSelect: (player: Player) => void
@@ -18,7 +20,9 @@ export function SearchBar({ onSelect, disabled, placeholder = "Search players...
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<Player[]>([])
   const [isOpen, setIsOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const abortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -30,17 +34,59 @@ export function SearchBar({ onSelect, disabled, placeholder = "Search players...
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  function handleChange(value: string) {
+  async function handleChange(value: string) {
     setQuery(value)
     if (value.length < 1) {
       setResults([])
       setIsOpen(false)
       return
     }
+
     const graph = getGraphInstance()
-    const matches = graph.searchPlayers(value)
-    setResults(matches.slice(0, 8))
-    setIsOpen(matches.length > 0)
+    const localMatches = graph.searchPlayers(value)
+    const combined: Player[] = [...localMatches]
+
+    if (localMatches.length < 5 && value.length >= 2) {
+      setLoading(true)
+      if (abortRef.current) abortRef.current.abort()
+      abortRef.current = new AbortController()
+
+      try {
+        const cached = searchCache.get(value)
+        if (cached) {
+          for (const p of cached) {
+            if (!combined.some((c) => c.id === p.id)) combined.push(p)
+          }
+        } else {
+          const wikidataResults = await searchWikidataPlayers(value)
+          const fetched: Player[] = []
+          for (const wr of wikidataResults) {
+            const existing = graph.getPlayerByName(wr.label)
+            if (existing) {
+              if (!combined.some((c) => c.id === existing.id)) fetched.push(existing)
+              continue
+            }
+            if (combined.some((c) => c.id === wr.id)) continue
+            const player = await fetchPlayerFromWikidata(wr.id)
+            if (player) {
+              const named = await fetchAndSetPlayerName(player)
+              graph.addPlayer(named)
+              fetched.push(named)
+            }
+          }
+          searchCache.set(value, fetched)
+          for (const p of fetched) {
+            if (!combined.some((c) => c.id === p.id)) combined.push(p)
+          }
+        }
+      } catch {
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    setResults(combined.slice(0, 8))
+    setIsOpen(combined.length > 0)
   }
 
   function handleSelect(player: Player) {
@@ -53,7 +99,11 @@ export function SearchBar({ onSelect, disabled, placeholder = "Search players...
   return (
     <div ref={ref} className="relative w-full max-w-sm">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        {loading ? (
+          <Loader2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground animate-spin" />
+        ) : (
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        )}
         <Input
           value={query}
           onChange={(e) => handleChange(e.target.value)}

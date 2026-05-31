@@ -135,7 +135,7 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
       const shortestResult = graph.findShortestPath(
         playerA.id,
         playerB.id,
-        getMaxConnectionsForDifficulty(difficulty)
+        getMaxConnectionsForDifficulty(difficulty) + 1
       )
       const shortestPossible = shortestResult ? shortestResult.path.length - 1 : chain.length
 
@@ -185,8 +185,8 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
     if (!playerA || !playerB) return
 
     const graph = getGraphInstance()
-    const maxConn = getMaxConnectionsForDifficulty(difficulty)
-    const result = graph.findShortestPath(playerA.id, playerB.id, maxConn)
+    const maxHops = getMaxConnectionsForDifficulty(difficulty) + 1
+    const result = graph.findShortestPath(playerA.id, playerB.id, maxHops)
 
     if (!result) {
       set({ hintChain: null, hintType: "unavailable" })

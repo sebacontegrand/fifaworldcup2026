@@ -1,10 +1,33 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import type { Player } from "@/lib/connection/types"
 import { motion } from "motion/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+
+const SPORTSDB_BASE = "https://www.thesportsdb.com/api/v1/json/3"
+
+const imageCache = new Map<string, string>()
+
+async function fetchPlayerImage(name: string): Promise<string | null> {
+  if (imageCache.has(name)) return imageCache.get(name) ?? null
+  try {
+    const res = await fetch(`${SPORTSDB_BASE}/searchplayers.php?p=${encodeURIComponent(name)}`)
+    const data = await res.json()
+    const cutout = (data as any)?.player?.[0]?.strCutout as string | undefined
+    if (cutout) {
+      imageCache.set(name, cutout)
+      return cutout
+    }
+    imageCache.set(name, "")
+    return null
+  } catch {
+    imageCache.set(name, "")
+    return null
+  }
+}
 
 interface PlayerCardProps {
   player: Player
@@ -14,6 +37,7 @@ interface PlayerCardProps {
 }
 
 export function PlayerCard({ player, label, variant = "chain", className }: PlayerCardProps) {
+  const [imgSrc, setImgSrc] = useState(player.image || undefined)
   const initials = player.name
     .split(" ")
     .map((n) => n[0])
@@ -27,6 +51,12 @@ export function PlayerCard({ player, label, variant = "chain", className }: Play
       : variant === "end"
         ? "border-gold/50 glow-gold"
         : "border-border/50"
+
+  useEffect(() => {
+    if (!player.image) {
+      fetchPlayerImage(player.name).then((url) => setImgSrc(url ?? undefined))
+    }
+  }, [player.name, player.image])
 
   return (
     <motion.div
@@ -45,7 +75,7 @@ export function PlayerCard({ player, label, variant = "chain", className }: Play
         </span>
       )}
       <Avatar className="h-16 w-16 ring-2 ring-border">
-        <AvatarImage src={player.image} alt={player.name} />
+        <AvatarImage src={imgSrc} alt={player.name} />
         <AvatarFallback className="bg-secondary text-xs font-bold">{initials}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col items-center gap-1 text-center">

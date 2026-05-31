@@ -124,7 +124,6 @@ export function NavBar() {
   const pathname = usePathname()
   const { simulate, isRunning } = useSimulation()
   const { data: session } = useSession()
-  const isAdmin = session?.user?.email?.toLowerCase() === "sebacontegrand@gmail.com"
   const [open, setOpen] = useState(false)
   const [isDesktop, setIsDesktop] = useState(true)
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
@@ -179,19 +178,6 @@ export function NavBar() {
                 />
               ))}
 
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className={cn(
-                    "rounded-md px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap",
-                    pathname.startsWith("/admin")
-                      ? "bg-red-500/20 text-red-400"
-                      : "text-red-400/60 hover:bg-red-500/10 hover:text-red-400"
-                  )}
-                >
-                  Admin
-                </Link>
-              )}
             </div>
 
             <CafecitoButton />
@@ -282,15 +268,6 @@ export function NavBar() {
                     </div>
                   ))}
 
-                  {isAdmin && (
-                    <Link
-                      href="/admin"
-                      onClick={() => setOpen(false)}
-                      className="flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-red-400/80 hover:bg-red-500/10 hover:text-red-400 transition-all"
-                    >
-                      Admin
-                    </Link>
-                  )}
                 </div>
               </SheetContent>
             </Sheet>
