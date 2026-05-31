@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Activity, RotateCcw, Play, CheckCircle2, ChevronRight, Trophy, Save, User, Lock, Zap, Share2, ShieldCheck } from "lucide-react"
+import { Activity, RotateCcw, Play, CheckCircle2, ChevronRight, Trophy, Save, User, Lock, Share2, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -47,8 +47,6 @@ interface LeaderboardData {
   leaderboard: LeaderboardEntry[]
 }
 
-type PredictMode = "quick" | "full"
-
 function calcPoints(guessA: number, guessB: number, actualA: number, actualB: number): number {
   const aMatch = guessA === actualA
   const bMatch = guessB === actualB
@@ -78,7 +76,8 @@ export default function LiveResultsPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
   const [savingGuess, setSavingGuess] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState(defaultTab)
-  const [predictMode, setPredictMode] = useState<PredictMode>("quick")
+  const [renderTick, setRenderTick] = useState(0)
+  const forceRender = useCallback(() => setRenderTick((t) => t + 1), [])
   const [now, setNow] = useState(Date.now())
   const guessInputs = useRef<Record<string, { scoreA: string; scoreB: string }>>({})
 
@@ -254,13 +253,17 @@ export default function LiveResultsPage() {
     const parsedA = parseInt(inputs.scoreA)
     const parsedB = parseInt(inputs.scoreB)
     if (isNaN(parsedA) || isNaN(parsedB)) return
-    chipReward.current = 400
+    chipReward.current = (parsedA === 1 && parsedB === 0) || (parsedA === 0 && parsedB === 1) ? 200 : 400
     saveGuessToServer(matchId, parsedA, parsedB)
   }
 
   const handleQuickPick = (matchId: string, homeWins: boolean) => {
-    chipReward.current = 200
-    saveGuessToServer(matchId, homeWins ? 1 : 0, homeWins ? 0 : 1)
+    if (!guessInputs.current[matchId]) {
+      guessInputs.current[matchId] = { scoreA: "", scoreB: "" }
+    }
+    guessInputs.current[matchId].scoreA = homeWins ? "1" : "0"
+    guessInputs.current[matchId].scoreB = homeWins ? "0" : "1"
+    forceRender()
   }
 
   const handleShare = async () => {
@@ -281,30 +284,13 @@ export default function LiveResultsPage() {
             <Button variant="ghost" size="sm" onClick={handleShare} className="h-6 text-[10px] text-white/40 hover:text-white gap-1 px-2">
               <Share2 className="h-3 w-3" /> Invite
             </Button>
-            {session?.user && (
-              <Badge
-                variant="outline"
-                className={cn(
-                  "cursor-pointer select-none border text-[10px]",
-                  predictMode === "quick"
-                    ? "border-yellow-500/40 text-yellow-400 bg-yellow-500/10"
-                    : "border-white/10 text-white/40"
-                )}
-                onClick={() => setPredictMode(predictMode === "quick" ? "full" : "quick")}
-              >
-                <Zap className={cn("h-3 w-3 mr-1", predictMode === "quick" && "fill-yellow-400")} />
-                {predictMode === "quick" ? "Quick Pick" : "Full Score"}
-              </Badge>
-            )}
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
             Live <span className="text-green-500">Results</span>
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
             {session?.user
-              ? predictMode === "quick"
-                ? "Quick Pick: tap a team to predict the winner. Easy!"
-                : "Full Score: enter exact scores. Both exact = 5pts, one exact = 2pts."
+              ? "Pick a winner or enter exact scores. Both exact = 5pts, one exact = 2pts. Quick Pick (1-0/0-1) = 200 chips, Full Score = 400 chips."
               : "Sign in to predict and compete. Tap a team to Quick Pick!"}
           </p>
         </div>
@@ -438,37 +424,7 @@ export default function LiveResultsPage() {
                         {/* Prediction Row */}
                         {session?.user && !matchDTO?.isFact && matchDTO && (
                           <>
-                            {predictMode === "quick" && !locked ? (
-                              <div className="flex items-center justify-between px-3 py-2 bg-yellow-500/[0.03] border-t border-yellow-500/10">
-                                <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Pick winner</span>
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    onClick={() => handleQuickPick(guessKey, true)}
-                                    className={cn(
-                                      "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
-                                      hasGuess && guess.scoreA > guess.scoreB
-                                        ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
-                                        : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50"
-                                    )}
-                                  >
-                                    {fixture.homeTeamFlag} {fixture.homeTeam}
-                                  </button>
-                                  <span className="text-white/20 text-xs">vs</span>
-                                  <button
-                                    onClick={() => handleQuickPick(guessKey, false)}
-                                    className={cn(
-                                      "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
-                                      hasGuess && guess.scoreB > guess.scoreA
-                                        ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
-                                        : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50"
-                                    )}
-                                  >
-                                    {fixture.awayTeamFlag} {fixture.awayTeam}
-                                  </button>
-                                  {savingGuess === guessKey && <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />}
-                                </div>
-                              </div>
-                            ) : locked ? (
+                            {locked ? (
                               <div className="flex items-center justify-between px-3 py-2 bg-white/[0.02] border-t border-white/5">
                                 <span className="text-[9px] text-red-400/50 font-medium uppercase tracking-wider">Locked</span>
                                 {hasGuess ? (
@@ -478,37 +434,68 @@ export default function LiveResultsPage() {
                                 )}
                               </div>
                             ) : (
-                              <div className="flex items-center justify-between px-3 py-2 bg-yellow-500/[0.03] border-t border-yellow-500/10">
-                                <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Score</span>
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="number" min="0"
-                                    value={gInputs.scoreA}
-                                    onChange={(e) => handleGuessChange(guessKey, "A", e.target.value)}
-                                    className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90"
-                                    placeholder="-"
-                                  />
-                                  <span className="text-yellow-500/40 font-black text-xs">:</span>
-                                  <Input
-                                    type="number" min="0"
-                                    value={gInputs.scoreB}
-                                    onChange={(e) => handleGuessChange(guessKey, "B", e.target.value)}
-                                    className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90"
-                                    placeholder="-"
-                                  />
-                                  {savingGuess === guessKey ? (
-                                    <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />
-                                  ) : hasGuess ? (
-                                    <CheckCircle2 className="h-3 w-3 text-green-400/70 shrink-0" />
-                                  ) : null}
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleSubmitGuess(guessKey)}
-                                    disabled={savingGuess === guessKey || gInputs.scoreA === "" || gInputs.scoreB === ""}
-                                    className="h-7 text-[10px] bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-2.5"
-                                  >
-                                    {savingGuess === guessKey ? "Saving..." : "Save"}
-                                  </Button>
+                              <div className="px-3 py-2 bg-yellow-500/[0.03] border-t border-yellow-500/10 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Pick winner</span>
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      onClick={() => handleQuickPick(guessKey, true)}
+                                      className={cn(
+                                        "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
+                                        !isNaN(parseInt(gInputs.scoreA)) && !isNaN(parseInt(gInputs.scoreB)) && parseInt(gInputs.scoreA) > parseInt(gInputs.scoreB)
+                                          ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
+                                          : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50"
+                                      )}
+                                    >
+                                      {fixture.homeTeamFlag} {fixture.homeTeam}
+                                    </button>
+                                    <span className="text-white/20 text-xs">vs</span>
+                                    <button
+                                      onClick={() => handleQuickPick(guessKey, false)}
+                                      className={cn(
+                                        "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
+                                        !isNaN(parseInt(gInputs.scoreA)) && !isNaN(parseInt(gInputs.scoreB)) && parseInt(gInputs.scoreB) > parseInt(gInputs.scoreA)
+                                          ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
+                                          : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50"
+                                      )}
+                                    >
+                                      {fixture.awayTeamFlag} {fixture.awayTeam}
+                                    </button>
+                                    {savingGuess === guessKey && <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />}
+                                  </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Score</span>
+                                  <div className="flex items-center gap-2">
+                                    <Input
+                                      type="number" min="0"
+                                      value={gInputs.scoreA}
+                                      onChange={(e) => handleGuessChange(guessKey, "A", e.target.value)}
+                                      className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90"
+                                      placeholder="-"
+                                    />
+                                    <span className="text-yellow-500/40 font-black text-xs">:</span>
+                                    <Input
+                                      type="number" min="0"
+                                      value={gInputs.scoreB}
+                                      onChange={(e) => handleGuessChange(guessKey, "B", e.target.value)}
+                                      className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90"
+                                      placeholder="-"
+                                    />
+                                    {savingGuess === guessKey ? (
+                                      <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />
+                                    ) : hasGuess ? (
+                                      <CheckCircle2 className="h-3 w-3 text-green-400/70 shrink-0" />
+                                    ) : null}
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleSubmitGuess(guessKey)}
+                                      disabled={savingGuess === guessKey || gInputs.scoreA === "" || gInputs.scoreB === ""}
+                                      className="h-7 text-[10px] bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-2.5"
+                                    >
+                                      {savingGuess === guessKey ? "Saving..." : "Save"}
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             )}

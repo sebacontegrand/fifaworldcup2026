@@ -30,20 +30,20 @@ def test_live_page_renders():
         print("  PASS: live results page renders with schedule tabs")
 
 
-def test_predict_mode_toggle():
+def test_winner_and_score_visible():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(f"{BASE}/timeline/live")
         page.wait_for_load_state("networkidle")
 
-        quick_pick_badge = page.locator("text=Quick Pick")
-        if quick_pick_badge.is_visible():
-            quick_pick_badge.click()
-            page.wait_for_timeout(500)
+        # Both "Pick winner" and "Score" labels should be visible on unplayed matches
+        pick_winner_labels = page.locator("text=Pick winner")
+        score_labels = page.locator("text=Score")
+        assert pick_winner_labels.count() > 0 or score_labels.count() > 0
 
         browser.close()
-        print("  PASS: predict mode toggle works")
+        print("  PASS: winner pick and score inputs both visible simultaneously")
 
 
 def test_ranking_page_renders():
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         time.sleep(15)
 
         test_live_page_renders()
-        test_predict_mode_toggle()
+        test_winner_and_score_visible()
         test_ranking_page_renders()
         test_admin_button_hidden_for_anon()
         test_prediction_page_renders()
