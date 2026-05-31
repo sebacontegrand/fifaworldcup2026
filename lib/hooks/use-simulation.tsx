@@ -47,6 +47,41 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const [config, setConfig] = useState<SimulationConfig>(INITIAL_CONFIG)
   const [tournamentState, setTournamentState] = useState<TournamentState>(INITIAL_TOURNAMENT_STATE)
   const [currentTournamentDate, setCurrentTournamentDate] = useState("2026-06-18")
+  const loaded = useRef(false)
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Load from DB on mount
+  useEffect(() => {
+    fetch("/api/simulation/config")
+      .then(r => r.json())
+      .then(data => {
+        if (data.config && Object.keys(data.config).length > 0) {
+          setConfig({ ...INITIAL_CONFIG, ...data.config, teamSettings: { ...INITIAL_CONFIG.teamSettings, ...data.config.teamSettings } })
+        }
+        if (data.tournamentState && Object.keys(data.tournamentState).length > 0) {
+          setTournamentState({ ...INITIAL_TOURNAMENT_STATE, ...data.tournamentState, matchOverrides: { ...data.tournamentState.matchOverrides } })
+        }
+        if (data.currentTournamentDate) {
+          setCurrentTournamentDate(data.currentTournamentDate)
+        }
+        loaded.current = true
+      })
+      .catch(() => { loaded.current = true })
+  }, [])
+
+  // Auto-save to DB when config or tournamentState changes (debounced)
+  useEffect(() => {
+    if (!loaded.current) return
+    if (saveTimer.current) clearTimeout(saveTimer.current)
+    saveTimer.current = setTimeout(() => {
+      fetch("/api/simulation/config", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ config, tournamentState, currentTournamentDate }),
+      }).catch(() => {})
+    }, 1000)
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current) }
+  }, [config, tournamentState, currentTournamentDate])
 
   const simulate = useCallback(() => {
     setIsRunning(true)
@@ -119,6 +154,11 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const resetConfig = useCallback(() => {
     setConfig(INITIAL_CONFIG)
     setTournamentState(INITIAL_TOURNAMENT_STATE)
+    fetch("/api/simulation/config", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ config: INITIAL_CONFIG, tournamentState: INITIAL_TOURNAMENT_STATE, currentTournamentDate: "2026-06-18" }),
+    }).catch(() => {})
   }, [])
 
   return (

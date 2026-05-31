@@ -205,3 +205,12 @@ model ConnectionScore {
   @@index([userId])
   @@index([score])
 }
+
+model SimulationConfig {
+  id    String @id @default("simulation")
+  config Json
+  tournamentState Json
+  currentTournamentDate String @default("2026-06-18")
+
+  updatedAt DateTime @updatedAt
+}
