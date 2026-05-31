@@ -130,7 +130,7 @@ export function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 768)
+    const check = () => setIsDesktop(window.innerWidth >= 640)
     check()
     window.addEventListener("resize", check)
     return () => window.removeEventListener("resize", check)
