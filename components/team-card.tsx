@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import type { Team } from "@/lib/simulation"
 
 interface TeamCardProps {
@@ -28,7 +29,7 @@ export function TeamCard({
           className
         )}
       >
-        <span className="text-xl">{team.flag}</span>
+        <img src={getFlagImageUrl(team.id, 40)} alt={team.name} className="h-6 w-auto" loading="lazy" />
         <span className="text-sm font-semibold text-card-foreground">
           {team.name}
         </span>
@@ -56,7 +57,7 @@ export function TeamCard({
         {/* Header: flag, name, ranking */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{team.flag}</span>
+            <img src={getFlagImageUrl(team.id, 80)} alt={team.name} className="h-10 w-auto" loading="lazy" />
             <div className="flex flex-col">
               <span className="text-base font-bold uppercase tracking-wide text-card-foreground">
                 {team.name}

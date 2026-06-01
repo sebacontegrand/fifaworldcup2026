@@ -5,6 +5,7 @@ import playersData from "@/data/players.json"
 import { TeamKit } from "@/components/team-kit"
 import { PlayerCard } from "@/components/player-card"
 import { type Team } from "@/lib/simulation"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import { cn } from "@/lib/utils"
 import { ChevronLeft, Trophy, Activity, Target, Shield, Info } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -72,7 +73,12 @@ export default async function TeamDetailPage({ params }: PageProps) {
 
                             <div className="relative flex flex-col md:flex-row items-center gap-10">
                                 <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                                    <span className="text-6xl md:text-8xl mb-4 drop-shadow-xl">{team.flag}</span>
+                                    <img
+                                      src={getFlagImageUrl(team.id, 320)}
+                                      alt={team.name}
+                                      className="h-20 w-auto md:h-28 drop-shadow-xl"
+                                      loading="eager"
+                                    />
                                     <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-foreground drop-shadow-neon">
                                         {team.name}
                                     </h1>

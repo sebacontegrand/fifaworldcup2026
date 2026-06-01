@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { TeamKit } from "@/components/team-kit"
 import { Check, X } from "lucide-react"
 import type { Question } from "@/lib/trivia/types"
+import { getFlagImageUrl, getFlagImageSrcSet } from "@/lib/team-flags"
 
 interface TriviaQuestionProps {
   question: Question
@@ -54,8 +55,14 @@ export function TriviaQuestion({
         >
           {/* Clue display */}
           <div className="flex h-40 w-full max-w-xs items-center justify-center rounded-2xl border border-border/50 bg-card glow-neon">
-            {question.clueType === "flag" && (
-              <span className="text-8xl">{question.correctAnswer && getTeamFlag(question.teamId)}</span>
+            {question.clueType === "flag" && question.teamId && (
+              <img
+                src={getFlagImageUrl(question.teamId, 160)}
+                srcSet={getFlagImageSrcSet(question.teamId)}
+                alt={question.correctAnswer}
+                className="h-24 w-auto drop-shadow-2xl"
+                loading="eager"
+              />
             )}
             {question.clueType === "kit" && question.teamId && (
               <TeamKit teamId={question.teamId} className="h-32 w-32" />
@@ -119,17 +126,4 @@ export function TriviaQuestion({
   )
 }
 
-function getTeamFlag(teamId?: string): string {
-  const flagMap: Record<string, string> = {
-    mex: "🇲🇽", rsa: "🇿🇦", usa: "🇺🇸", can: "🇨🇦", fra: "🇫🇷",
-    ger: "🇩🇪", jpn: "🇯🇵", esp: "🇪🇸", ned: "🇳🇱", eng: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    ita: "🇮🇹", uru: "🇺🇾", por: "🇵🇹", bel: "🇧🇪", cro: "🇭🇷",
-    mar: "🇲🇦", sen: "🇸🇳", aus: "🇦🇺", kor: "🇰🇷", irn: "🇮🇷",
-    egy: "🇪🇬", nga: "🇳🇬", civ: "🇨🇮", tun: "🇹🇳", ksa: "🇸🇦",
-    cmr: "🇨🇲", qat: "🇶🇦", sui: "🇨🇭", hai: "🇭🇹", sco: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-    par: "🇵🇾", cur: "🇨🇼", ecu: "🇪🇨", nzl: "🇳🇿", cpv: "🇨🇻",
-    nor: "🇳🇴", alg: "🇩🇿", aut: "🇦🇹", jor: "🇯🇴", uzb: "🇺🇿",
-    col: "🇨🇴", gha: "🇬🇭", pan: "🇵🇦",
-  }
-  return teamId ? flagMap[teamId] || "🏳️" : "🏳️"
-}
+

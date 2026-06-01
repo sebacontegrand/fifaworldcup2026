@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import type { GroupStanding, Team } from "@/lib/simulation"
 
 interface GroupTableProps {
@@ -90,7 +91,7 @@ export function GroupTable({
                       href={`/teams/${team.id}`}
                       className="flex items-center gap-2 hover:text-primary transition-colors"
                     >
-                      <span className="text-base">{team.flag}</span>
+                      <img src={getFlagImageUrl(team.id, 40)} alt={team.name} className="h-5 w-auto" loading="lazy" />
                       <span className="text-sm font-semibold text-card-foreground">
                         {team.name}
                       </span>

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import type { Team, MatchResult, MatchupProbability } from "@/lib/simulation"
 
 interface MatchCardProps {
@@ -26,7 +27,7 @@ export function MatchCard({
       <div className="flex items-center gap-4 p-4">
         {/* Team A */}
         <div className="flex flex-1 flex-col items-center gap-1">
-          <span className="text-2xl">{teamA.flag}</span>
+          <img src={getFlagImageUrl(teamA.id, 64)} alt={teamA.name} className="h-8 w-auto" loading="lazy" />
           <span className="text-xs font-bold uppercase text-card-foreground">
             {teamA.code}
           </span>
@@ -67,7 +68,7 @@ export function MatchCard({
 
         {/* Team B */}
         <div className="flex flex-1 flex-col items-center gap-1">
-          <span className="text-2xl">{teamB.flag}</span>
+          <img src={getFlagImageUrl(teamB.id, 64)} alt={teamB.name} className="h-8 w-auto" loading="lazy" />
           <span className="text-xs font-bold uppercase text-card-foreground">
             {teamB.code}
           </span>
