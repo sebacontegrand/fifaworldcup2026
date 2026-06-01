@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { RefreshCw, Menu, ChevronDown, Globe, Cpu, Gamepad2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { useSession } from "next-auth/react"
 import { CafecitoButton } from "@/components/cafecito-button"
+import { motion, AnimatePresence } from "motion/react"
 import {
   Sheet,
   SheetContent,
@@ -85,38 +85,47 @@ function DropdownMenu({
       <button
         onClick={onToggle}
         className={cn(
-          "flex items-center gap-1 rounded-md px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap",
+          "relative flex items-center gap-1.5 rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all duration-300 border cursor-pointer",
           anyActive
-            ? "bg-primary text-primary-foreground"
-            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+            ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_15px_rgba(var(--primary),0.05)]"
+            : "text-muted-foreground hover:bg-white/5 hover:text-foreground border-transparent"
         )}
       >
         {group.icon}
-        {group.label}
-        <ChevronDown className={cn("h-3 w-3 transition-transform", isOpen && "rotate-180")} />
+        <span>{group.label}</span>
+        <ChevronDown className={cn("h-3 w-3 transition-transform duration-300", isOpen && "rotate-180")} />
       </button>
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 rounded-xl border border-white/10 bg-card shadow-2xl backdrop-blur-xl overflow-hidden z-50">
-          {group.links.map((link) => {
-            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={onClose}
-                className={cn(
-                  "flex items-center px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider transition-colors",
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
-            )
-          })}
-        </div>
-      )}
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="absolute top-[calc(100%+8px)] left-0 min-w-[200px] p-1.5 rounded-2xl border border-white/10 bg-card/85 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden z-50 gradient-border"
+          >
+            {group.links.map((link) => {
+              const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={onClose}
+                  className={cn(
+                    "flex items-center px-3.5 py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all duration-200 border",
+                    isActive
+                      ? "bg-primary/10 text-primary border-primary/10"
+                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground border-transparent"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -137,32 +146,37 @@ export function NavBar() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-            <span className="text-sm font-black text-primary-foreground">WC</span>
+    <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-md shadow-[0_1px_30px_rgba(0,0,0,0.2)]">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <Link href="/" className="flex items-center gap-3 shrink-0 group">
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-accent via-primary to-cyan p-[1px] shadow-lg transition-transform duration-300 group-hover:scale-105">
+            <div className="flex h-full w-full items-center justify-center rounded-xl bg-background/90 backdrop-blur-sm">
+              <span className="text-xs font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-tr from-primary to-accent">
+                WC
+              </span>
+            </div>
+            <div className="absolute -inset-0.5 -z-10 rounded-xl bg-gradient-to-tr from-accent to-primary opacity-30 blur-sm group-hover:opacity-60 transition-opacity duration-300" />
           </div>
           <div className="hidden lg:flex flex-col">
-            <span className="text-sm font-bold uppercase tracking-wider text-foreground leading-none">
+            <span className="text-[11px] font-black uppercase tracking-widest text-foreground leading-tight group-hover:text-primary transition-colors duration-300">
               World Cup 2026
             </span>
-            <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-              Predictor
+            <span className="text-[8px] font-medium uppercase tracking-[0.25em] text-muted-foreground/80">
+              Sim & Predictor
             </span>
           </div>
         </Link>
 
         {isDesktop ? (
           <div className="flex items-center gap-2 lg:gap-4">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <Link
                 href="/"
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap",
+                  "rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap border cursor-pointer",
                   pathname === "/"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_15px_rgba(var(--primary),0.05)]"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground border-transparent"
                 )}
               >
                 Dashboard
@@ -178,25 +192,31 @@ export function NavBar() {
                   onClose={() => setDropdownOpen(null)}
                 />
               ))}
-
             </div>
 
             <CafecitoButton />
 
-            <div className="h-4 w-px bg-border shrink-0" />
+            <div className="h-4 w-px bg-white/10 shrink-0" />
 
             <button
               onClick={simulate}
               disabled={isRunning}
               className={cn(
-                "group relative flex items-center gap-2 rounded-lg bg-secondary px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-foreground transition-all hover:bg-muted border border-border/50 overflow-hidden shrink-0",
-                isRunning && "opacity-80"
+                "group relative flex items-center gap-2 rounded-full px-5 py-2 text-[10px] font-black uppercase tracking-widest transition-all duration-300 overflow-hidden shrink-0 cursor-pointer shadow-lg",
+                isRunning 
+                  ? "bg-secondary text-muted-foreground border border-border/50 cursor-not-allowed" 
+                  : "bg-gradient-to-r from-primary/10 to-primary/20 hover:from-primary/20 hover:to-primary/30 text-primary border border-primary/35 hover:scale-[1.03] hover:shadow-[0_0_20px_oklch(0.85_0.22_155_/_0.2)]"
               )}
             >
-              <RefreshCw className={cn("h-3 w-3", isRunning && "animate-spin")} />
+              {!isRunning && (
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              )}
+              
+              <RefreshCw className={cn("h-3.5 w-3.5 transition-transform duration-500", isRunning ? "animate-spin" : "group-hover:rotate-180")} />
               <span>{isRunning ? "Simulating..." : "Run Sim"}</span>
+              
               {isRunning && (
-                <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary animate-progress-glow" />
+                <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary animate-pulse-neon" />
               )}
             </button>
           </div>
@@ -206,69 +226,89 @@ export function NavBar() {
               onClick={simulate}
               disabled={isRunning}
               className={cn(
-                "group relative flex items-center gap-1.5 rounded-lg bg-secondary px-2 py-1.5 text-[9px] sm:text-[10px] sm:px-3 font-black uppercase tracking-widest text-foreground transition-all hover:bg-muted border border-border/50 overflow-hidden",
-                isRunning && "opacity-80"
+                "group relative flex items-center gap-2 rounded-full px-4 py-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-300 overflow-hidden cursor-pointer",
+                isRunning 
+                  ? "bg-secondary text-muted-foreground border border-border/50 cursor-not-allowed" 
+                  : "bg-gradient-to-r from-primary/10 to-primary/20 hover:from-primary/20 hover:to-primary/30 text-primary border border-primary/35 hover:scale-[1.02] hover:shadow-[0_0_15px_oklch(0.85_0.22_155_/_0.15)]"
               )}
             >
-              <RefreshCw className={cn("h-3 sm:h-3 w-3 sm:w-3", isRunning && "animate-spin")} />
+              <RefreshCw className={cn("h-3.5 w-3.5 transition-transform duration-500", isRunning ? "animate-spin" : "group-hover:rotate-180")} />
               <span className="hidden sm:inline-block">{isRunning ? "Simulating..." : "Run Sim"}</span>
               <span className="sm:hidden">{isRunning ? "Sim..." : "Sim"}</span>
+              
+              {isRunning && (
+                <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary animate-pulse-neon" />
+              )}
             </button>
 
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 px-0">
-                  <Menu className="h-5 w-5" />
+                <button className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-200 text-foreground cursor-pointer">
+                  <Menu className="h-4 w-4" />
                   <span className="sr-only">Toggle navigation menu</span>
-                </Button>
+                </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle className="text-left">Navigation</SheetTitle>
-                </SheetHeader>
-                <div className="py-6 space-y-4">
-                  <Link
-                    href="/"
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      "flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-bold uppercase tracking-wider transition-all",
-                      pathname === "/"
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    )}
-                  >
-                    Dashboard
-                  </Link>
+              <SheetContent side="right" className="w-[300px] border-l border-white/10 bg-background/90 backdrop-blur-2xl p-6 flex flex-col justify-between">
+                <div>
+                  <SheetHeader className="mb-6">
+                    <SheetTitle className="text-left text-xs font-black uppercase tracking-widest text-muted-foreground">
+                      Tournament Menu
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="space-y-5">
+                    <Link
+                      href="/"
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-black uppercase tracking-widest transition-all duration-300 border cursor-pointer",
+                        pathname === "/"
+                          ? "bg-primary/10 text-primary border-primary/25 shadow-[0_0_15px_rgba(var(--primary),0.05)]"
+                          : "text-muted-foreground hover:bg-white/5 hover:text-foreground border-transparent"
+                      )}
+                    >
+                      Dashboard
+                    </Link>
 
-                  {groups.map((g) => (
-                    <div key={g.label}>
-                      <div className="flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white/30">
-                        {g.icon}
-                        {g.label}
+                    {groups.map((g) => (
+                      <div key={g.label} className="space-y-1.5">
+                        <div className="flex items-center gap-2 px-4 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">
+                          {g.icon}
+                          {g.label}
+                        </div>
+                        <div className="space-y-1">
+                          {g.links.map((link) => {
+                            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
+                            return (
+                              <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setOpen(false)}
+                                className={cn(
+                                  "block rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-200 border cursor-pointer",
+                                  isActive
+                                    ? "bg-primary/10 text-primary border-primary/15"
+                                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground border-transparent"
+                                )}
+                              >
+                                {link.label}
+                              </Link>
+                            )
+                          })}
+                        </div>
                       </div>
-                      <div className="ml-2 space-y-0.5">
-                        {g.links.map((link) => {
-                          const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
-                          return (
-                            <Link
-                              key={link.href}
-                              href={link.href}
-                              onClick={() => setOpen(false)}
-                              className={cn(
-                                "block rounded-md px-4 py-2 text-sm font-bold uppercase tracking-wider transition-all",
-                                isActive
-                                  ? "bg-primary/10 text-primary"
-                                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                              )}
-                            >
-                              {link.label}
-                            </Link>
-                          )
-                        })}
-                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-white/5 flex flex-col gap-4">
+                  <div className="flex justify-center">
+                    <CafecitoButton />
+                  </div>
+                  {session?.user && (
+                    <div className="text-[10px] text-center text-muted-foreground font-mono">
+                      Logged in as <span className="text-foreground text-glow-neon">{session.user.name || session.user.email}</span>
                     </div>
-                  ))}
-
+                  )}
                 </div>
               </SheetContent>
             </Sheet>

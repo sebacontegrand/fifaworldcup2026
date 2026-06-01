@@ -6,8 +6,8 @@ import { SimulationProvider } from "@/lib/hooks/use-simulation"
 import { Providers } from "@/components/providers"
 import "./globals.css"
 
-const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-const _geistMono = Geist_Mono({
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
 })
@@ -35,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
       <body className="font-sans antialiased min-h-screen bg-grid">
         <Providers>
           <SimulationProvider>
