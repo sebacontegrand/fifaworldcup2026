@@ -2,6 +2,14 @@ import teamsData from "@/data/teams.json"
 import matchesData from "../fifa_2026_group_stage.json"
 
 // ─── Types ───────────────────────────────────────────────────────────
+export type KitPattern = "solid" | "stripes" | "checkered"
+
+export interface KitColors {
+  primary: string
+  secondary: string
+  pattern: KitPattern
+}
+
 export interface Team {
   id: string
   name: string
@@ -14,6 +22,7 @@ export interface Team {
   attackStrength: number
   defenseStrength: number
   eloSigma: number
+  kit: KitColors
   topPlayers: { name: string; position: string; club: string; age: number }[]
   stats: { worldCupAppearances: number; bestFinish: string; recentForm: string }
 }

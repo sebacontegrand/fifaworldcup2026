@@ -35,7 +35,12 @@
     },
     "attackStrength": 0.12,
     "defenseStrength": -0.02,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#006847",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "rsa",
@@ -73,7 +78,12 @@
     },
     "attackStrength": -0.04,
     "defenseStrength": 0.09,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#007A4D",
+      "secondary": "#FFB81C",
+      "pattern": "solid"
+    }
   },
   {
     "id": "kor",
@@ -111,7 +121,12 @@
     },
     "attackStrength": 0.08,
     "defenseStrength": 0.01,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#CC1631",
+      "secondary": "#000000",
+      "pattern": "solid"
+    }
   },
   {
     "id": "can",
@@ -149,7 +164,12 @@
     },
     "attackStrength": 0.01,
     "defenseStrength": 0.05,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#FF0000",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "qat",
@@ -187,7 +207,12 @@
     },
     "attackStrength": -0.04,
     "defenseStrength": 0.07,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#8D1B3D",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "sui",
@@ -225,7 +250,12 @@
     },
     "attackStrength": 0.09,
     "defenseStrength": 0,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#E31620",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "bra",
@@ -263,7 +293,12 @@
     },
     "attackStrength": 0.23,
     "defenseStrength": -0.05,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#fed100",
+      "secondary": "#009b3a",
+      "pattern": "solid"
+    }
   },
   {
     "id": "mar",
@@ -301,7 +336,12 @@
     },
     "attackStrength": 0.16,
     "defenseStrength": 0,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#C1272D",
+      "secondary": "#006233",
+      "pattern": "solid"
+    }
   },
   {
     "id": "hai",
@@ -339,7 +379,12 @@
     },
     "attackStrength": -0.18,
     "defenseStrength": 0.14,
-    "eloSigma": 85
+    "eloSigma": 85,
+    "kit": {
+      "primary": "#00209F",
+      "secondary": "#D21034",
+      "pattern": "solid"
+    }
   },
   {
     "id": "sco",
@@ -377,7 +422,12 @@
     },
     "attackStrength": -0.08,
     "defenseStrength": 0.05,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#004B87",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "usa",
@@ -415,7 +465,12 @@
     },
     "attackStrength": 0.17,
     "defenseStrength": -0.01,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#002868",
+      "pattern": "solid"
+    }
   },
   {
     "id": "par",
@@ -453,7 +508,12 @@
     },
     "attackStrength": -0.05,
     "defenseStrength": 0.07,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#D52B1E",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "aus",
@@ -491,7 +551,12 @@
     },
     "attackStrength": 0.07,
     "defenseStrength": 0.01,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#FFCD00",
+      "secondary": "#008751",
+      "pattern": "solid"
+    }
   },
   {
     "id": "ger",
@@ -529,7 +594,12 @@
     },
     "attackStrength": 0.25,
     "defenseStrength": -0.06,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#000000",
+      "pattern": "solid"
+    }
   },
   {
     "id": "cur",
@@ -567,7 +637,12 @@
     },
     "attackStrength": -0.13,
     "defenseStrength": 0.15,
-    "eloSigma": 85
+    "eloSigma": 85,
+    "kit": {
+      "primary": "#00205B",
+      "secondary": "#FECC00",
+      "pattern": "solid"
+    }
   },
   {
     "id": "civ",
@@ -605,7 +680,12 @@
     },
     "attackStrength": 0.06,
     "defenseStrength": 0.07,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#FF8200",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "ecu",
@@ -643,7 +723,12 @@
     },
     "attackStrength": 0.04,
     "defenseStrength": 0.03,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#FFD100",
+      "secondary": "#0033A0",
+      "pattern": "solid"
+    }
   },
   {
     "id": "ned",
@@ -681,7 +766,12 @@
     },
     "attackStrength": 0.22,
     "defenseStrength": -0.04,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#F36C21",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "jpn",
@@ -719,7 +809,12 @@
     },
     "attackStrength": 0.15,
     "defenseStrength": 0,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#00008B",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "tun",
@@ -757,7 +852,12 @@
     },
     "attackStrength": 0.01,
     "defenseStrength": 0.03,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#E70013",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "bel",
@@ -795,7 +895,12 @@
     },
     "attackStrength": 0.19,
     "defenseStrength": -0.07,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#E4032E",
+      "secondary": "#000000",
+      "pattern": "solid"
+    }
   },
   {
     "id": "egy",
@@ -833,7 +938,12 @@
     },
     "attackStrength": 0.08,
     "defenseStrength": 0.06,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#CE1126",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "irn",
@@ -871,7 +981,12 @@
     },
     "attackStrength": 0.08,
     "defenseStrength": 0,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#DA291C",
+      "pattern": "solid"
+    }
   },
   {
     "id": "nzl",
@@ -909,7 +1024,12 @@
     },
     "attackStrength": -0.18,
     "defenseStrength": 0.16,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#000000",
+      "pattern": "solid"
+    }
   },
   {
     "id": "esp",
@@ -947,7 +1067,12 @@
     },
     "attackStrength": 0.28,
     "defenseStrength": -0.06,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#AA151B",
+      "secondary": "#F1BF00",
+      "pattern": "solid"
+    }
   },
   {
     "id": "cpv",
@@ -985,7 +1110,12 @@
     },
     "attackStrength": -0.07,
     "defenseStrength": 0.11,
-    "eloSigma": 85
+    "eloSigma": 85,
+    "kit": {
+      "primary": "#003893",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "ksa",
@@ -1023,7 +1153,12 @@
     },
     "attackStrength": -0.04,
     "defenseStrength": 0.09,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#006C35",
+      "pattern": "solid"
+    }
   },
   {
     "id": "uru",
@@ -1061,7 +1196,12 @@
     },
     "attackStrength": 0.17,
     "defenseStrength": -0.01,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#75AADB",
+      "secondary": "#000000",
+      "pattern": "solid"
+    }
   },
   {
     "id": "fra",
@@ -1099,7 +1239,12 @@
     },
     "attackStrength": 0.28,
     "defenseStrength": -0.08,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#002395",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "sen",
@@ -1137,7 +1282,12 @@
     },
     "attackStrength": 0.1,
     "defenseStrength": -0.01,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#00853F",
+      "pattern": "solid"
+    }
   },
   {
     "id": "nor",
@@ -1175,7 +1325,12 @@
     },
     "attackStrength": 0.03,
     "defenseStrength": 0.09,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#EF2B2D",
+      "secondary": "#00205B",
+      "pattern": "solid"
+    }
   },
   {
     "id": "arg",
@@ -1213,7 +1368,12 @@
     },
     "attackStrength": 0.24,
     "defenseStrength": -0.06,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#74ACDF",
+      "secondary": "#FFFFFF",
+      "pattern": "stripes"
+    }
   },
   {
     "id": "alg",
@@ -1251,7 +1411,12 @@
     },
     "attackStrength": 0.03,
     "defenseStrength": 0.04,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#006233",
+      "pattern": "solid"
+    }
   },
   {
     "id": "aut",
@@ -1289,7 +1454,12 @@
     },
     "attackStrength": 0.08,
     "defenseStrength": 0.01,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#ED2939",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "jor",
@@ -1327,7 +1497,12 @@
     },
     "attackStrength": -0.09,
     "defenseStrength": 0.12,
-    "eloSigma": 85
+    "eloSigma": 85,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#CE1126",
+      "pattern": "solid"
+    }
   },
   {
     "id": "por",
@@ -1365,7 +1540,12 @@
     },
     "attackStrength": 0.21,
     "defenseStrength": -0.04,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#E42518",
+      "secondary": "#006600",
+      "pattern": "solid"
+    }
   },
   {
     "id": "uzb",
@@ -1403,7 +1583,12 @@
     },
     "attackStrength": -0.07,
     "defenseStrength": 0.11,
-    "eloSigma": 85
+    "eloSigma": 85,
+    "kit": {
+      "primary": "#003580",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "col",
@@ -1441,7 +1626,12 @@
     },
     "attackStrength": 0.2,
     "defenseStrength": -0.01,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#FCD116",
+      "secondary": "#003893",
+      "pattern": "solid"
+    }
   },
   {
     "id": "eng",
@@ -1479,7 +1669,12 @@
     },
     "attackStrength": 0.24,
     "defenseStrength": -0.06,
-    "eloSigma": 40
+    "eloSigma": 40,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#000040",
+      "pattern": "solid"
+    }
   },
   {
     "id": "cro",
@@ -1517,7 +1712,12 @@
     },
     "attackStrength": 0.12,
     "defenseStrength": -0.03,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#FF0000",
+      "pattern": "checkered"
+    }
   },
   {
     "id": "gha",
@@ -1555,7 +1755,12 @@
     },
     "attackStrength": -0.01,
     "defenseStrength": 0.07,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#000000",
+      "pattern": "solid"
+    }
   },
   {
     "id": "pan",
@@ -1593,7 +1798,12 @@
     },
     "attackStrength": -0.07,
     "defenseStrength": 0.09,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#DA121A",
+      "secondary": "#00247D",
+      "pattern": "solid"
+    }
   },
   {
     "id": "cze",
@@ -1605,9 +1815,24 @@
     "confederation": "UEFA",
     "eloRating": 1650,
     "topPlayers": [
-      { "name": "Patrik Schick", "position": "FW", "club": "Bayer Leverkusen", "age": 30 },
-      { "name": "Tomas Soucek", "position": "MF", "club": "West Ham United", "age": 31 },
-      { "name": "Vladimir Coufal", "position": "DF", "club": "West Ham United", "age": 33 }
+      {
+        "name": "Patrik Schick",
+        "position": "FW",
+        "club": "Bayer Leverkusen",
+        "age": 30
+      },
+      {
+        "name": "Tomas Soucek",
+        "position": "MF",
+        "club": "West Ham United",
+        "age": 31
+      },
+      {
+        "name": "Vladimir Coufal",
+        "position": "DF",
+        "club": "West Ham United",
+        "age": 33
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
@@ -1616,7 +1841,12 @@
     },
     "attackStrength": 0.08,
     "defenseStrength": 0.02,
-    "eloSigma": 50
+    "eloSigma": 50,
+    "kit": {
+      "primary": "#D7141A",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "bih",
@@ -1628,9 +1858,24 @@
     "confederation": "UEFA",
     "eloRating": 1505,
     "topPlayers": [
-      { "name": "Edin Dzeko", "position": "FW", "club": "Fenerbahce", "age": 40 },
-      { "name": "Miralem Pjanic", "position": "MF", "club": "Sharjah FC", "age": 36 },
-      { "name": "Sead Kolasinac", "position": "DF", "club": "Atalanta", "age": 32 }
+      {
+        "name": "Edin Dzeko",
+        "position": "FW",
+        "club": "Fenerbahce",
+        "age": 40
+      },
+      {
+        "name": "Miralem Pjanic",
+        "position": "MF",
+        "club": "Sharjah FC",
+        "age": 36
+      },
+      {
+        "name": "Sead Kolasinac",
+        "position": "DF",
+        "club": "Atalanta",
+        "age": 32
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
@@ -1639,7 +1884,12 @@
     },
     "attackStrength": 0.02,
     "defenseStrength": 0.06,
-    "eloSigma": 65
+    "eloSigma": 65,
+    "kit": {
+      "primary": "#002395",
+      "secondary": "#FFCC00",
+      "pattern": "solid"
+    }
   },
   {
     "id": "tur",
@@ -1651,9 +1901,24 @@
     "confederation": "UEFA",
     "eloRating": 1630,
     "topPlayers": [
-      { "name": "Hakan Calhanoglu", "position": "MF", "club": "Inter Milan", "age": 32 },
-      { "name": "Cengiz Under", "position": "FW", "club": "Fenerbahce", "age": 28 },
-      { "name": "Merih Demiral", "position": "DF", "club": "Al-Ahli", "age": 28 }
+      {
+        "name": "Hakan Calhanoglu",
+        "position": "MF",
+        "club": "Inter Milan",
+        "age": 32
+      },
+      {
+        "name": "Cengiz Under",
+        "position": "FW",
+        "club": "Fenerbahce",
+        "age": 28
+      },
+      {
+        "name": "Merih Demiral",
+        "position": "DF",
+        "club": "Al-Ahli",
+        "age": 28
+      }
     ],
     "stats": {
       "worldCupAppearances": 2,
@@ -1662,7 +1927,12 @@
     },
     "attackStrength": 0.11,
     "defenseStrength": 0.04,
-    "eloSigma": 55
+    "eloSigma": 55,
+    "kit": {
+      "primary": "#E30A17",
+      "secondary": "#FFFFFF",
+      "pattern": "solid"
+    }
   },
   {
     "id": "swe",
@@ -1674,9 +1944,24 @@
     "confederation": "UEFA",
     "eloRating": 1710,
     "topPlayers": [
-      { "name": "Alexander Isak", "position": "FW", "club": "Newcastle United", "age": 27 },
-      { "name": "Dejan Kulusevski", "position": "MF", "club": "Tottenham Hotspur", "age": 26 },
-      { "name": "Victor Lindelof", "position": "DF", "club": "Manchester United", "age": 31 }
+      {
+        "name": "Alexander Isak",
+        "position": "FW",
+        "club": "Newcastle United",
+        "age": 27
+      },
+      {
+        "name": "Dejan Kulusevski",
+        "position": "MF",
+        "club": "Tottenham Hotspur",
+        "age": 26
+      },
+      {
+        "name": "Victor Lindelof",
+        "position": "DF",
+        "club": "Manchester United",
+        "age": 31
+      }
     ],
     "stats": {
       "worldCupAppearances": 12,
@@ -1685,7 +1970,12 @@
     },
     "attackStrength": 0.13,
     "defenseStrength": 0.05,
-    "eloSigma": 45
+    "eloSigma": 45,
+    "kit": {
+      "primary": "#FFE800",
+      "secondary": "#005BAC",
+      "pattern": "solid"
+    }
   },
   {
     "id": "irq",
@@ -1697,9 +1987,24 @@
     "confederation": "AFC",
     "eloRating": 1420,
     "topPlayers": [
-      { "name": "Aymen Hussein", "position": "FW", "club": "Al-Quwa Al-Jawiya", "age": 30 },
-      { "name": "Ali Adnan", "position": "DF", "club": "Al Shorta", "age": 32 },
-      { "name": "Safaa Hadi", "position": "MF", "club": "Al-Zawraa", "age": 27 }
+      {
+        "name": "Aymen Hussein",
+        "position": "FW",
+        "club": "Al-Quwa Al-Jawiya",
+        "age": 30
+      },
+      {
+        "name": "Ali Adnan",
+        "position": "DF",
+        "club": "Al Shorta",
+        "age": 32
+      },
+      {
+        "name": "Safaa Hadi",
+        "position": "MF",
+        "club": "Al-Zawraa",
+        "age": 27
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
@@ -1707,8 +2012,13 @@
       "recentForm": "WDLWL"
     },
     "attackStrength": -0.03,
-    "defenseStrength": 0.10,
-    "eloSigma": 70
+    "defenseStrength": 0.1,
+    "eloSigma": 70,
+    "kit": {
+      "primary": "#FFFFFF",
+      "secondary": "#007A33",
+      "pattern": "solid"
+    }
   },
   {
     "id": "cod",
@@ -1720,9 +2030,24 @@
     "confederation": "CAF",
     "eloRating": 1480,
     "topPlayers": [
-      { "name": "Cedric Bakambu", "position": "FW", "club": "Galatasaray", "age": 35 },
-      { "name": "Yoane Wissa", "position": "FW", "club": "Brentford", "age": 30 },
-      { "name": "Chancel Mbemba", "position": "DF", "club": "Marseille", "age": 31 }
+      {
+        "name": "Cedric Bakambu",
+        "position": "FW",
+        "club": "Galatasaray",
+        "age": 35
+      },
+      {
+        "name": "Yoane Wissa",
+        "position": "FW",
+        "club": "Brentford",
+        "age": 30
+      },
+      {
+        "name": "Chancel Mbemba",
+        "position": "DF",
+        "club": "Marseille",
+        "age": 31
+      }
     ],
     "stats": {
       "worldCupAppearances": 1,
@@ -1731,6 +2056,11 @@
     },
     "attackStrength": 0.01,
     "defenseStrength": 0.08,
-    "eloSigma": 68
+    "eloSigma": 68,
+    "kit": {
+      "primary": "#007FFF",
+      "secondary": "#F7D618",
+      "pattern": "solid"
+    }
   }
 ]
