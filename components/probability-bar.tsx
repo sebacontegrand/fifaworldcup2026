@@ -58,11 +58,13 @@ export function ProbabilityBar({
   )
 }
 
+import type { ReactNode } from "react"
+
 interface MatchProbabilityBarProps {
   teamAName: string
   teamBName: string
-  teamAFlag: string
-  teamBFlag: string
+  teamAFlag: ReactNode
+  teamBFlag: ReactNode
   winA: number
   draw: number
   winB: number

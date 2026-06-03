@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useSimulation } from "@/lib/hooks/use-simulation"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import teamsData from "@/data/teams.json"
 import type { Team } from "@/lib/simulation"
 import { cn } from "@/lib/utils"
@@ -135,7 +136,7 @@ export default function GroupsPage() {
                           >
                             {idx + 1}
                           </span>
-                          <span className="text-base">{team.flag}</span>
+                          <img src={getFlagImageUrl(team.id, 24)} alt={team.code} className="h-5 w-5 object-contain" />
                           <span className="flex-1 text-sm font-semibold text-card-foreground">
                             {team.name}
                           </span>

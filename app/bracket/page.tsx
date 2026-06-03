@@ -3,6 +3,7 @@
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { BracketView } from "@/components/bracket-view"
 import { SimulationAnalytics } from "@/components/simulation-analytics"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import teamsData from "@/data/teams.json"
@@ -71,7 +72,7 @@ function GroupTable({
                                     </td>
                                     <td className="py-1 px-2">
                                         <div className="flex items-center gap-1.5">
-                                            <span className="text-xs">{team?.flag}</span>
+                                            {team && <img src={getFlagImageUrl(team.id, 20)} alt={team.code} className="h-4 w-4 object-contain" />}
                                             <span
                                                 className={
                                                     qualifies
@@ -138,11 +139,11 @@ function GroupTable({
                                     <span className="flex-1 text-right">
                                         {tA?.code || m.teamA}
                                     </span>
-                                    <span className="text-[9px]">{tA?.flag}</span>
+                                    {tA && <img src={getFlagImageUrl(tA.id, 16)} alt={tA.code} className="h-3.5 w-3.5 object-contain" />}
                                     <span className="font-mono font-bold text-white/70 px-1">
                                         {m.scoreA} - {m.scoreB}
                                     </span>
-                                    <span className="text-[9px]">{tB?.flag}</span>
+                                    {tB && <img src={getFlagImageUrl(tB.id, 16)} alt={tB.code} className="h-3.5 w-3.5 object-contain" />}
                                     <span className="flex-1">
                                         {tB?.code || m.teamB}
                                     </span>

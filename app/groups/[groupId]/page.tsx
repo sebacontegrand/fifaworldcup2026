@@ -3,6 +3,7 @@
 import { use } from "react"
 import { notFound } from "next/navigation"
 import { useSimulation } from "@/lib/hooks/use-simulation"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import teamsData from "@/data/teams.json"
 import type { Team } from "@/lib/simulation"
 import { getMatchupKey } from "@/lib/simulation"
@@ -100,8 +101,8 @@ export default function GroupDetailPage({
                       <MatchProbabilityBar
                         teamAName={tA.name}
                         teamBName={tB.name}
-                        teamAFlag={tA.flag}
-                        teamBFlag={tB.flag}
+                        teamAFlag={<img src={getFlagImageUrl(tA.id, 20)} alt="" className="h-4 w-4 object-contain inline" />}
+                        teamBFlag={<img src={getFlagImageUrl(tB.id, 20)} alt="" className="h-4 w-4 object-contain inline" />}
                         winA={prob.winA}
                         draw={prob.draw}
                         winB={prob.winB}
@@ -127,7 +128,7 @@ export default function GroupDetailPage({
                   >
                     <StageProbabilityChart
                       probability={result.teamProbabilities[team.id]}
-                      teamName={`${team.flag} ${team.name}`}
+                      teamLabel={<><img src={getFlagImageUrl(team.id, 20)} alt="" className="h-4 w-4 object-contain inline align-text-bottom mr-1" />{team.name}</>}
                     />
                   </div>
                 ) : null

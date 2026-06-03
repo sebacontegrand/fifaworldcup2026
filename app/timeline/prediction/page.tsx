@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { useSimulation } from "@/lib/hooks/use-simulation"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import { getTeam, type Team } from "@/lib/simulation"
 import { TeamSelector } from "@/components/team-selector"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -49,7 +50,7 @@ export default function PredictionPage() {
                     "flex h-12 w-12 items-center justify-center rounded-lg border border-white/10 bg-zinc-900 group-hover:scale-110 transition-transform",
                     team ? "text-2xl" : "text-white/20"
                 )}>
-                    {team ? team.flag : <Users className="h-6 w-6" />}
+                    {                    team ? <img src={getFlagImageUrl(team.id, 32)} alt="" className="h-8 w-8 object-contain" /> : <Users className="h-6 w-6" />}
                 </div>
                 <div className="flex-1">
                     <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{label}</div>

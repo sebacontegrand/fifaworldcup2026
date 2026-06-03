@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react"
 import { useSession } from "next-auth/react"
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { getScheduleByDay, getMatchKickoff, isMatchLocked, getCountdown, type ScheduleMatch } from "@/lib/schedule"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -338,7 +339,7 @@ export default function LiveResultsPage() {
         {/* Score Row */}
         <div className={cn("flex items-center justify-between px-3 py-2.5", isSet ? "bg-green-500/5" : "")}>
           <div className="flex items-center gap-2 w-[90px] sm:w-[130px]">
-            {fixture.homeTeamFlag && <span className="text-lg sm:text-xl">{fixture.homeTeamFlag}</span>}
+            {fixture.homeTeamId && <img src={getFlagImageUrl(fixture.homeTeamId, 28)} alt="" className="h-6 w-6 object-contain" />}
             <span className="text-xs sm:text-sm font-bold truncate">{fixture.homeTeam}</span>
           </div>
 
@@ -365,7 +366,7 @@ export default function LiveResultsPage() {
 
           <div className="flex items-center justify-end gap-1 sm:gap-2 w-[90px] sm:w-[130px]">
             <span className="text-xs sm:text-sm font-bold truncate text-right">{fixture.awayTeam}</span>
-            {fixture.awayTeamFlag && <span className="text-lg sm:text-xl">{fixture.awayTeamFlag}</span>}
+            {fixture.awayTeamId && <img src={getFlagImageUrl(fixture.awayTeamId, 28)} alt="" className="h-6 w-6 object-contain" />}
             {isSet && !matchDTO?.isFact && fixture.homeTeamId && fixture.awayTeamId && (
               <Button variant="ghost" size="icon" onClick={() => handleClearResult(fixture.homeTeamId!, fixture.awayTeamId!)} className="h-5 w-5 text-white/20 hover:text-red-400">
                 <RotateCcw className="h-2.5 w-2.5" />
@@ -396,7 +397,7 @@ export default function LiveResultsPage() {
                         !isNaN(parseInt(gInputs.scoreA)) && !isNaN(parseInt(gInputs.scoreB)) && parseInt(gInputs.scoreA) > parseInt(gInputs.scoreB)
                           ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
                           : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50")}>
-                      {fixture.homeTeamFlag} {fixture.homeTeam}
+                      {fixture.homeTeamId && <img src={getFlagImageUrl(fixture.homeTeamId, 20)} alt="" className="h-4 w-4 object-contain inline mr-1" />}{fixture.homeTeam}
                     </button>
                     <span className="text-white/20 text-xs">vs</span>
                     <button onClick={() => handleQuickPick(guessKey, false)}
@@ -404,7 +405,7 @@ export default function LiveResultsPage() {
                         !isNaN(parseInt(gInputs.scoreA)) && !isNaN(parseInt(gInputs.scoreB)) && parseInt(gInputs.scoreB) > parseInt(gInputs.scoreA)
                           ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
                           : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50")}>
-                      {fixture.awayTeamFlag} {fixture.awayTeam}
+                      {fixture.awayTeamId && <img src={getFlagImageUrl(fixture.awayTeamId, 20)} alt="" className="h-4 w-4 object-contain inline mr-1" />}{fixture.awayTeam}
                     </button>
                     {savingGuess === guessKey && <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />}
                   </div>
@@ -607,7 +608,7 @@ export default function LiveResultsPage() {
                             <div key={s.teamId} className="flex items-center justify-between text-[10px] overflow-hidden">
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <span className="text-white/20 w-2.5 text-[9px] shrink-0">{idx + 1}</span>
-                                <span className="text-xs shrink-0">{team?.flag}</span>
+                                {team && <img src={getFlagImageUrl(s.teamId, 20)} alt="" className="h-4 w-4 object-contain shrink-0" />}
                                 <span className={cn("truncate", idx < 2 ? "text-white font-medium" : "text-white/40")}>{team?.name}</span>
                               </div>
                               <div className="flex gap-2 font-mono">
@@ -750,13 +751,5 @@ for (const team of teamsData as { id: string; name: string; flag: string }[]) {
   groupTeamsMap[team.id] = team
 }
 
-const teamFlagMap: Record<string, string> = {}
-for (const team of teamsData as { name: string; flag: string }[]) {
-  teamFlagMap[team.name.toLowerCase().trim()] = team.flag
-}
 
-function getFlag(teamName: string | null): string {
-  if (!teamName) return "🏳️"
-  return teamFlagMap[teamName.toLowerCase().trim()] || "🏳️"
-}
 

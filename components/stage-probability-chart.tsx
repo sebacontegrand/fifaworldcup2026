@@ -9,12 +9,13 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts"
+import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import type { TeamProbability } from "@/lib/simulation"
 
 interface StageProbabilityChartProps {
   probability: TeamProbability
-  teamName: string
+  teamLabel: ReactNode
   className?: string
 }
 
@@ -41,7 +42,7 @@ const barColors = [
 
 export function StageProbabilityChart({
   probability,
-  teamName,
+  teamLabel,
   className,
 }: StageProbabilityChartProps) {
   const data = stages.map((stage, i) => ({
@@ -53,7 +54,7 @@ export function StageProbabilityChart({
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-        {teamName} - Stage Probability
+        {teamLabel} - Stage Probability
       </h3>
       <div className="h-48 w-full">
         <ResponsiveContainer width="100%" height="100%">

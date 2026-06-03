@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { useSimulation } from "@/lib/hooks/use-simulation"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import { getTeam, type TacticalStyle } from "@/lib/simulation"
 import { TeamSelector } from "@/components/team-selector"
 import { Label } from "@/components/ui/label"
@@ -85,7 +86,7 @@ export function SimulationControls() {
                         {selectedTeam && teamSettings && (
                             <div className="pt-6 border-t border-white/5 space-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
                                 <div className="flex items-center gap-3">
-                                    <span className="text-2xl">{selectedTeam.flag}</span>
+                                    <img src={getFlagImageUrl(selectedTeam.id, 40)} alt={selectedTeam.code} className="h-8 w-8 object-contain" />
                                     <div>
                                         <h3 className="font-bold text-white">{selectedTeam.name}</h3>
                                         <Badge variant="outline" className="text-[10px] uppercase border-white/10">Group {selectedTeam.group}</Badge>

@@ -23,6 +23,12 @@ const FIFA_TO_ISO: Record<string, string> = {
   CZE: "cz", BIH: "ba", TUR: "tr", SWE: "se", IRQ: "iq", COD: "cd",
 }
 
+export function getFlagImageUrlByCode(code: string, size: number = 64): string {
+  const iso = FIFA_TO_ISO[code]
+  if (!iso) return ""
+  return `https://flagcdn.com/w${size}/${iso}.png`
+}
+
 export function getFlagImageUrl(teamId: string, size: number = 64): string {
   const team = (teamsData as { id: string; code: string }[]).find((t) => t.id === teamId)
   if (!team) return ""

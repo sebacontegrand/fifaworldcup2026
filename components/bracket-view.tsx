@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import type { KnockoutRound, Team } from "@/lib/simulation"
 
 interface BracketViewProps {
@@ -31,7 +32,7 @@ function TeamRow({
           : "hover:bg-white/5"
       )}
     >
-      <span className="text-sm flex-shrink-0">{team?.flag || "🏳️"}</span>
+      {team ? <img src={getFlagImageUrl(team.id, 20)} alt={team.code} className="h-4 w-4 object-contain flex-shrink-0" /> : <span className="text-sm flex-shrink-0">🏳️</span>}
       <span
         className={cn(
           "text-[11px] font-bold flex-1 truncate",
@@ -202,9 +203,11 @@ export function BracketView({
 
               return (
                 <div className="flex flex-col items-center gap-2 rounded-xl border-2 border-gold/40 bg-gradient-to-b from-gold/10 to-gold/5 p-5 shadow-lg shadow-gold/10">
-                  <span className="text-5xl drop-shadow-lg">
-                    {champion?.flag || "🏳️"}
-                  </span>
+                  {champion ? (
+                    <img src={getFlagImageUrl(champion.id, 80)} alt={champion.code} className="h-16 w-16 object-contain drop-shadow-lg" />
+                  ) : (
+                    <span className="text-5xl drop-shadow-lg">🏳️</span>
+                  )}
                   <span className="text-sm font-black uppercase tracking-wider text-gold text-glow-gold text-center">
                     {champion?.name || "TBD"}
                   </span>

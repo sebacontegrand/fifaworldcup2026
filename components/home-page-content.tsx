@@ -2,6 +2,7 @@
 
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { useMyTeam } from "@/lib/hooks/use-my-team"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import teamsData from "@/data/teams.json"
 import type { Team } from "@/lib/simulation"
 import { TeamCard } from "@/components/team-card"
@@ -260,7 +261,7 @@ export function HomePageContent() {
                                 href="/my-team"
                                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold uppercase text-primary-foreground transition-all hover:bg-primary/90"
                             >
-                                <span>{teamMap[selectedTeam].flag}</span>
+                                <img src={getFlagImageUrl(selectedTeam, 24)} alt="" className="h-5 w-5 object-contain" />
                                 Track {teamMap[selectedTeam].code}
                             </Link>
                         )}

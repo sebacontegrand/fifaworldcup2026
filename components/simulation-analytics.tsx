@@ -3,6 +3,7 @@
 import React from "react";
 import { useSimulation } from "@/lib/hooks/use-simulation";
 import { MonochromeBarChart } from "@/components/charts/monochrome-bar-chart";
+import { getFlagImageUrl } from "@/lib/team-flags";
 import { getTeam } from "@/lib/simulation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Trophy, Zap, Target, Activity, Gauge } from "lucide-react";
@@ -120,12 +121,12 @@ export function SimulationAnalytics() {
                                             className="flex items-center justify-between bg-white/5 rounded-md px-3 py-2 border border-white/5"
                                         >
                                             <div className="flex items-center gap-2">
-                                                <span className="text-sm">{underdog?.flag}</span>
+                                                {underdog && <img src={getFlagImageUrl(underdog.id, 24)} alt="" className="h-4 w-4 object-contain" />}
                                                 <span className="text-xs font-medium text-white">
                                                     {underdog?.name}
                                                 </span>
                                                 <span className="text-[10px] text-white/30">beats</span>
-                                                <span className="text-sm">{favorite?.flag}</span>
+                                                {favorite && <img src={getFlagImageUrl(favorite.id, 24)} alt="" className="h-4 w-4 object-contain" />}
                                                 <span className="text-xs text-white/60">{favorite?.name}</span>
                                             </div>
                                             <div className="flex items-center gap-2">
@@ -163,7 +164,7 @@ export function SimulationAnalytics() {
                                     key={t.teamId}
                                     className="flex items-center gap-2 bg-white/5 rounded-full px-3 py-1.5 border border-white/5"
                                 >
-                                    <span className="text-sm">{team?.flag}</span>
+                                    {team && <img src={getFlagImageUrl(team.id, 24)} alt="" className="h-4 w-4 object-contain" />}
                                     <span className="text-xs font-medium text-white">{team?.name}</span>
                                     <span className="text-[10px] font-mono text-teal-400">σ={t.sigma}</span>
                                 </div>

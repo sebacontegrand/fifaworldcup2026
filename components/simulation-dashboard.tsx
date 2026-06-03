@@ -2,6 +2,8 @@
 
 import React, { useState, useCallback, useEffect, useRef } from "react"
 import { useSimulation } from "@/lib/hooks/use-simulation"
+import { getFlagImageUrl } from "@/lib/team-flags"
+import teamsData from "@/data/teams.json"
 import {
     runFullSimulation,
     getTeam,
@@ -9,7 +11,6 @@ import {
     type TacticalStyle,
     type SimulationResult,
 } from "@/lib/simulation"
-import teamsData from "@/data/teams.json"
 import { TeamSelector } from "@/components/team-selector"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
@@ -439,7 +440,7 @@ export function SimulationDashboard() {
                                 <div className="space-y-5 p-4 rounded-xl bg-white/5 border border-white/10">
                                     {/* Team header */}
                                     <div className="flex items-center gap-3">
-                                        <span className="text-3xl">{selectedTeam.flag}</span>
+                                        <img src={getFlagImageUrl(selectedTeam.id, 40)} alt={selectedTeam.code} className="h-8 w-8 object-contain" />
                                         <div>
                                             <h3 className="font-bold text-white">
                                                 {selectedTeam.name}

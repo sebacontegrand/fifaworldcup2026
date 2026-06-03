@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { getFlagImageUrl } from "@/lib/team-flags"
 import teamsData from "@/data/teams.json"
 import type { Team } from "@/lib/simulation"
 
@@ -56,7 +57,7 @@ export function TeamSelector({
                     : "border-border/50 bg-card text-card-foreground hover:border-primary/30 hover:bg-secondary"
                 )}
               >
-                <span className="text-base">{team.flag}</span>
+                <img src={getFlagImageUrl(team.id, 24)} alt={team.code} className="h-5 w-5 object-contain" />
                 <div className="flex flex-col">
                   <span className="text-xs font-semibold">{team.name}</span>
                   <span className="text-[9px] text-muted-foreground">

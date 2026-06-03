@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { getFlagByCode } from "@/lib/team-flags"
+import { getFlagImageUrlByCode } from "@/lib/team-flags"
 
 interface Player {
   rank: number
@@ -45,7 +45,8 @@ export function PlayerCard({ player, className }: PlayerCardProps) {
               {player.name}
             </span>
             <span className="text-xs text-muted-foreground">
-              {getFlagByCode(player.nationalTeamCode)} {player.nationality}
+              <img src={getFlagImageUrlByCode(player.nationalTeamCode, 16)} alt="" className="inline h-3.5 w-3.5 object-contain align-text-bottom mr-0.5" />
+              {player.nationality}
             </span>
             <span className="text-xs text-muted-foreground">{player.club}</span>
           </div>
