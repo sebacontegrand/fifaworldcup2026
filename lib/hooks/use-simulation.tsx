@@ -3,6 +3,47 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react"
 import { runFullSimulation, type SimulationResult, type SimulationConfig, type TeamSimulationConfig, type TournamentState, type MatchOverride } from "@/lib/simulation"
 
+interface FactMatch {
+  teamAId: string | null
+  teamBId: string | null
+  scoreA: number | null
+  scoreB: number | null
+  isFact: boolean
+}
+
+async function mergeFactResultsWithOverrides(
+  tournamentState: TournamentState
+): Promise<TournamentState> {
+  try {
+    const res = await fetch("/api/matches")
+    const matches: FactMatch[] = await res.json()
+    const factOverrides: Record<string, MatchOverride> = {}
+
+    for (const match of matches) {
+      if (match.isFact && match.teamAId && match.teamBId && match.scoreA !== null && match.scoreB !== null) {
+        const key = `${match.teamAId}_${match.teamBId}`
+        factOverrides[key] = {
+          scoreA: match.scoreA,
+          scoreB: match.scoreB,
+          winnerId:
+            match.scoreA > match.scoreB
+              ? match.teamAId
+              : match.scoreB > match.scoreA
+                ? match.teamBId
+                : undefined,
+        }
+      }
+    }
+
+    return {
+      ...tournamentState,
+      matchOverrides: { ...factOverrides, ...tournamentState.matchOverrides },
+    }
+  } catch {
+    return tournamentState
+  }
+}
+
 const INITIAL_CONFIG: SimulationConfig = {
   teamSettings: {},
   globalSettings: {
@@ -52,21 +93,36 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
 
   // Load from DB on mount
   useEffect(() => {
+    let cancelled = false
+
     fetch("/api/simulation/config")
       .then(r => r.json())
-      .then(data => {
+      .then(async data => {
+        if (cancelled) return
+
+        let newConfig = INITIAL_CONFIG
         if (data.config && Object.keys(data.config).length > 0) {
-          setConfig({ ...INITIAL_CONFIG, ...data.config, teamSettings: { ...INITIAL_CONFIG.teamSettings, ...data.config.teamSettings } })
+          newConfig = { ...INITIAL_CONFIG, ...data.config, teamSettings: { ...INITIAL_CONFIG.teamSettings, ...data.config.teamSettings } }
         }
+        setConfig(newConfig)
+
+        let newState = INITIAL_TOURNAMENT_STATE
         if (data.tournamentState && Object.keys(data.tournamentState).length > 0) {
-          setTournamentState({ ...INITIAL_TOURNAMENT_STATE, ...data.tournamentState, matchOverrides: { ...data.tournamentState.matchOverrides } })
+          newState = { ...INITIAL_TOURNAMENT_STATE, ...data.tournamentState, matchOverrides: { ...data.tournamentState.matchOverrides } }
         }
+
+        // Merge fact results from DB into match overrides
+        const mergedState = await mergeFactResultsWithOverrides(newState)
+        if (!cancelled) setTournamentState(mergedState)
+
         if (data.currentTournamentDate) {
           setCurrentTournamentDate(data.currentTournamentDate)
         }
         loaded.current = true
       })
       .catch(() => { loaded.current = true })
+
+    return () => { cancelled = true }
   }, [])
 
   // Auto-save to DB when config or tournamentState changes (debounced)
@@ -86,12 +142,18 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const simulate = useCallback(() => {
     setIsRunning(true)
 
-    // Use setTimeout to allow the UI to update with loading state before heavy calculation
-    setTimeout(() => {
-      const simResult = runFullSimulation(config, tournamentState)
-      setResult(simResult)
-      setIsRunning(false)
-    }, 100)
+    // Merge latest fact results from DB, then run simulation
+    ;(async () => {
+      const mergedState = await mergeFactResultsWithOverrides(tournamentState)
+      setTournamentState(mergedState)
+
+      // Use setTimeout to allow the UI to update with loading state before heavy calculation
+      setTimeout(() => {
+        const simResult = runFullSimulation(config, mergedState)
+        setResult(simResult)
+        setIsRunning(false)
+      }, 100)
+    })()
   }, [config, tournamentState])
 
   const updateTeamConfig = useCallback((teamId: string, settings: Partial<TeamSimulationConfig>) => {
