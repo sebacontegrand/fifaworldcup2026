@@ -1,5 +1,14 @@
 import teamsData from "@/data/teams.json"
 import matchesData from "../fifa_2026_group_stage.json"
+import {
+  assignThirdPlacedToSlots,
+  buildBracketSeeding,
+  computeThirdPlaceAdvancing,
+  getKnockoutRoundDefs,
+  getKnockoutRoundNames,
+  getKnockoutResultKeys,
+  resolveSourceFromWinners,
+} from "./bracket-seeding"
 
 // ─── Types ───────────────────────────────────────────────────────────
 export type KitPattern = "solid" | "stripes" | "checkered"
@@ -207,6 +216,8 @@ export interface SimulationResult {
   teamProbabilities: Record<string, TeamProbability>
   matchupProbabilities: Record<string, MatchupProbability>
   extendedMetrics: ExtendedMetrics
+  bracketSeeding: { matchId: number; round: string; teamA: string | null; teamB: string | null }[]
+  advancingIds: string[]
 }
 
 // ─── Bayesian Elo System ─────────────────────────────────────────────
@@ -984,46 +995,50 @@ function simulateKnockout(
     results[id] = is32TeamFormat ? "roundOf16" : "roundOf32"
   }
 
-  let currentRound = [...advancingIds]
+  // ── Build proper FIFA 2026 bracket seeding ──
+  const thirdPlaceAdvancing = computeThirdPlaceAdvancing(standings)
+  const thirdPlaceAssignments = assignThirdPlacedToSlots(thirdPlaceAdvancing)
+  const bracketSeeding = buildBracketSeeding(standings, advancingIds, thirdPlaceAssignments)
+
+  // seedingMap: matchId → { teamA, teamB } for R32
+  const seedingMap: Record<number, { teamA: string | null; teamB: string | null }> = {}
+  for (const slot of bracketSeeding) {
+    seedingMap[slot.matchId] = { teamA: slot.teamA, teamB: slot.teamB }
+  }
+
+  // Track winners from each match
+  const matchWinners: Record<number, string> = {}
+
+  const roundDefs = getKnockoutRoundDefs(is32TeamFormat)
+  const roundNames = getKnockoutRoundNames(is32TeamFormat)
+  const resultKeys = getKnockoutResultKeys(is32TeamFormat)
 
   const rounds: KnockoutRound[] = []
-  const roundNames = is32TeamFormat
-    ? [
-        "Round of 16",
-        "Quarter-Finals",
-        "Semi-Finals",
-        "Final",
-      ]
-    : [
-        "Round of 32",
-        "Round of 16",
-        "Quarter-Finals",
-        "Semi-Finals",
-        "Final",
-      ]
-  const resultKeys = is32TeamFormat
-    ? [
-        "quarterFinal",
-        "semiFinal",
-        "final",
-        "champion",
-      ]
-    : [
-        "roundOf16",
-        "quarterFinal",
-        "semiFinal",
-        "final",
-        "champion",
-      ]
 
-  for (let r = 0; r < roundNames.length; r++) {
+  for (let r = 0; r < roundDefs.length; r++) {
     const matches: KnockoutMatch[] = []
-    const nextRound: string[] = []
 
-    for (let i = 0; i < currentRound.length; i += 2) {
-      if (i + 1 < currentRound.length) {
-        const teamA = teamMap[currentRound[i]]
-        const teamB = teamMap[currentRound[i + 1]]
+    for (let m = 0; m < roundDefs[r].length; m++) {
+      const slot = roundDefs[r][m]
+      let teamAId: string | null = null
+      let teamBId: string | null = null
+
+      if (r === 0) {
+        // First knockout round: use bracket seeding
+        const seeded = seedingMap[slot.matchId]
+        if (seeded) {
+          teamAId = seeded.teamA
+          teamBId = seeded.teamB
+        }
+      } else {
+        // Later rounds: resolve from previous round winners
+        teamAId = resolveSourceFromWinners(slot.sourceA, matchWinners)
+        teamBId = resolveSourceFromWinners(slot.sourceB, matchWinners)
+      }
+
+      if (teamAId && teamBId) {
+        const teamA = teamMap[teamAId]
+        const teamB = teamMap[teamBId]
 
         if (teamA && teamB) {
           // Check for overrides
@@ -1051,6 +1066,7 @@ function simulateKnockout(
 
           let winnerId = result.winner || (result.scoreA > result.scoreB ? teamA.id : teamB.id)
 
+          matchWinners[slot.matchId] = winnerId
           totalKnockoutMatches++
           if (result.wentToPenalties) penaltyCount++
 
@@ -1065,15 +1081,14 @@ function simulateKnockout(
 
           // Handle Stage Anchors
           const anchors = tournamentState?.stageAnchors
-          const currentRoundIndex = r
 
-          const aAnchoredToNext = anchors?.semifinals.includes(teamA.id) && currentRoundIndex < 3 ||
-            anchors?.finals.includes(teamA.id) && currentRoundIndex < 4 ||
-            anchors?.champion === teamA.id && currentRoundIndex < 5
+          const aAnchoredToNext = anchors?.semifinals.includes(teamA.id) && r < 3 ||
+            anchors?.finals.includes(teamA.id) && r < 4 ||
+            anchors?.champion === teamA.id && r < 5
 
-          const bAnchoredToNext = anchors?.semifinals.includes(teamB.id) && currentRoundIndex < 3 ||
-            anchors?.finals.includes(teamB.id) && currentRoundIndex < 4 ||
-            anchors?.champion === teamB.id && currentRoundIndex < 5
+          const bAnchoredToNext = anchors?.semifinals.includes(teamB.id) && r < 3 ||
+            anchors?.finals.includes(teamB.id) && r < 4 ||
+            anchors?.champion === teamB.id && r < 5
 
           if (aAnchoredToNext && !bAnchoredToNext) {
             winnerId = teamA.id
@@ -1083,21 +1098,19 @@ function simulateKnockout(
 
           matches.push({
             round: roundNames[r],
-            matchId: i / 2,
+            matchId: slot.matchId,
             teamA: teamA.id,
             teamB: teamB.id,
             winner: winnerId,
-            date: getKnockoutMatchDate(roundNames[r], i / 2).toISOString(),
+            date: getKnockoutMatchDate(roundNames[r], m).toISOString(),
           })
 
-          nextRound.push(winnerId)
           results[winnerId] = resultKeys[r]
         }
       }
     }
 
     rounds.push({ round: roundNames[r], matches })
-    currentRound = nextRound
   }
 
   return { rounds, results, penaltyCount, totalKnockoutMatches, upsets }
@@ -1335,6 +1348,19 @@ export function runFullSimulation(
   const { standings, matches } = simulateGroupStage(teamsByGroup, config, tournamentState)
   const { rounds } = simulateKnockout(standings, teamMap, config, tournamentState)
 
+  // Compute bracket seeding for the crossing visualization
+  const displayAdvancingIds: string[] = []
+  for (const groupStandings of Object.values(standings)) {
+    if (groupStandings[0]) displayAdvancingIds.push(groupStandings[0].teamId)
+    if (groupStandings[1]) displayAdvancingIds.push(groupStandings[1].teamId)
+  }
+  const displayBestThird = getBestThirdPlaced(standings)
+  displayAdvancingIds.push(...displayBestThird)
+
+  const displayThirdPlaceAdvancing = computeThirdPlaceAdvancing(standings)
+  const displayThirdPlaceAssignments = assignThirdPlacedToSlots(displayThirdPlaceAdvancing)
+  const displayBracketSeeding = buildBracketSeeding(standings, displayAdvancingIds, displayThirdPlaceAssignments)
+
   return {
     groupStandings: standings,
     groupMatches: matches,
@@ -1347,6 +1373,8 @@ export function runFullSimulation(
       upsetIndex,
       topVolatileTeams,
     },
+    bracketSeeding: displayBracketSeeding,
+    advancingIds: displayAdvancingIds,
   }
 }
 

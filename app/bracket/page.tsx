@@ -2,6 +2,7 @@
 
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { BracketView } from "@/components/bracket-view"
+import { BracketCrossings } from "@/components/bracket-crossings"
 import { SimulationAnalytics } from "@/components/simulation-analytics"
 import { getFlagImageUrl } from "@/lib/team-flags"
 import { Badge } from "@/components/ui/badge"
@@ -10,7 +11,9 @@ import teamsData from "@/data/teams.json"
 import type { Team, GroupStanding, MatchResult } from "@/lib/simulation"
 import { getTeam } from "@/lib/simulation"
 import Link from "next/link"
-import { Settings2, Trophy, Users, Play } from "lucide-react"
+import { useState } from "react"
+import { cn } from "@/lib/utils"
+import { Settings2, Trophy, Users, Play, GitBranch, LayoutGrid } from "lucide-react"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -161,6 +164,7 @@ function GroupTable({
 
 export default function BracketPage() {
     const { result, isRunning, simulate } = useSimulation()
+    const [viewMode, setViewMode] = useState<"classic" | "crossings">("classic")
 
     const groupKeys = result
         ? Object.keys(result.groupStandings).sort()
@@ -263,6 +267,34 @@ export default function BracketPage() {
                         </div>
                     </section>
 
+                    {/* ═══ View Toggle ═══ */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setViewMode("classic")}
+                            className={cn(
+                                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all",
+                                viewMode === "classic"
+                                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+                                    : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10"
+                            )}
+                        >
+                            <LayoutGrid className="h-3 w-3" />
+                            Classic Bracket
+                        </button>
+                        <button
+                            onClick={() => setViewMode("crossings")}
+                            className={cn(
+                                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all",
+                                viewMode === "crossings"
+                                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+                                    : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10"
+                            )}
+                        >
+                            <GitBranch className="h-3 w-3" />
+                            Crossing Paths
+                        </button>
+                    </div>
+
                     {/* ═══ Knockout Bracket ═══ */}
                     <section>
                         <div className="flex items-center gap-3 mb-4">
@@ -277,11 +309,21 @@ export default function BracketPage() {
                             </Badge>
                         </div>
                         <div className="rounded-xl border border-border/50 bg-card p-6 shadow-2xl relative overflow-hidden">
-                            <BracketView
-                                rounds={result.knockoutBracket}
-                                teams={teamMap}
-                                teamProbabilities={result.teamProbabilities}
-                            />
+                            {viewMode === "classic" ? (
+                                <BracketView
+                                    rounds={result.knockoutBracket}
+                                    teams={teamMap}
+                                    teamProbabilities={result.teamProbabilities}
+                                />
+                            ) : (
+                                <BracketCrossings
+                                    rounds={result.knockoutBracket}
+                                    teams={teamMap}
+                                    teamProbabilities={result.teamProbabilities}
+                                    bracketSeeding={result.bracketSeeding}
+                                    advancingIds={result.advancingIds}
+                                />
+                            )}
                         </div>
                     </section>
 
