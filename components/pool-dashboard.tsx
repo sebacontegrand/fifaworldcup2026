@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Coins, Zap, Shield, EyeOff, TrendingUp, Activity, Gift,
-  Loader2, CheckCircle2, AlertCircle
+  Loader2, CheckCircle2, AlertCircle, Trophy, Medal, User
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -96,6 +96,7 @@ export function PoolDashboard() {
   const [bets, setBets] = useState<BetDTO[]>([])
   const [pulse, setPulse] = useState<PulseDTO[]>([])
   const [matches, setMatches] = useState<MatchDTO[]>([])
+  const [leaderboard, setLeaderboard] = useState<{ rank: number; userId: string; name: string | null; image: string | null; balance: number; lifetimeEarnings: number; bets: number; totalWagered: number }[]>([])
   const [claimed, setClaimed] = useState(false)
   const [claiming, setClaiming] = useState(false)
   const [selectedMatch, setSelectedMatch] = useState<MatchDTO | null>(null)
@@ -105,16 +106,17 @@ export function PoolDashboard() {
   const [selectedCard, setSelectedCard] = useState<string | null>(null)
   const [placing, setPlacing] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
-  const [activeTab, setActiveTab] = useState<"bet" | "cards" | "history">("bet")
+  const [activeTab, setActiveTab] = useState<"bet" | "cards" | "history" | "leaderboard">("bet")
 
   const fetchAll = useCallback(async () => {
     try {
-      const [balRes, cardRes, betRes, pulseRes, matchRes] = await Promise.all([
+      const [balRes, cardRes, betRes, pulseRes, matchRes, lbRes] = await Promise.all([
         fetch("/api/pool/balance"),
         fetch("/api/pool/cards"),
         fetch("/api/pool/bets"),
         fetch("/api/pool/pulse"),
         fetch("/api/matches"),
+        fetch("/api/pool/leaderboard"),
       ])
       if (balRes.ok) {
         const balData = await balRes.json()
@@ -130,6 +132,10 @@ export function PoolDashboard() {
       setPulse(Array.isArray(pulseData) ? pulseData : [])
       const matchData = await matchRes.json()
       setMatches(Array.isArray(matchData) ? matchData.filter((m: MatchDTO) => !m.isFact && m.teamAId && m.teamBId) : [])
+      if (lbRes.ok) {
+        const lbData = await lbRes.json()
+        setLeaderboard(Array.isArray(lbData.leaderboard) ? lbData.leaderboard : [])
+      }
     } catch (e) {
       console.error("Failed to fetch pool data", e)
     }
@@ -295,6 +301,7 @@ export function PoolDashboard() {
             { key: "bet", label: "Place Bet" },
             { key: "cards", label: `Cards (${cards.length})` },
             { key: "history", label: "History" },
+            { key: "leaderboard", label: "Leaderboard" },
           ].map(tab => (
             <button
               key={tab.key}
@@ -500,6 +507,62 @@ export function PoolDashboard() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Leaderboard Tab */}
+        {activeTab === "leaderboard" && (
+          <div>
+            {leaderboard.length === 0 ? (
+              <div className="text-center py-10 text-white/30">
+                <Trophy className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                <p className="text-xs font-bold">No pool earnings yet</p>
+                <p className="text-[10px] mt-1">Place bets and win to climb the ranks.</p>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-white/10 overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="bg-white/5 border-b border-white/10">
+                      <th className="text-left px-3 py-2 text-[9px] font-bold uppercase tracking-widest text-white/40 w-10">Rank</th>
+                      <th className="text-left px-3 py-2 text-[9px] font-bold uppercase tracking-widest text-white/40">User</th>
+                      <th className="text-right px-3 py-2 text-[9px] font-bold uppercase tracking-widest text-white/40">Earnings</th>
+                      <th className="text-right px-3 py-2 text-[9px] font-bold uppercase tracking-widest text-white/40 hidden sm:table-cell">Bets</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leaderboard.slice(0, 20).map(entry => (
+                      <tr key={entry.userId} className="border-b border-white/5 last:border-0 hover:bg-white/5">
+                        <td className="px-3 py-2">
+                          <span className={cn(
+                            "font-bold tabular-nums",
+                            entry.rank === 1 ? "text-yellow-400" :
+                            entry.rank === 2 ? "text-zinc-300" :
+                            entry.rank === 3 ? "text-amber-600" : "text-white/30"
+                          )}>
+                            {entry.rank <= 3 ? ["🥇", "🥈", "🥉"][entry.rank - 1] : `#${entry.rank}`}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            {entry.image ? (
+                              <img src={entry.image} alt="" className="h-5 w-5 rounded-full object-cover" />
+                            ) : (
+                              <div className="h-5 w-5 rounded-full bg-zinc-800 flex items-center justify-center">
+                                <User className="h-2.5 w-2.5 text-white/30" />
+                              </div>
+                            )}
+                            <span className="font-medium text-white/80 truncate max-w-[100px]">{entry.name ?? "Anonymous"}</span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-2 text-right font-black text-green-400 tabular-nums">{entry.lifetimeEarnings}</td>
+                        <td className="px-3 py-2 text-right text-white/40 tabular-nums hidden sm:table-cell">{entry.bets}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>

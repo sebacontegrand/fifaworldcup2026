@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react"
 import { useSession } from "next-auth/react"
 import { useSimulation } from "@/lib/hooks/use-simulation"
+import type { GroupStanding } from "@/lib/simulation"
 import { getScheduleByDay, getMatchKickoff, isMatchLocked, getCountdown, type ScheduleMatch } from "@/lib/schedule"
 import { getFlagImageUrl } from "@/lib/team-flags"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

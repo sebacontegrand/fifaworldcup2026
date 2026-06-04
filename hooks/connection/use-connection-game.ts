@@ -160,7 +160,10 @@ export const useConnectionGame = create<ConnectionGameStore>((set, get) => ({
       const shortestPossible = shortestResult ? shortestResult.path.length - 1 : chain.length
 
       const chipReward = calculateChipReward(difficulty, usedHint)
-      const score = chipReward
+      const efficiencyBonus = chain.length <= shortestPossible && !usedHint
+        ? Math.round(chipReward * 0.5)
+        : 0
+      const score = chipReward + efficiencyBonus
 
       set({
         isComplete: true,

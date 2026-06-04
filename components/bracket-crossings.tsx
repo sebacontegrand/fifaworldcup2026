@@ -6,13 +6,16 @@ import { getFlagImageUrl } from "@/lib/team-flags"
 import type { KnockoutRound, Team, TeamProbability } from "@/lib/simulation"
 import { buildBracketEdges, getTeamCrossings } from "@/lib/bracket-seeding"
 import type { BracketTeamSlot, BracketEdge } from "@/lib/bracket-seeding"
-import { X, Filter, Crosshair } from "lucide-react"
+import { X, Filter, Crosshair, ZoomIn, ZoomOut } from "lucide-react"
+import { motion, AnimatePresence } from "motion/react"
 
 // ─── Constants ────────────────────────────────────────────────────────
 
-const MATCH_WIDTH = 170
+const BASE_MATCH_WIDTH = 170
+const MOBILE_MATCH_WIDTH = 140
 const MATCH_HEIGHT = 52
-const COLUMN_GAP = 60
+const BASE_COLUMN_GAP = 60
+const MOBILE_COLUMN_GAP = 40
 const ROW_GAP = 6
 const TEAM_ROW_HEIGHT = 26
 
@@ -45,11 +48,13 @@ interface MatchLayout {
 }
 
 function computeLayout(
-  roundDefs: { round: string; matches: { matchId: number }[] }[]
+  roundDefs: { round: string; matches: { matchId: number }[] }[],
+  isMobile: boolean
 ): { layouts: MatchLayout[]; bracketWidth: number; bracketHeight: number } {
   const layouts: MatchLayout[] = []
+  const MW = isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH
+  const CG = isMobile ? MOBILE_COLUMN_GAP : BASE_COLUMN_GAP
 
-  // Compute y positions recursively from R32 outward
   function getCenterY(roundIdx: number, matchIdx: number): number {
     if (roundIdx === 0) {
       return matchIdx * (MATCH_HEIGHT + ROW_GAP) + MATCH_HEIGHT / 2
@@ -63,7 +68,7 @@ function computeLayout(
   const bracketHeight = totalR32Matches * (MATCH_HEIGHT + ROW_GAP) - ROW_GAP + MATCH_HEIGHT
 
   for (let r = 0; r < roundDefs.length; r++) {
-    const x = r * (MATCH_WIDTH + COLUMN_GAP)
+    const x = r * (MW + CG)
     for (let m = 0; m < roundDefs[r].matches.length; m++) {
       const centerY = getCenterY(r, m)
       layouts.push({
@@ -78,7 +83,7 @@ function computeLayout(
     }
   }
 
-  const bracketWidth = roundDefs.length * (MATCH_WIDTH + COLUMN_GAP) + 140
+  const bracketWidth = roundDefs.length * (MW + CG) + 140
 
   return { layouts, bracketWidth, bracketHeight }
 }
@@ -93,14 +98,16 @@ interface ConnectorLine {
 
 function computeConnectors(
   edges: BracketEdge[],
-  layouts: MatchLayout[]
+  layouts: MatchLayout[],
+  isMobile: boolean
 ): ConnectorLine[] {
   const layoutMap = new Map<number, MatchLayout>()
   for (const l of layouts) layoutMap.set(l.matchId, l)
+  const MW = isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH
+  const CG = isMobile ? MOBILE_COLUMN_GAP : BASE_COLUMN_GAP
 
   const connectors: ConnectorLine[] = []
 
-  // Group edges by parent match
   const parentMap = new Map<number, BracketEdge[]>()
   for (const edge of edges) {
     if (!parentMap.has(edge.parentMatchId)) {
@@ -119,15 +126,14 @@ function computeConnectors(
     const childLayoutB = childB ? layoutMap.get(childB.childMatchId) : undefined
     if (!childLayoutA || !childLayoutB) continue
 
-    const childRightX = parentLayout.x - COLUMN_GAP + MATCH_WIDTH
-    const midX = childRightX + COLUMN_GAP / 2
+    const childRightX = parentLayout.x - CG + MW
+    const midX = childRightX + CG / 2
     const parentLeftX = parentLayout.x
 
     const cA = childLayoutA.centerY
     const cB = childLayoutB.centerY
     const avg = (cA + cB) / 2
 
-    // Single path: childA right → midX → down to avg → parent left
     const path = `M ${childRightX} ${cA} L ${midX} ${cA} L ${midX} ${cB} L ${midX} ${avg} L ${parentLeftX} ${avg}`
 
     connectors.push({
@@ -195,18 +201,28 @@ export function BracketCrossings({
   const [hoveredTeamId, setHoveredTeamId] = useState<string | null>(null)
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
   const [showOpponents, setShowOpponents] = useState(true)
+  const [zoom, setZoom] = useState(1)
+  const [isMobile, setIsMobile] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
+  }, [])
 
   const edges = useMemo(() => buildBracketEdges(), [])
 
   const { layouts, bracketWidth, bracketHeight } = useMemo(
-    () => computeLayout(rounds),
-    [rounds]
+    () => computeLayout(rounds, isMobile),
+    [rounds, isMobile]
   )
 
   const connectors = useMemo(
-    () => computeConnectors(edges, layouts),
-    [edges, layouts]
+    () => computeConnectors(edges, layouts, isMobile),
+    [edges, layouts, isMobile]
   )
 
   const layoutMap = useMemo(() => {
@@ -270,13 +286,23 @@ export function BracketCrossings({
 
   // ─── Render ───────────────────────────────────────────────────────
 
+  if (!rounds.length || !advancingIds.length) {
+    return (
+      <div className={cn("flex flex-col items-center justify-center py-16 text-white/30", className)}>
+        <Crosshair className="h-10 w-10 mb-3 opacity-30" />
+        <p className="text-sm font-bold">No bracket data available</p>
+        <p className="text-xs mt-1">Run a simulation first to see crossing paths.</p>
+      </div>
+    )
+  }
+
   return (
     <div className={cn("relative", className)}>
       {/* Controls bar */}
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 flex-wrap">
         <div className="flex items-center gap-2">
           <Filter className="h-3.5 w-3.5 text-white/40" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-white/40 hidden sm:inline">
             Group:
           </span>
           <select
@@ -298,10 +324,29 @@ export function BracketCrossings({
             onChange={(e) => setShowOpponents(e.target.checked)}
             className="rounded border-white/20"
           />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-white/40 hidden sm:inline">
             Show Opponent Pools
           </span>
         </label>
+
+        {/* Zoom controls (mobile) */}
+        <div className="flex items-center gap-1 ml-auto sm:ml-0">
+          <button
+            onClick={() => setZoom(z => Math.max(0.5, z - 0.1))}
+            className="rounded-md border border-white/10 bg-black/40 px-1.5 py-1 text-[10px] text-white/60 hover:text-white"
+          >
+            <ZoomOut className="h-3 w-3" />
+          </button>
+          <span className="text-[10px] font-mono text-white/40 w-8 text-center tabular-nums">
+            {Math.round(zoom * 100)}%
+          </span>
+          <button
+            onClick={() => setZoom(z => Math.min(2, z + 0.1))}
+            className="rounded-md border border-white/10 bg-black/40 px-1.5 py-1 text-[10px] text-white/60 hover:text-white"
+          >
+            <ZoomIn className="h-3 w-3" />
+          </button>
+        </div>
 
         {selectedTeamId && (
           <button
@@ -316,10 +361,19 @@ export function BracketCrossings({
 
       {/* Scrollable bracket area */}
       <div
-        className="overflow-x-auto overflow-y-hidden -mx-4 px-4 sm:mx-0 sm:px-0"
+        ref={containerRef}
+        className="overflow-x-auto overflow-y-hidden -mx-4 px-4 sm:mx-0 sm:px-0 touch-pan-x"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        <div className="relative" style={{ width: bracketWidth, height: bracketHeight }}>
+        <div
+          className="relative"
+          style={{
+            width: bracketWidth,
+            height: bracketHeight,
+            transform: `scale(${zoom})`,
+            transformOrigin: "top left",
+          }}
+        >
           {/* SVG Connectors Layer */}
           <svg
             ref={svgRef}
@@ -342,22 +396,26 @@ export function BracketCrossings({
                 selectedPath?.matchIds.some((id) => conn.childMatchIds.includes(id))
 
               return (
-                <path
+                <motion.path
                   key={conn.matchId}
                   d={conn.path}
                   fill="none"
                   stroke={isHighlighted ? "rgba(6,182,212,0.6)" : "rgba(255,255,255,0.08)"}
                   strokeWidth={isHighlighted ? 2.5 : 1.5}
                   className={isHighlighted ? "drop-shadow-[0_0_4px_rgba(6,182,212,0.3)]" : ""}
-                  style={{
-                    transition: "stroke 0.3s ease, stroke-width 0.3s ease",
+                  animate={{
+                    pathLength: 1,
+                    opacity: isHighlighted ? 1 : 0.4,
                   }}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
                 />
               )
             })}
           </svg>
 
           {/* Match Cards Layer */}
+          <AnimatePresence mode="popLayout">
           {layouts.map((layout) => {
             const match = findMatch(layout.matchId)
             if (!match) return null
@@ -368,10 +426,8 @@ export function BracketCrossings({
             const isSelected = match.teamA === selectedTeamId || match.teamB === selectedTeamId
             const isOnSelectedPath = selectedPath?.matchIds.includes(layout.matchId)
 
-            // Hover
             const isHovered = match.teamA === hoveredTeamId || match.teamB === hoveredTeamId
 
-            // Group filter
             const passesGroupFilter =
               !selectedGroup ||
               (tA?.group === selectedGroup) ||
@@ -379,14 +435,25 @@ export function BracketCrossings({
 
             if (!passesGroupFilter) return null
 
+            const MW = isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH
+
             return (
-              <div
+              <motion.div
                 key={layout.matchId}
+                layout
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  scale: isOnSelectedPath ? 1.02 : 1,
+                  y: 0,
+                }}
+                exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
                 className={cn(
-                  "absolute rounded-lg border overflow-hidden bg-card/80 backdrop-blur-sm transition-all duration-300",
+                  "absolute rounded-lg border overflow-hidden bg-card/80 backdrop-blur-sm",
                   ROUND_COLORS[layout.round] ?? "border-white/10",
                   isOnSelectedPath
-                    ? "shadow-lg shadow-cyan-500/20 border-cyan-500/50 scale-[1.02] z-10"
+                    ? "shadow-lg shadow-cyan-500/20 border-cyan-500/50 z-10"
                     : match.winner
                       ? "shadow-md"
                       : "shadow-sm",
@@ -395,7 +462,7 @@ export function BracketCrossings({
                 style={{
                   left: layout.x,
                   top: layout.y,
-                  width: MATCH_WIDTH,
+                  width: MW,
                   height: MATCH_HEIGHT,
                 }}
               >
@@ -410,6 +477,7 @@ export function BracketCrossings({
                   onClick={() => setSelectedTeamId(match.teamA === selectedTeamId ? null : match.teamA)}
                   onHover={setHoveredTeamId}
                   position="top"
+                  isMobile={isMobile}
                 />
 
                 {/* Team B */}
@@ -423,10 +491,12 @@ export function BracketCrossings({
                   onClick={() => setSelectedTeamId(match.teamB === selectedTeamId ? null : match.teamB)}
                   onHover={setHoveredTeamId}
                   position="bottom"
+                  isMobile={isMobile}
                 />
-              </div>
+              </motion.div>
             )
           })}
+          </AnimatePresence>
 
           {/* Champion column */}
           {(() => {
@@ -438,14 +508,19 @@ export function BracketCrossings({
               : undefined
 
             const championY = bracketHeight / 2 - 60
+            const MW = isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH
+            const CG = isMobile ? MOBILE_COLUMN_GAP : BASE_COLUMN_GAP
 
             return (
-              <div
-                className="absolute flex flex-col items-center gap-2 rounded-xl border-2 border-gold/40 bg-gradient-to-b from-gold/10 to-gold/5 p-4 shadow-lg shadow-gold/10 transition-all duration-300"
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+                className="absolute flex flex-col items-center gap-2 rounded-xl border-2 border-gold/40 bg-gradient-to-b from-gold/10 to-gold/5 p-4 shadow-lg shadow-gold/10"
                 style={{
-                  left: rounds.length * (MATCH_WIDTH + COLUMN_GAP) + 10,
+                  left: rounds.length * (MW + CG) + 10,
                   top: championY,
-                  width: 130,
+                  width: isMobile ? 100 : 130,
                 }}
               >
                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gold">
@@ -456,36 +531,52 @@ export function BracketCrossings({
                     <img
                       src={getFlagImageUrl(champion.id, 64)}
                       alt={champion.code}
-                      className="h-12 w-12 object-contain drop-shadow-lg"
+                      className="h-10 w-10 sm:h-12 sm:w-12 object-contain drop-shadow-lg"
                     />
-                    <span className="text-xs font-black uppercase tracking-wider text-gold text-center">
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-gold text-center leading-tight">
                       {champion.name}
                     </span>
                     {champProb !== undefined && (
                       <span className="text-[9px] font-mono text-gold/60">
-                        {champProb}% prob
+                        {Math.round(champProb)}% prob
                       </span>
                     )}
                   </>
                 ) : (
-                  <span className="text-3xl">TBD</span>
+                  <motion.span
+                    className="text-3xl"
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    TBD
+                  </motion.span>
                 )}
-              </div>
+              </motion.div>
             )
           })()}
         </div>
       </div>
 
       {/* Bottom panel: Crossings detail */}
+      <AnimatePresence>
       {selectedTeamId && selectedPath && crossings && (
-        <CrossingDetail
-          team={teams[selectedTeamId]}
-          path={selectedPath}
-          crossings={crossings}
-          teams={teams}
-          findMatch={findMatch}
-        />
+        <motion.div
+          key={selectedTeamId}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <CrossingDetail
+            team={teams[selectedTeamId]}
+            path={selectedPath}
+            crossings={crossings}
+            teams={teams}
+            findMatch={findMatch}
+          />
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -502,6 +593,7 @@ function TeamRowContent({
   onClick,
   onHover,
   position,
+  isMobile,
 }: {
   team: Team | null
   isWinner: boolean
@@ -512,6 +604,7 @@ function TeamRowContent({
   onClick: () => void
   onHover: (id: string | null) => void
   position: "top" | "bottom"
+  isMobile?: boolean
 }) {
   const probKeyMap: Record<string, keyof TeamProbability> = {
     "Round of 32": "roundOf16",
@@ -526,7 +619,7 @@ function TeamRowContent({
   return (
     <div
       className={cn(
-        "flex items-center gap-1.5 px-2 py-1 min-w-0 cursor-pointer transition-all duration-150",
+        "flex items-center gap-1 px-2 py-1 min-w-0 cursor-pointer transition-all duration-150",
         position === "top" ? "border-b border-white/5" : "",
         isWinner ? "bg-primary/10" : "hover:bg-white/10",
         isSelected ? "bg-cyan-500/15" : "",
@@ -541,16 +634,17 @@ function TeamRowContent({
     >
       {team ? (
         <img
-          src={getFlagImageUrl(team.id, 20)}
+          src={getFlagImageUrl(team.id, isMobile ? 16 : 20)}
           alt={team.code}
-          className="h-3.5 w-3.5 object-contain flex-shrink-0"
+          className={cn("object-contain flex-shrink-0", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")}
         />
       ) : (
         <span className="text-xs flex-shrink-0">-</span>
       )}
       <span
         className={cn(
-          "text-[11px] font-bold flex-1 truncate leading-tight",
+          "font-bold flex-1 truncate leading-tight",
+          isMobile ? "text-[10px]" : "text-[11px]",
           isWinner ? "text-primary" : team ? "text-white/70" : "text-white/30",
           isSelected ? "text-cyan-300" : "",
         )}
@@ -560,7 +654,9 @@ function TeamRowContent({
       {prob !== undefined && (
         <span
           className={cn(
-            "text-[9px] font-mono flex-shrink-0 tabular-nums",
+            "flex-shrink-0 tabular-nums",
+            isMobile ? "text-[8px]" : "text-[9px]",
+            "font-mono",
             isWinner ? "text-primary/80" : "text-white/30",
           )}
         >

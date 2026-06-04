@@ -75,6 +75,12 @@ async function resolveMatchBets(matchId: string, actualA: number, actualB: numbe
           payout = Math.max(payout, bet.wagerAmount * 2)
         } else if (userCard.card.effect === "boost" && payout > 0) {
           payout = Math.round(payout * (userCard.card.multiplier ?? 1.5))
+        } else if (userCard.card.effect === "insurance") {
+          const predictedWinner = bet.scoreA > bet.scoreB ? "A" : bet.scoreB > bet.scoreA ? "B" : "draw"
+          const actualWinner = actualA > actualB ? "A" : actualB > actualA ? "B" : "draw"
+          if (predictedWinner === actualWinner) {
+            payout = Math.max(payout, Math.round(userCard.card.multiplier ?? 50))
+          }
         }
       }
     }

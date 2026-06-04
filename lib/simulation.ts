@@ -449,6 +449,42 @@ export function getStrategyModifiedStrengths(
   }
 }
 
+// ─── Form & Depth Utilities ─────────────────────────────────────────
+
+/**
+ * Parse recent form string (e.g. "WDWLW") into a modifier
+ * W = +0.05, D = 0, L = -0.05 per result, clamped to [-0.3, 0.3]
+ */
+function parseFormBonus(form: string): number {
+  let bonus = 0
+  for (const ch of form.toUpperCase()) {
+    if (ch === "W") bonus += 0.05
+    else if (ch === "L") bonus -= 0.05
+  }
+  return Math.max(-0.3, Math.min(0.3, bonus))
+}
+
+/**
+ * Compute squad depth factor from topPlayers count.
+ * Teams with 5+ top players get a small bonus; teams with 0-1 get a penalty.
+ */
+function computeSquadDepthBonus(playerCount: number): number {
+  if (playerCount >= 5) return 0.10
+  if (playerCount >= 3) return 0.05
+  if (playerCount >= 2) return 0
+  return -0.08
+}
+
+/**
+ * Fatigue penalty for consecutive matches without adequate rest.
+ * Knockout rounds with <4 days rest: small cumulative penalty.
+ */
+function computeFatiguePenalty(matchIndex: number, daysSinceLastMatch: number): number {
+  if (matchIndex <= 0) return 0
+  if (daysSinceLastMatch < 4) return -0.03 * Math.min(matchIndex, 5)
+  return 0
+}
+
 // ─── Match Simulation ────────────────────────────────────────────────
 
 const HOST_NATIONS = ["USA", "MEX", "CAN"]
@@ -463,7 +499,11 @@ export function simulateMatch(
   teamB: Team,
   isKnockout: boolean,
   config: SimulationConfig,
-  sampledElos?: Record<string, number>
+  sampledElos?: Record<string, number>,
+  matchIndexA?: number,
+  matchIndexB?: number,
+  daysSinceLastA?: number,
+  daysSinceLastB?: number,
 ): MatchResult {
   const settingsA = config.teamSettings[teamA.id]
   const settingsB = config.teamSettings[teamB.id]
@@ -473,25 +513,45 @@ export function simulateMatch(
   let eloA = (sampledElos?.[teamA.id] ?? teamA.eloRating) + (settingsA?.eloAdjustment || 0)
   let eloB = (sampledElos?.[teamB.id] ?? teamB.eloRating) + (settingsB?.eloAdjustment || 0)
 
+  // Form bonus from recent results
+  const formA = parseFormBonus(teamA.stats.recentForm)
+  const formB = parseFormBonus(teamB.stats.recentForm)
+  eloA += formA * 100
+  eloB += formB * 100
+
+  // Squad depth mitigation for injuries
+  const depthA = computeSquadDepthBonus(teamA.topPlayers.length)
+  const depthB = computeSquadDepthBonus(teamB.topPlayers.length)
+
+  // Fatigue from schedule congestion
+  const fatigueA = computeFatiguePenalty(matchIndexA ?? 0, daysSinceLastA ?? 7)
+  const fatigueB = computeFatiguePenalty(matchIndexB ?? 0, daysSinceLastB ?? 7)
+
   // Stochastic injury modeling
   let injuredCountA = settingsA?.injuredPlayers?.length || 0
   let injuredCountB = settingsB?.injuredPlayers?.length || 0
 
-  // Additional random injuries per match
+  // Additional random injuries per match; squad depth reduces injury rate
+  const injuryRateA = INJURY_RATE_PER_MATCH * Math.max(0.3, 1 - depthA)
+  const injuryRateB = INJURY_RATE_PER_MATCH * Math.max(0.3, 1 - depthB)
+
   for (const player of teamA.topPlayers) {
-    if (!settingsA?.injuredPlayers?.includes(player.name) && Math.random() < INJURY_RATE_PER_MATCH) {
+    if (!settingsA?.injuredPlayers?.includes(player.name) && Math.random() < injuryRateA) {
       injuredCountA++
     }
   }
   for (const player of teamB.topPlayers) {
-    if (!settingsB?.injuredPlayers?.includes(player.name) && Math.random() < INJURY_RATE_PER_MATCH) {
+    if (!settingsB?.injuredPlayers?.includes(player.name) && Math.random() < injuryRateB) {
       injuredCountB++
     }
   }
 
-  // Injured players: -30 Elo per removed player
-  eloA -= injuredCountA * 30
-  eloB -= injuredCountB * 30
+  // Injured players: -30 Elo per removed player, mitigated by depth
+  eloA -= injuredCountA * 30 * Math.max(0.5, 1 - depthA)
+  eloB -= injuredCountB * 30 * Math.max(0.5, 1 - depthB)
+
+  // Apply depth and fatigue to attack/defense
+  const formModifier = (formA - formB) * 0.5
 
   // Host advantage (calibrated to configurable Elo points)
   const isHostA = settingsA?.isHostOverride ?? HOST_NATIONS.includes(teamA.code)
@@ -520,6 +580,12 @@ export function simulateMatch(
   defenseA -= eloDiffScale * 0.2
   attackB -= eloDiffScale * 0.3
   defenseB += eloDiffScale * 0.2
+
+  // Apply depth & fatigue modifiers
+  attackA += formA + depthA + fatigueA
+  defenseA += depthA * 0.5 + fatigueA
+  attackB += formB + depthB + fatigueB
+  defenseB += depthB * 0.5 + fatigueB
 
   // Apply tactical style modifiers
   const styleA = settingsA?.tacticalStyle || "Normal"

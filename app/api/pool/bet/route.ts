@@ -84,6 +84,14 @@ export async function POST(req: NextRequest) {
     if (!userCard || userCard.quantity < 1) {
       return NextResponse.json({ error: "Card not owned" }, { status: 400 })
     }
+    if (userCard.card.cooldownHours > 0 && userCard.lastUsedAt) {
+      const cooldownMs = userCard.card.cooldownHours * 60 * 60 * 1000
+      const timeSinceLastUse = Date.now() - new Date(userCard.lastUsedAt).getTime()
+      if (timeSinceLastUse < cooldownMs) {
+        const hoursLeft = Math.ceil((cooldownMs - timeSinceLastUse) / (60 * 60 * 1000))
+        return NextResponse.json({ error: `Card on cooldown. ${hoursLeft}h remaining.` }, { status: 400 })
+      }
+    }
     if (userCard.card.effect === "double_down") {
       finalWager = wagerAmount * 2
     }

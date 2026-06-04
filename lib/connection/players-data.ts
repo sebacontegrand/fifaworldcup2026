@@ -228,21 +228,6 @@ export const SEEDED_PLAYERS: Player[] = [
     ],
   },
   {
-    id: "salah",
-    name: "Mohamed Salah",
-    image: "",
-    nationality: "Egypt",
-    nationalityFlag: "https://flagcdn.com/eg.svg",
-    position: "Forward",
-    teams: [
-      { teamId: "basel", teamName: "FC Basel", startYear: 2010, endYear: 2012 },
-      { teamId: "chelsea", teamName: "Chelsea", startYear: 2012, endYear: 2014 },
-      { teamId: "fiorentina", teamName: "Fiorentina", startYear: 2015, endYear: 2015 },
-      { teamId: "roma", teamName: "AS Roma", startYear: 2015, endYear: 2017 },
-      { teamId: "liverpool", teamName: "Liverpool", startYear: 2017, endYear: undefined },
-    ],
-  },
-  {
     id: "rodri",
     name: "Rodri",
     image: "",
@@ -434,22 +419,6 @@ export const SEEDED_PLAYERS: Player[] = [
     ],
   },
   {
-    id: "r9",
-    name: "Ronaldo Nazário",
-    image: "",
-    nationality: "Brazil",
-    nationalityFlag: "https://flagcdn.com/br.svg",
-    position: "Forward",
-    teams: [
-      { teamId: "cruzeiro", teamName: "Cruzeiro", startYear: 1993, endYear: 1994 },
-      { teamId: "psv", teamName: "PSV Eindhoven", startYear: 1994, endYear: 1996 },
-      { teamId: "barcelona", teamName: "Barcelona", startYear: 1996, endYear: 1997 },
-      { teamId: "inter", teamName: "Inter Milan", startYear: 1997, endYear: 2002 },
-      { teamId: "real-madrid", teamName: "Real Madrid", startYear: 2002, endYear: 2007 },
-      { teamId: "milan", teamName: "AC Milan", startYear: 2007, endYear: 2008 },
-    ],
-  },
-  {
     id: "zidane",
     name: "Zinedine Zidane",
     image: "",
@@ -503,34 +472,6 @@ export const SEEDED_PLAYERS: Player[] = [
     teams: [
       { teamId: "barcelona", teamName: "Barcelona", startYear: 1998, endYear: 2015 },
       { teamId: "al-sadd", teamName: "Al Sadd", startYear: 2015, endYear: 2019 },
-    ],
-  },
-  {
-    id: "iniesta",
-    name: "Andrés Iniesta",
-    image: "",
-    nationality: "Spain",
-    nationalityFlag: "https://flagcdn.com/es.svg",
-    position: "Midfielder",
-    teams: [
-      { teamId: "barcelona", teamName: "Barcelona", startYear: 2002, endYear: 2018 },
-      { teamId: "vissel-kobe", teamName: "Vissel Kobe", startYear: 2018, endYear: 2023 },
-    ],
-  },
-  {
-    id: "ronaldo",
-    name: "Cristiano Ronaldo",
-    image: "",
-    nationality: "Portugal",
-    nationalityFlag: "https://flagcdn.com/pt.svg",
-    position: "Forward",
-    teams: [
-      { teamId: "sporting", teamName: "Sporting CP", startYear: 2002, endYear: 2003 },
-      { teamId: "man-united", teamName: "Manchester United", startYear: 2003, endYear: 2009 },
-      { teamId: "real-madrid", teamName: "Real Madrid", startYear: 2009, endYear: 2018 },
-      { teamId: "juventus", teamName: "Juventus", startYear: 2018, endYear: 2021 },
-      { teamId: "man-united", teamName: "Manchester United", startYear: 2021, endYear: 2022 },
-      { teamId: "al-nassr", teamName: "Al Nassr", startYear: 2023, endYear: undefined },
     ],
   },
   {
@@ -711,19 +652,6 @@ export const SEEDED_PLAYERS: Player[] = [
     position: "Forward",
     teams: [
       { teamId: "bayern", teamName: "Bayern Munich", startYear: 2009, endYear: undefined },
-    ],
-  },
-  {
-    id: "ribery",
-    name: "Franck Ribéry",
-    image: "",
-    nationality: "France",
-    nationalityFlag: "https://flagcdn.com/fr.svg",
-    position: "Forward",
-    teams: [
-      { teamId: "marseille", teamName: "Olympique Marseille", startYear: 2005, endYear: 2007 },
-      { teamId: "bayern", teamName: "Bayern Munich", startYear: 2007, endYear: 2019 },
-      { teamId: "fiorentina", teamName: "Fiorentina", startYear: 2019, endYear: 2021 },
     ],
   },
   {
@@ -975,20 +903,6 @@ export const SEEDED_PLAYERS: Player[] = [
     ],
   },
   {
-    id: "lewandowski",
-    name: "Robert Lewandowski",
-    image: "",
-    nationality: "Poland",
-    nationalityFlag: "https://flagcdn.com/pl.svg",
-    position: "Forward",
-    teams: [
-      { teamId: "lech", teamName: "Lech Poznań", startYear: 2008, endYear: 2010 },
-      { teamId: "dortmund", teamName: "Borussia Dortmund", startYear: 2010, endYear: 2014 },
-      { teamId: "bayern", teamName: "Bayern Munich", startYear: 2014, endYear: 2022 },
-      { teamId: "barcelona", teamName: "Barcelona", startYear: 2022, endYear: undefined },
-    ],
-  },
-  {
     id: "hazard",
     name: "Eden Hazard",
     image: "",
@@ -1027,18 +941,6 @@ export const SEEDED_PLAYERS: Player[] = [
       { teamId: "juventus", teamName: "Juventus", startYear: 2012, endYear: 2016 },
       { teamId: "man-united", teamName: "Manchester United", startYear: 2016, endYear: 2022 },
       { teamId: "juventus", teamName: "Juventus", startYear: 2022, endYear: 2024 },
-    ],
-  },
-  {
-    id: "vini",
-    name: "Vinícius Jr",
-    image: "",
-    nationality: "Brazil",
-    nationalityFlag: "https://flagcdn.com/br.svg",
-    position: "Forward",
-    teams: [
-      { teamId: "flamengo", teamName: "Flamengo", startYear: 2017, endYear: 2018 },
-      { teamId: "real-madrid", teamName: "Real Madrid", startYear: 2018, endYear: undefined },
     ],
   },
   {

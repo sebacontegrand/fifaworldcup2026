@@ -6,7 +6,7 @@ import { motion } from "motion/react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { Gamepad2, Zap, Infinity, Clock, Shield } from "lucide-react"
+import { Gamepad2, Zap, Infinity, Clock, Shield, Trophy } from "lucide-react"
 import type { Difficulty, GameMode } from "@/lib/connection/types"
 
 const difficulties: { key: Difficulty; label: string; description: string; icon: string }[] = [
@@ -106,14 +106,25 @@ export default function ConnectionPage() {
           </div>
         </div>
 
-        <Button
-          size="lg"
-          onClick={handlePlay}
-          className="w-full h-12 text-sm font-black uppercase tracking-widest glow-neon"
-        >
-          <Zap className="h-5 w-5 mr-2" />
-          Play
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            size="lg"
+            onClick={handlePlay}
+            className="flex-1 h-12 text-sm font-black uppercase tracking-widest glow-neon"
+          >
+            <Zap className="h-5 w-5 mr-2" />
+            Play
+          </Button>
+          <Link href="/connection/leaderboard">
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-12 border-white/10 text-xs font-bold uppercase tracking-wider"
+            >
+              <Trophy className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
 
         <p className="text-center text-[9px] text-muted-foreground">
           Powered by TheSportsDB — {difficulties.find((d) => d.key === difficulty)?.description} max
