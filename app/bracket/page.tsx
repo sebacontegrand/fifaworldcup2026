@@ -13,7 +13,9 @@ import { getTeam } from "@/lib/simulation"
 import Link from "next/link"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { Settings2, Trophy, Users, Play, GitBranch, LayoutGrid } from "lucide-react"
+import { Settings2, Trophy, Users, Play, GitBranch, LayoutGrid, Brain } from "lucide-react"
+import { AiAnalysisPanel } from "@/components/ai/ai-analysis-panel"
+import { AiChat } from "@/components/ai/ai-chat"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -327,6 +329,14 @@ export default function BracketPage() {
                         </div>
                     </section>
 
+                    {/* ═══ AI Analysis ═══ */}
+                    <section className="pt-4 border-t border-white/5">
+                        <h2 className="text-xl font-black uppercase tracking-tight text-foreground mb-6">
+                            AI <span className="text-primary">Analysis</span>
+                        </h2>
+                        <AiAnalysisPanel />
+                    </section>
+
                     {/* ═══ Analytics ═══ */}
                     <section className="pt-4 border-t border-white/5">
                         <h2 className="text-xl font-black uppercase tracking-tight text-foreground mb-6">
@@ -336,6 +346,8 @@ export default function BracketPage() {
                     </section>
                 </div>
             )}
+
+            <AiChat />
         </div>
     )
 }
