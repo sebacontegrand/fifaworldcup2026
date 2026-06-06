@@ -20,6 +20,7 @@ import {
 } from "recharts"
 
 import { Play, Activity } from "lucide-react"
+import { TournamentCountdown } from "@/components/tournament-countdown"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -61,7 +62,16 @@ export function HomePageContent() {
                     <span className="block text-glow-neon text-primary">2026</span>
                 </h1>
 
-                <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                <div className="mt-6 mb-4">
+                    <div className="flex flex-col items-center gap-2">
+                        <span className="text-[10px] uppercase tracking-[0.25em] text-white/30 font-semibold">
+                            Tournament Starts In
+                        </span>
+                        <TournamentCountdown />
+                    </div>
+                </div>
+
+                <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
                     Advanced predictions powered by{" "}
                     <span className="font-semibold text-foreground">Dixon-Coles bivariate Poisson</span>{" "}
                     and <span className="font-semibold text-foreground">Bayesian Elo</span> uncertainty
