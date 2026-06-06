@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 
-const TOURNAMENT_START = new Date("2026-06-18T00:00:00Z").getTime()
+const TOURNAMENT_START = new Date("2026-06-11T00:00:00Z").getTime()
 
 function calcTimeLeft() {
   const now = Date.now()
