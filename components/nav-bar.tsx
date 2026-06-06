@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useSimulation } from "@/lib/hooks/use-simulation"
-import { RefreshCw, Menu, ChevronDown, Globe, Cpu, Gamepad2 } from "lucide-react"
+import { RefreshCw, Menu, ChevronDown, Globe, Cpu, Gamepad2, Settings } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { CafecitoButton } from "@/components/cafecito-button"
 import { motion, AnimatePresence } from "motion/react"
@@ -196,6 +196,14 @@ export function NavBar() {
 
             <CafecitoButton />
 
+            <Link
+              href="/settings"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70 transition-all duration-200"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              <span className="sr-only">Settings</span>
+            </Link>
+
             <div className="h-4 w-px bg-white/10 shrink-0" />
 
             <button
@@ -305,9 +313,19 @@ export function NavBar() {
                     <CafecitoButton />
                   </div>
                   {session?.user && (
-                    <div className="text-[10px] text-center text-muted-foreground font-mono">
-                      Logged in as <span className="text-foreground text-glow-neon">{session.user.name || session.user.email}</span>
-                    </div>
+                    <>
+                      <Link
+                        href="/settings"
+                        onClick={() => setOpen(false)}
+                        className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/10 hover:text-white transition-all duration-200"
+                      >
+                        <Settings className="h-3 w-3" />
+                        Settings
+                      </Link>
+                      <div className="text-[10px] text-center text-muted-foreground font-mono">
+                        Logged in as <span className="text-foreground text-glow-neon">{session.user.name || session.user.email}</span>
+                      </div>
+                    </>
                   )}
                 </div>
               </SheetContent>

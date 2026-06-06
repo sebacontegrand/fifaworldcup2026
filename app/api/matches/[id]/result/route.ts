@@ -172,5 +172,10 @@ export async function POST(
   // Resolve chip bets on this match (finds bets with payout: null)
   const betsResolved = await resolveMatchBets(id, scoreA, scoreB)
 
+  // 📧 Fire-and-forget email notifications to users who guessed/bet on this match
+  import("@/lib/email").then(({ sendMatchResultNotifications }) => {
+    sendMatchResultNotifications(id, scoreA, scoreB).catch(console.error)
+  })
+
   return NextResponse.json({ ok: true, guessesScored: guesses.length, betsResolved })
 }

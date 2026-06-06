@@ -16,11 +16,13 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]
-  guesses         Guess[]
-  bets            Bet[]
-  chipBalance     ChipBalance?
-  userCards       UserCard[]
-  connectionScores ConnectionScore[]
+  emailNotifications Boolean            @default(true)
+  emailNotifs         EmailNotification[]
+  guesses             Guess[]
+  bets                Bet[]
+  chipBalance         ChipBalance?
+  userCards           UserCard[]
+  connectionScores    ConnectionScore[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -93,8 +95,9 @@ model Match {
   scoreB     Int?
   isFact     Boolean @default(false)
 
-  guesses Guess[]
-  bets     Bet[]
+  guesses           Guess[]
+  bets              Bet[]
+  emailNotifications EmailNotification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -213,4 +216,19 @@ model SimulationConfig {
   currentTournamentDate String @default("2026-06-18")
 
   updatedAt DateTime @updatedAt
+}
+
+model EmailNotification {
+  id         String   @id @default(cuid())
+  userId     String
+  matchId    String
+  type       String   // "guess" | "bet" | "both"
+  sentAt     DateTime @default(now())
+  openedAt   DateTime?
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([matchId])
 }
