@@ -328,9 +328,17 @@ export function HomePageContent() {
 
             {/* Methodology */}
             <section className="mt-12 rounded-xl border border-border/50 bg-card p-6">
-                <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-foreground">
-                    Methodology & Sources
-                </h2>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                        Methodology & Sources
+                    </h2>
+                    <Link
+                        href="/methodology"
+                        className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary/80 transition-colors"
+                    >
+                        How It Works →
+                    </Link>
+                </div>
                 <div className="grid grid-cols-1 gap-4 text-xs leading-relaxed text-muted-foreground md:grid-cols-2">
                     <div>
                         <h3 className="mb-1 font-semibold text-foreground">
