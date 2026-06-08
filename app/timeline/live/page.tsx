@@ -109,6 +109,7 @@ export default function LiveResultsPage() {
   const forceRender = useCallback(() => setRenderTick((t) => t + 1), [])
   const [now, setNow] = useState(Date.now())
   const guessInputs = useRef<Record<string, { scoreA: string; scoreB: string }>>({})
+  const overrideInputs = useRef<Record<string, { scoreA: string; scoreB: string }>>({})
 
   const isAdmin = session?.user?.email?.toLowerCase() === "sebacontegrand@gmail.com"
   const [submittingAdminId, setSubmittingAdminId] = useState<string | null>(null)
@@ -247,22 +248,31 @@ export default function LiveResultsPage() {
   }, [fetchMatches, fetchLeaderboard])
 
   const handleScoreChange = (teamAId: string, teamBId: string, side: "A" | "B", value: string) => {
-    const scoreValue = parseInt(value)
-    if (isNaN(scoreValue)) return
     const key = `${teamAId}_${teamBId}`
-    const current = tournamentState.matchOverrides[key]
-    const newOverride: Record<string, number> = {}
-    if (side === "A") {
-      newOverride.scoreA = scoreValue
-      if (current?.scoreB !== undefined) newOverride.scoreB = current.scoreB
-    } else {
-      newOverride.scoreB = scoreValue
-      if (current?.scoreA !== undefined) newOverride.scoreA = current.scoreA
+    if (!overrideInputs.current[key]) {
+      const current = tournamentState.matchOverrides[key]
+      overrideInputs.current[key] = {
+        scoreA: current?.scoreA?.toString() ?? "",
+        scoreB: current?.scoreB?.toString() ?? "",
+      }
     }
-    updateMatchResult(teamAId, teamBId, newOverride as any)
+    overrideInputs.current[key][side === "A" ? "scoreA" : "scoreB"] = value
+    forceRender()
+  }
+
+  const handleScoreBlur = (teamAId: string, teamBId: string) => {
+    const key = `${teamAId}_${teamBId}`
+    const local = overrideInputs.current[key]
+    if (!local) return
+    const parsedA = parseInt(local.scoreA)
+    const parsedB = parseInt(local.scoreB)
+    if (isNaN(parsedA) || isNaN(parsedB)) return
+    updateMatchResult(teamAId, teamBId, { scoreA: parsedA, scoreB: parsedB } as any)
   }
 
   const handleClearResult = (teamAId: string, teamBId: string) => {
+    const key = `${teamAId}_${teamBId}`
+    delete overrideInputs.current[key]
     updateMatchResult(teamAId, teamBId, null)
   }
 
@@ -360,12 +370,16 @@ export default function LiveResultsPage() {
               </div>
             ) : (
               <>
-                <Input type="number" min="0" value={override?.scoreA ?? ""}
+                <Input type="number" min="0"
+                  value={overrideInputs.current[overrideKey]?.scoreA ?? override?.scoreA?.toString() ?? ""}
                   onChange={(e) => fixture.homeTeamId && fixture.awayTeamId && handleScoreChange(fixture.homeTeamId, fixture.awayTeamId, "A", e.target.value)}
+                  onBlur={() => fixture.homeTeamId && fixture.awayTeamId && handleScoreBlur(fixture.homeTeamId, fixture.awayTeamId)}
                   className="w-10 sm:w-12 h-9 sm:h-10 text-center text-base sm:text-lg font-bold bg-zinc-900 border-white/10" placeholder="-" />
                 <span className="text-white/20 font-black text-xs sm:text-sm">VS</span>
-                <Input type="number" min="0" value={override?.scoreB ?? ""}
+                <Input type="number" min="0"
+                  value={overrideInputs.current[overrideKey]?.scoreB ?? override?.scoreB?.toString() ?? ""}
                   onChange={(e) => fixture.homeTeamId && fixture.awayTeamId && handleScoreChange(fixture.homeTeamId, fixture.awayTeamId, "B", e.target.value)}
+                  onBlur={() => fixture.homeTeamId && fixture.awayTeamId && handleScoreBlur(fixture.homeTeamId, fixture.awayTeamId)}
                   className="w-10 sm:w-12 h-9 sm:h-10 text-center text-base sm:text-lg font-bold bg-zinc-900 border-white/10" placeholder="-" />
               </>
             )}
@@ -492,8 +506,14 @@ export default function LiveResultsPage() {
                       className="h-6 text-[9px] text-red-400 hover:text-red-300 hover:bg-red-500/10 font-bold uppercase tracking-wider px-2">Delete</Button>
                   )}
                   <Button size="sm"
-                    disabled={submittingAdminId === matchDTO.id || override?.scoreA === undefined || override?.scoreB === undefined}
-                    onClick={() => handleAdminSubmitFact(matchDTO.id, override!.scoreA, override!.scoreB)}
+                    disabled={submittingAdminId === matchDTO.id}
+                    onClick={() => {
+                      const local = overrideInputs.current[overrideKey] ?? override
+                      const a = local?.scoreA != null ? Number(local.scoreA) : undefined
+                      const b = local?.scoreB != null ? Number(local.scoreB) : undefined
+                      if (a == null || b == null || isNaN(a) || isNaN(b)) return
+                      handleAdminSubmitFact(matchDTO.id, a, b)
+                    }}
                     className="h-6 text-[9px] bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest px-2.5">
                     {submittingAdminId === matchDTO.id ? (
                       <div className="h-3 w-3 border-2 border-white/20 border-t-white animate-spin rounded-full" />
