@@ -275,7 +275,6 @@ export default function LiveResultsPage() {
       }
     }
     guessInputs.current[matchId][side === "A" ? "scoreA" : "scoreB"] = value
-    forceRender()
   }
 
   const handleSubmitGuess = (matchId: string) => {
@@ -285,6 +284,12 @@ export default function LiveResultsPage() {
     const parsedB = parseInt(inputs.scoreB)
     if (isNaN(parsedA) || isNaN(parsedB)) return
     chipReward.current = (parsedA === 1 && parsedB === 0) || (parsedA === 0 && parsedB === 1) ? 200 : 400
+    setMatches(prev => prev.map(m =>
+      m.id === matchId
+        ? { ...m, guess: { scoreA: parsedA, scoreB: parsedB } }
+        : m
+    ))
+    delete guessInputs.current[matchId]
     saveGuessToServer(matchId, parsedA, parsedB)
   }
 
