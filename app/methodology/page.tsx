@@ -415,7 +415,51 @@ const sections: Section[] = [
         ),
     },
 
-    /* 12 — Sensitivity Analysis */
+    /* 12 — Live Tournament */
+    {
+        id: "live",
+        icon: <Activity className="h-5 w-5" />,
+        color: "text-green-400",
+        accentBg: "bg-green-400/10",
+        title: "Live Tournament Mode — Predict & Compete",
+        subtitle: "During the World Cup, enter predictions, track results, and climb the leaderboard in real time.",
+        body: (
+            <>
+                <p>
+                    Once the tournament kicks off, the <strong>Live Results</strong> page becomes
+                    your command centre. Real match results are entered as they happen, and you can
+                    predict the score of every game — before kickoff.
+                </p>
+                <p className="mt-3">
+                    <strong className="text-white/80">How predictions work:</strong> Pick a winner
+                    with <strong>Quick Pick</strong> (1-0 / 0-1) for 200 chips, or enter an{" "}
+                    <strong>exact score</strong> for 400 chips. Once a match ends, your prediction
+                    is scored automatically: an <strong className="text-green-400">exact match</strong>{" "}
+                    = 300 points on the leaderboard, a <strong className="text-blue-400">correct winner</strong>{" "}
+                    = 100 points.
+                </p>
+                <p className="mt-3">
+                    The <strong>Confidence Pool</strong> lets you wager chips on match outcomes with
+                    Elo-based odds multipliers. Use power-up cards like <strong>Double Down</strong>,{" "}
+                    <strong>Hedge</strong>, or <strong>Lock In</strong> to boost your payouts. Every
+                    prediction and bet feeds into the <strong>Overall Ranking</strong>, which
+                    combines Connection puzzles (20%), Predictions (30%), Pool winnings (35%), and
+                    Trivia/Sort games (15%) into a single leaderboard.
+                </p>
+            </>
+        ),
+        deeper: (
+            <p className="text-white/50">
+                Chips earned from predictions, games, and daily bonuses are stored in your
+                account balance and can be used to place bets in the Confidence Pool. The
+                leaderboard recalculates automatically as real results are submitted — no
+                manual scoring needed. Admin-entered results also feed into the simulation
+                engine, so bracket projections update live as the tournament progresses.
+            </p>
+        ),
+    },
+
+    /* 13 — Sensitivity Analysis */
     {
         id: "sensitivity",
         icon: <Activity className="h-5 w-5" />,
