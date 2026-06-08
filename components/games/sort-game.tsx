@@ -88,6 +88,13 @@ export function SortGame({ target, criterion, difficulty }: SortGameProps) {
         totalPossible: totalRounds * 100,
       }),
     }).catch(() => {})
+    if (totalScore > 0) {
+      fetch("/api/chips/earn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: totalScore, source: "game" }),
+      }).catch(() => {})
+    }
   }, [isComplete, target, difficulty, totalScore, totalRounds])
 
   function handleDragStart(index: number) {

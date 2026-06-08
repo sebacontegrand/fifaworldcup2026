@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid amount" }, { status: 400 })
   }
 
-  if (!source || !["connection", "live_guess"].includes(source)) {
+  if (!source || !["connection", "live_guess", "game"].includes(source)) {
     return NextResponse.json({ error: "Invalid source" }, { status: 400 })
   }
 

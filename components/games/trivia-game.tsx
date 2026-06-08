@@ -64,6 +64,13 @@ export function TriviaGame({ gameType, difficulty }: TriviaGameProps) {
         totalPossible: totalQuestions * 30,
       }),
     }).catch(() => {})
+    if (score > 0) {
+      fetch("/api/chips/earn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: score, source: "game" }),
+      }).catch(() => {})
+    }
   }, [isComplete, gameType, difficulty, score, totalQuestions])
 
   const handleAnswer = useCallback(
