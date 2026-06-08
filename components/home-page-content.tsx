@@ -254,6 +254,72 @@ export function HomePageContent() {
                 </>
             )}
 
+            {/* Methodology */}
+            <section className="mb-12 rounded-xl border border-border/50 bg-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                        Methodology & Sources
+                    </h2>
+                    <Link
+                        href="/methodology"
+                        className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary/80 transition-colors"
+                    >
+                        How It Works →
+                    </Link>
+                </div>
+                <div className="grid grid-cols-1 gap-4 text-xs leading-relaxed text-muted-foreground md:grid-cols-2">
+                    <div>
+                        <h3 className="mb-1 font-semibold text-foreground">
+                            Dixon-Coles / Bayesian Elo Model
+                        </h3>
+                        <p>
+                            Goal predictions use the Dixon-Coles bivariate Poisson model, which
+                            splits each team into per-team attack and defense strength parameters
+                            (λ<sub>home</sub> = exp(μ + attack − defense + home_adv)). A ρ correction
+                            adjusts low-scoring outcome probabilities (0-0, 1-0, 0-1, 1-1). Elo
+                            ratings are treated as Bayesian distributions (μ ± σ), sampled fresh
+                            each Monte Carlo iteration to propagate uncertainty.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 className="mb-1 font-semibold text-foreground">
+                            Monte Carlo Simulation
+                        </h3>
+                        <p>
+                            10,000 full tournament iterations (group stage → Round of 32 → Final)
+                            produce probability distributions for advancement, championship, and
+                            elimination at each stage. Extended analytics include tournament
+                            entropy (bits), penalty shootout likelihood, upset index, and team
+                            volatility rankings based on Bayesian Elo variance.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 className="mb-1 font-semibold text-foreground">
+                            Game Theory — Mixed-Strategy Equilibria
+                        </h3>
+                        <p>
+                            Nash Equilibrium analysis with 3×3 payoff matrices (attacking,
+                            balanced, defensive) now includes mixed-strategy equilibria via
+                            iterated softmax best-response. Context-aware utility functions
+                            differentiate group stage (draw = 1 pt) from knockout (draw ≈ coin
+                            flip) and adjust for scoreline urgency and match minute.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 className="mb-1 font-semibold text-foreground">
+                            Data Sources
+                        </h3>
+                        <p>
+                            FIFA/Coca-Cola World Rankings (Feb 2026), official FIFA World Cup 2026
+                            group draw (Dec 2025), club-level xG and defensive metrics from
+                            2024-25 and 2025-26 European league seasons (Opta/FBref), historical
+                            World Cup match data (1930–2022), and EloRatings.net international
+                            football Elo database.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* Pick Your Team */}
             <section className="mb-12">
                 <div className="rounded-xl border border-border/50 bg-card p-6">
@@ -324,72 +390,6 @@ export function HomePageContent() {
                         <span className="text-xs text-muted-foreground">{link.desc}</span>
                     </Link>
                 ))}
-            </section>
-
-            {/* Methodology */}
-            <section className="mt-12 rounded-xl border border-border/50 bg-card p-6">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">
-                        Methodology & Sources
-                    </h2>
-                    <Link
-                        href="/methodology"
-                        className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary/80 transition-colors"
-                    >
-                        How It Works →
-                    </Link>
-                </div>
-                <div className="grid grid-cols-1 gap-4 text-xs leading-relaxed text-muted-foreground md:grid-cols-2">
-                    <div>
-                        <h3 className="mb-1 font-semibold text-foreground">
-                            Dixon-Coles / Bayesian Elo Model
-                        </h3>
-                        <p>
-                            Goal predictions use the Dixon-Coles bivariate Poisson model, which
-                            splits each team into per-team attack and defense strength parameters
-                            (λ<sub>home</sub> = exp(μ + attack − defense + home_adv)). A ρ correction
-                            adjusts low-scoring outcome probabilities (0-0, 1-0, 0-1, 1-1). Elo
-                            ratings are treated as Bayesian distributions (μ ± σ), sampled fresh
-                            each Monte Carlo iteration to propagate uncertainty.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 className="mb-1 font-semibold text-foreground">
-                            Monte Carlo Simulation
-                        </h3>
-                        <p>
-                            10,000 full tournament iterations (group stage → Round of 32 → Final)
-                            produce probability distributions for advancement, championship, and
-                            elimination at each stage. Extended analytics include tournament
-                            entropy (bits), penalty shootout likelihood, upset index, and team
-                            volatility rankings based on Bayesian Elo variance.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 className="mb-1 font-semibold text-foreground">
-                            Game Theory — Mixed-Strategy Equilibria
-                        </h3>
-                        <p>
-                            Nash Equilibrium analysis with 3×3 payoff matrices (attacking,
-                            balanced, defensive) now includes mixed-strategy equilibria via
-                            iterated softmax best-response. Context-aware utility functions
-                            differentiate group stage (draw = 1 pt) from knockout (draw ≈ coin
-                            flip) and adjust for scoreline urgency and match minute.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 className="mb-1 font-semibold text-foreground">
-                            Data Sources
-                        </h3>
-                        <p>
-                            FIFA/Coca-Cola World Rankings (Feb 2026), official FIFA World Cup 2026
-                            group draw (Dec 2025), club-level xG and defensive metrics from
-                            2024-25 and 2025-26 European league seasons (Opta/FBref), historical
-                            World Cup match data (1930–2022), and EloRatings.net international
-                            football Elo database.
-                        </p>
-                    </div>
-                </div>
             </section>
         </>
     )
