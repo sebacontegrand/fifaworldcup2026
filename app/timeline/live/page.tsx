@@ -110,6 +110,7 @@ export default function LiveResultsPage() {
   const [now, setNow] = useState(Date.now())
   const guessInputs = useRef<Record<string, { scoreA: string; scoreB: string }>>({})
   const overrideInputs = useRef<Record<string, { scoreA: string; scoreB: string }>>({})
+  const guessInputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
   const isAdmin = session?.user?.email?.toLowerCase() === "sebacontegrand@gmail.com"
   const [submittingAdminId, setSubmittingAdminId] = useState<string | null>(null)
@@ -250,24 +251,9 @@ export default function LiveResultsPage() {
   const handleScoreChange = (teamAId: string, teamBId: string, side: "A" | "B", value: string) => {
     const key = `${teamAId}_${teamBId}`
     if (!overrideInputs.current[key]) {
-      const current = tournamentState.matchOverrides[key]
-      overrideInputs.current[key] = {
-        scoreA: current?.scoreA?.toString() ?? "",
-        scoreB: current?.scoreB?.toString() ?? "",
-      }
+      overrideInputs.current[key] = { scoreA: "", scoreB: "" }
     }
     overrideInputs.current[key][side === "A" ? "scoreA" : "scoreB"] = value
-    forceRender()
-  }
-
-  const handleScoreBlur = (teamAId: string, teamBId: string) => {
-    const key = `${teamAId}_${teamBId}`
-    const local = overrideInputs.current[key]
-    if (!local) return
-    const parsedA = parseInt(local.scoreA)
-    const parsedB = parseInt(local.scoreB)
-    if (isNaN(parsedA) || isNaN(parsedB)) return
-    updateMatchResult(teamAId, teamBId, { scoreA: parsedA, scoreB: parsedB } as any)
   }
 
   const handleClearResult = (teamAId: string, teamBId: string) => {
@@ -278,11 +264,7 @@ export default function LiveResultsPage() {
 
   const handleGuessChange = (matchId: string, side: "A" | "B", value: string) => {
     if (!guessInputs.current[matchId]) {
-      const match = matches.find((m) => m.id === matchId)
-      guessInputs.current[matchId] = {
-        scoreA: match?.guess?.scoreA?.toString() ?? "",
-        scoreB: match?.guess?.scoreB?.toString() ?? "",
-      }
+      guessInputs.current[matchId] = { scoreA: "", scoreB: "" }
     }
     guessInputs.current[matchId][side === "A" ? "scoreA" : "scoreB"] = value
   }
@@ -294,12 +276,6 @@ export default function LiveResultsPage() {
     const parsedB = parseInt(inputs.scoreB)
     if (isNaN(parsedA) || isNaN(parsedB)) return
     chipReward.current = (parsedA === 1 && parsedB === 0) || (parsedA === 0 && parsedB === 1) ? 200 : 400
-    setMatches(prev => prev.map(m =>
-      m.id === matchId
-        ? { ...m, guess: { scoreA: parsedA, scoreB: parsedB } }
-        : m
-    ))
-    delete guessInputs.current[matchId]
     saveGuessToServer(matchId, parsedA, parsedB)
   }
 
@@ -307,8 +283,14 @@ export default function LiveResultsPage() {
     if (!guessInputs.current[matchId]) {
       guessInputs.current[matchId] = { scoreA: "", scoreB: "" }
     }
-    guessInputs.current[matchId].scoreA = homeWins ? "1" : "0"
-    guessInputs.current[matchId].scoreB = homeWins ? "0" : "1"
+    const a = homeWins ? "1" : "0"
+    const b = homeWins ? "0" : "1"
+    guessInputs.current[matchId].scoreA = a
+    guessInputs.current[matchId].scoreB = b
+    const aInput = guessInputRefs.current[`${matchId}_A`]
+    const bInput = guessInputRefs.current[`${matchId}_B`]
+    if (aInput) aInput.value = a
+    if (bInput) bInput.value = b
     forceRender()
   }
 
@@ -371,15 +353,15 @@ export default function LiveResultsPage() {
             ) : (
               <>
                 <Input type="number" min="0"
-                  value={overrideInputs.current[overrideKey]?.scoreA ?? override?.scoreA?.toString() ?? ""}
+                  key={`oA_${overrideKey}`}
+                  defaultValue={override?.scoreA?.toString() ?? ""}
                   onChange={(e) => fixture.homeTeamId && fixture.awayTeamId && handleScoreChange(fixture.homeTeamId, fixture.awayTeamId, "A", e.target.value)}
-                  onBlur={() => fixture.homeTeamId && fixture.awayTeamId && handleScoreBlur(fixture.homeTeamId, fixture.awayTeamId)}
                   className="w-10 sm:w-12 h-9 sm:h-10 text-center text-base sm:text-lg font-bold bg-zinc-900 border-white/10" placeholder="-" />
                 <span className="text-white/20 font-black text-xs sm:text-sm">VS</span>
                 <Input type="number" min="0"
-                  value={overrideInputs.current[overrideKey]?.scoreB ?? override?.scoreB?.toString() ?? ""}
+                  key={`oB_${overrideKey}`}
+                  defaultValue={override?.scoreB?.toString() ?? ""}
                   onChange={(e) => fixture.homeTeamId && fixture.awayTeamId && handleScoreChange(fixture.homeTeamId, fixture.awayTeamId, "B", e.target.value)}
-                  onBlur={() => fixture.homeTeamId && fixture.awayTeamId && handleScoreBlur(fixture.homeTeamId, fixture.awayTeamId)}
                   className="w-10 sm:w-12 h-9 sm:h-10 text-center text-base sm:text-lg font-bold bg-zinc-900 border-white/10" placeholder="-" />
               </>
             )}
@@ -434,11 +416,13 @@ export default function LiveResultsPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Score</span>
                   <div className="flex items-center gap-2">
-                    <Input type="number" min="0" value={gInputs.scoreA}
+                    <Input type="number" min="0" defaultValue={guess?.scoreA?.toString() ?? ""}
+                      ref={(el) => { guessInputRefs.current[`${guessKey}_A`] = el }}
                       onChange={(e) => handleGuessChange(guessKey, "A", e.target.value)}
                       className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90" placeholder="-" />
                     <span className="text-yellow-500/40 font-black text-xs">:</span>
-                    <Input type="number" min="0" value={gInputs.scoreB}
+                    <Input type="number" min="0" defaultValue={guess?.scoreB?.toString() ?? ""}
+                      ref={(el) => { guessInputRefs.current[`${guessKey}_B`] = el }}
                       onChange={(e) => handleGuessChange(guessKey, "B", e.target.value)}
                       className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90" placeholder="-" />
                     {savingGuess === guessKey ? (
@@ -447,7 +431,7 @@ export default function LiveResultsPage() {
                       <CheckCircle2 className="h-3 w-3 text-green-400/70 shrink-0" />
                     ) : null}
                     <Button size="sm" onClick={() => handleSubmitGuess(guessKey)}
-                      disabled={savingGuess === guessKey || gInputs.scoreA === "" || gInputs.scoreB === ""}
+                      disabled={savingGuess === guessKey}
                       className="h-7 text-[10px] bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-2.5">
                       {savingGuess === guessKey ? "Saving..." : "Save"}
                     </Button>
@@ -508,10 +492,12 @@ export default function LiveResultsPage() {
                   <Button size="sm"
                     disabled={submittingAdminId === matchDTO.id}
                     onClick={() => {
-                      const local = overrideInputs.current[overrideKey] ?? override
-                      const a = local?.scoreA != null ? Number(local.scoreA) : undefined
-                      const b = local?.scoreB != null ? Number(local.scoreB) : undefined
+                      const local = overrideInputs.current[overrideKey]
+                      const a = local?.scoreA ? parseInt(local.scoreA) : (override?.scoreA ?? undefined)
+                      const b = local?.scoreB ? parseInt(local.scoreB) : (override?.scoreB ?? undefined)
                       if (a == null || b == null || isNaN(a) || isNaN(b)) return
+                      updateMatchResult(fixture.homeTeamId!, fixture.awayTeamId!, { scoreA: a, scoreB: b } as any)
+                      delete overrideInputs.current[overrideKey]
                       handleAdminSubmitFact(matchDTO.id, a, b)
                     }}
                     className="h-6 text-[9px] bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest px-2.5">
