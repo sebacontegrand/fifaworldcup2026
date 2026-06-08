@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { ChipCounter } from "./chip-counter"
 import { Button } from "@/components/ui/button"
@@ -52,6 +52,7 @@ export function SortGame({ target, criterion, difficulty }: SortGameProps) {
   const [started, setStarted] = useState(false)
   const [showCorrectOrder, setShowCorrectOrder] = useState<SortItem[] | null>(null)
   const [revealing, setRevealing] = useState(false)
+  const scoreSaved = useRef(false)
 
   const loadRound = useCallback(() => {
     const q = generateSortQuestion(target, criterion, difficulty)
@@ -69,6 +70,25 @@ export function SortGame({ target, criterion, difficulty }: SortGameProps) {
   useEffect(() => {
     if (started) loadRound()
   }, [started, round, loadRound])
+
+  useEffect(() => {
+    if (!isComplete || scoreSaved.current) return
+    scoreSaved.current = true
+    const typeMap: Record<string, string> = {
+      teams: "sort_teams",
+      players: "sort_players",
+    }
+    fetch("/api/games/score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        gameType: typeMap[target],
+        difficulty,
+        score: totalScore,
+        totalPossible: totalRounds * 100,
+      }),
+    }).catch(() => {})
+  }, [isComplete, target, difficulty, totalScore, totalRounds])
 
   function handleDragStart(index: number) {
     if (submitted) return
@@ -229,6 +249,7 @@ export function SortGame({ target, criterion, difficulty }: SortGameProps) {
                 setRound(0)
                 setIsComplete(false)
                 setStarted(true)
+                scoreSaved.current = false
                 loadRound()
               }}
             >

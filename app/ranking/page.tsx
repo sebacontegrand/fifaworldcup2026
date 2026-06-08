@@ -21,6 +21,7 @@ interface OverallEntry {
   connection: { bestScore: number; skill: number; gamesPlayed: number }
   prediction: { totalPoints: number; skill: number; totalGuesses: number }
   pool: { totalPayout: number; skill: number; totalBets: number }
+  games: { bestScore: number; skill: number; totalGames: number }
 }
 
 interface OverallLeaderboardData {
@@ -136,7 +137,7 @@ export default function RankingPage() {
             <span className="text-yellow-400">Overall</span> Rankings
           </h1>
           <p className="text-sm text-muted-foreground">
-            Weighted composite — Connections ×25%, Predictions ×35%, Pool ×40%.
+            Weighted composite — Connections ×20%, Predictions ×30%, Pool ×35%, Games ×15%.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={fetchOverallLeaderboard} disabled={loading} className="border-white/10">
@@ -160,6 +161,7 @@ export default function RankingPage() {
                   <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden sm:table-cell">Conn.</th>
                   <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden sm:table-cell">Pred.</th>
                   <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden md:table-cell">Pool</th>
+                  <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden md:table-cell">Games</th>
                   {showAdmin && <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Adj.</th>}
                 </tr>
               </thead>
@@ -206,6 +208,9 @@ export default function RankingPage() {
                       </td>
                       <td className="px-4 sm:px-6 py-4 text-right text-white/60 font-bold hidden md:table-cell tabular-nums">
                         {entry.pool.skill.toFixed(0)}
+                      </td>
+                      <td className="px-4 sm:px-6 py-4 text-right text-white/60 font-bold hidden md:table-cell tabular-nums">
+                        {entry.games.skill.toFixed(0)}
                       </td>
                       {showAdmin && (
                         <td className="px-4 sm:px-6 py-4 text-right">
@@ -283,11 +288,14 @@ export default function RankingPage() {
           <Award className="h-16 w-16 mx-auto mb-4 opacity-20" />
           <h2 className="text-xl font-bold mb-2">No rankings yet</h2>
           <p className="text-sm max-w-md mx-auto">
-            Play Connections, submit predictions, and bet in the Confidence Pool to build your overall score.
+            Play Connections, Trivia, Sort games, submit predictions, and bet in the Confidence Pool to build your overall score.
           </p>
           <div className="flex gap-3 justify-center mt-6 flex-wrap">
             <Link href="/connection">
               <Button variant="outline" className="border-white/10">Play Connections</Button>
+            </Link>
+            <Link href="/games">
+              <Button variant="outline" className="border-white/10">Play Games</Button>
             </Link>
             <Link href="/timeline/live">
               <Button variant="outline" className="border-white/10">Make Predictions</Button>

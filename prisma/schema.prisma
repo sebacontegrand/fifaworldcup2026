@@ -23,6 +23,7 @@ model User {
   chipBalance         ChipBalance?
   userCards           UserCard[]
   connectionScores    ConnectionScore[]
+  gameScores          GameScore[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -204,6 +205,22 @@ model ConnectionScore {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([score])
+}
+
+model GameScore {
+  id        String   @id @default(cuid())
+  userId    String
+  gameType  String   // "trivia_flag" | "trivia_kit" | "trivia_player" | "sort_teams" | "sort_players"
+  difficulty String  // "easy" | "medium" | "hard"
+  score     Int
+  totalPossible Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 
   @@index([userId])
   @@index([score])

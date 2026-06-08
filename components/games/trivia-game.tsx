@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { TriviaQuestion } from "./trivia-question"
 import { ChipCounter } from "./chip-counter"
@@ -37,6 +37,7 @@ export function TriviaGame({ gameType, difficulty }: TriviaGameProps) {
   const [isComplete, setIsComplete] = useState(false)
   const [started, setStarted] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
+  const scoreSaved = useRef(false)
 
   const totalQuestions = getItemCountForDifficulty(difficulty)
 
@@ -44,6 +45,26 @@ export function TriviaGame({ gameType, difficulty }: TriviaGameProps) {
     const batch = generateQuestionBatch(gameType, difficulty, totalQuestions)
     setQuestions(batch)
   }, [gameType, difficulty, totalQuestions])
+
+  useEffect(() => {
+    if (!isComplete || scoreSaved.current) return
+    scoreSaved.current = true
+    const typeMap: Record<string, string> = {
+      flag: "trivia_flag",
+      kit: "trivia_kit",
+      player: "trivia_player",
+    }
+    fetch("/api/games/score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        gameType: typeMap[gameType],
+        difficulty,
+        score,
+        totalPossible: totalQuestions * 30,
+      }),
+    }).catch(() => {})
+  }, [isComplete, gameType, difficulty, score, totalQuestions])
 
   const handleAnswer = useCallback(
     (correct: boolean) => {
@@ -89,6 +110,7 @@ export function TriviaGame({ gameType, difficulty }: TriviaGameProps) {
     setIsComplete(false)
     setStarted(true)
     setShowCelebration(false)
+    scoreSaved.current = false
   }
 
   if (!started) {
