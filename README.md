@@ -1,45 +1,64 @@
-# ⚽ FIFA World Cup 2026 Simulation & Analytics
+# FIFA World Cup 2026 — Simulation, Predictions & Games
 
-A high-performance forecasting engine and interactive dashboard for the 2026 FIFA World Cup. This application leverages advanced statistical models and game theory analysis to predict tournament outcomes with precision.
+A high-performance tournament forecasting engine, prediction pool, and interactive games hub for the 2026 FIFA World Cup. Built with Next.js 16, TypeScript, and PostgreSQL.
 
-![Hero Banner](https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000)
+## Features
 
-## 🚀 Key Features
+### Simulation Engine
+- **10,000 Monte Carlo iterations** producing stable probability distributions for every team at every stage
+- **Dixon-Coles bivariate Poisson model** for match score prediction with low-score correction factor
+- **Bayesian Elo sampling** — ratings drawn from `N(mean, sigma)` per iteration to propagate uncertainty
+- **Tactical style modifiers** — Normal / Attacking / Defensive affect attack/defense strengths
+- **Chaos factor & upset index** — adjustable to control randomness
+- **Host advantage** — configurable Elo boost for USA / Mexico / Canada
+- **Match overrides & stage anchors** — pin specific results or force teams into semifinals/finals
 
-### 🎲 Advanced Simulation Engine
-- **10,000 Monte Carlo Iterations**: Every tournament outcome is simulated 10,000 times to produce stable probability distributions.
-- **Dynamic Elo Rating System**: Real-time win probabilities based on FIFA rankings and adjusted Elo ratings.
-- **Poisson Distribution Modeling**: Match scores are predicted using goal-frequency statistics calibrated to international football.
+### Game Theory Engine
+- 3x3 strategy matrices (attacking / balanced / defensive)
+- Mixed-strategy Nash Equilibrium via iterated softmax best-response
+- Context-aware utility (group stage vs. knockout, scoreline, minute)
 
-### 📊 Interactive Analytics
-- **Live Knockout Bracket**: Visualize the most likely paths to the final with real-time probability updates.
-- **Group Stage Deep-Dive**: Analysis of all 12 groups, including automated "Group of Death" identification.
-- **Simulation Controls**: Adjust global variables like "Chaos Factor" or specific team settings (injuries, tactical styles) to see how they impact tournament outcomes.
+### Prediction Pool
+- Chip-based betting on match outcomes
+- Power-up cards: double down, hedge, lock in, scout, insurance, boost
+- Odds multipliers and daily streaks
+- Persistent balance via database + localStorage fallback
 
-### 🎯 Strategic Insights
-- **Game Theory Analysis**: Nash Equilibrium evaluations for tactical matchups (Attacking vs. Defensive strategies).
-- **Squad Impact Simulation**: Track how the absence of star players affects a team's championship probability.
-- **"My Team" Tracker**: Follow your favorite nation through the tournament with dedicated metrics and projections.
+### Connection Game
+- Graph-based puzzle connecting two footballers through shared clubs
+- Bipartite player-club graph with shortest-path search
+- Wikidata-backed player data
+- Chip rewards per difficulty
 
-## 🛠️ Tech Stack
+### Games Hub
+- Trivia and sorting mini-games
+- Scores synced to ranking with 15% weight
+- Chip earnings per completion
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Vanilla CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
-- **Visuals**: [Framer Motion](https://www.framer.com/motion/) (Animations) & [Recharts](https://recharts.org/) (Data Visualization)
-- **UI Components**: [Radix UI](https://www.radix-ui.com/) primitives
+### Rankings
+- Composite leaderboard across Connection (20%), Predictions (30%), Pool (35%), and Games (15%)
 
-## 📈 Methodology
+### Team & Tournament Data
+- All 48 qualified teams with Elo ratings, attack/defense strengths, kits, top players
+- Group stage schedule with home/away, dates, times
+- Live bracket view, group of death analysis, player rankings
 
-Our prediction model is built on three core pillars:
+## Tech Stack
 
-1.  **Elo Rating Adjustment**: `E = 1 / (1 + 10^((Rb - Ra) / 400))` adjusted for home advantage and squad strength.
-2.  **Match Simulation**: Goal scoring follows a **Poisson Point Process**, where the expected goals are derived from offensive and defensive ratings.
-3.  **Tactical Matrix**: 3x3 payoff matrices simulate manager decisions, identifying optimal strategies for underdog vs. favorite matchups.
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Next.js 16 (App Router) |
+| **Language** | TypeScript 5.7 |
+| **Styling** | Tailwind CSS v4, shadcn/ui (New York style) |
+| **Database** | PostgreSQL + Prisma 6 |
+| **Auth** | NextAuth v4 (Google & GitHub OAuth) |
+| **Animation** | Framer Motion (`motion`) |
+| **Charts** | Recharts |
+| **Icons** | Lucide React |
 
-## 🏁 Getting Started
+## Getting Started
 
-First, install the dependencies:
+1. Clone the repository and install dependencies:
 
 ```bash
 npm install
@@ -47,13 +66,94 @@ npm install
 pnpm install
 ```
 
-Then, run the development server:
+2. Copy `.env.example` to `.env.local` and fill in the required variables:
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth credentials |
+| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | GitHub OAuth credentials |
+| `AUTH_SECRET` | NextAuth secret (random 32-byte hex) |
+| `NEXTAUTH_URL` | Production deployment URL |
+
+3. Set up the database:
+
+```bash
+npx prisma migrate dev
+npm run seed
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the simulator in action.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run lint` | Run ESLint |
+| `npm run seed` | Seed database (matches + card templates) |
+| `npx prisma migrate dev` | Run database migrations |
+| `npx prisma generate` | Regenerate Prisma client |
+
+## Architecture
+
+### Routes
+
+| Path | Page |
+|------|------|
+| `/` | Dashboard with simulation controls |
+| `/teams` | Team overview |
+| `/players` | Player rankings |
+| `/groups` | Group breakdowns |
+| `/bracket` | Tournament bracket |
+| `/ranking` | Overall leaderboard |
+| `/simulate` | Monte Carlo simulation dashboard |
+| `/analysis` | Statistical analysis |
+| `/methodology` | Model documentation & sources |
+| `/my-team` | Favorite team tracker |
+| `/pool` | Prediction pool (chips & cards) |
+| `/connection` | Connection puzzle game |
+| `/games` | Mini-games hub |
+
+### Key Directories
+
+```
+app/          — Next.js App Router pages and API routes
+components/   — React components (UI + custom)
+lib/          — Shared logic (simulation, game theory, hooks, DB)
+prisma/       — Schema, migrations, seed script
+data/         — Static datasets (teams, players, schedule)
+tests/        — Python Playwright E2E tests
+```
+
+## Model Details
+
+### Dixon-Coles Bivariate Poisson
+Match goals are modeled as correlated Poisson variables with a low-score correction (`ρ = -0.13`). Each team has attack and defense strength parameters, and expected goals are calculated as:
+
+```
+λ_home = exp(μ + attack_home − defense_away + home_advantage)
+λ_away = exp(μ + attack_away − defense_home)
+```
+
+### Bayesian Elo
+Elo ratings are treated as distributions rather than point estimates. Each Monte Carlo iteration samples fresh ratings from `N(mean, σ)` where σ is scaled by `√(entropyMultiplier)`, propagating parameter uncertainty into outcome distributions.
+
+## Testing
+
+E2E tests use Python Playwright:
+
+```bash
+cd tests && bash run.sh
+```
 
 ---
-*Built with ❤️ for the beautiful game.*
+
+*Built for the beautiful game.*
