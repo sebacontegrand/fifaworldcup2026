@@ -275,6 +275,7 @@ export default function LiveResultsPage() {
       }
     }
     guessInputs.current[matchId][side === "A" ? "scoreA" : "scoreB"] = value
+    forceRender()
   }
 
   const handleSubmitGuess = (matchId: string) => {
