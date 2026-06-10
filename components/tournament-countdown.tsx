@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 
-const TOURNAMENT_START = new Date("2026-06-11T00:00:00Z").getTime()
+// Argentina (UTC-3): June 11, 14:30 → UTC: June 11, 17:30
+const TOURNAMENT_START = new Date("2026-06-11T17:30:00Z").getTime()
 
 function calcTimeLeft() {
   const now = Date.now()
