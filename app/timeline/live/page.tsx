@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback, useRef } from "react"
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { useSession } from "next-auth/react"
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import type { GroupStanding } from "@/lib/simulation"
@@ -93,13 +93,13 @@ function findMatchDTO(matches: MatchDTO[], teamAId: string | null, teamBId: stri
   )
 }
 
-const scheduleDays = getScheduleByDay()
-const dayValues = scheduleDays.map((d) => d.date)
-const defaultTab = dayValues[0] ?? "leaderboard"
-
 export default function LiveResultsPage() {
   const { data: session } = useSession()
   const { tournamentState, updateMatchResult, simulate, isRunning, resetConfig, result } = useSimulation()
+
+  const scheduleDays = useMemo(() => getScheduleByDay(), [])
+  const dayValues = useMemo(() => scheduleDays.map((d) => d.date), [scheduleDays])
+  const defaultTab = dayValues[0] ?? "leaderboard"
 
   const [matches, setMatches] = useState<MatchDTO[]>([])
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
