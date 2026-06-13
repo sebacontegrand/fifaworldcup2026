@@ -332,8 +332,32 @@ export default function LiveResultsPage() {
               <span className="text-[9px] text-yellow-400/60 font-mono tabular-nums">{countdown}</span>
             )}
           </div>
-          <span className="text-[9px] text-white/30">{fixture.time}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] text-white/30">{fixture.time}</span>
+            {fixture.timeArt && (
+              <span className="text-[7px] text-white/20 font-mono hidden sm:inline">ART {fixture.timeArt}</span>
+            )}
+            {fixture.tvArgentina && fixture.tvArgentina.length > 0 && (
+              <span className="text-[7px] text-blue-400/60 font-medium tracking-wider hidden sm:inline-flex items-center gap-1 border border-blue-400/15 rounded-full px-1.5 py-0.5 bg-blue-400/5">
+                AR: {fixture.tvArgentina.join(", ")}
+              </span>
+            )}
+          </div>
         </div>
+
+        {(fixture.tvArgentina?.length || fixture.timeArt) && (
+          <div className="flex items-center gap-2 px-3 py-1 bg-blue-500/[0.02] border-t border-blue-500/5 sm:hidden">
+            {fixture.timeArt && (
+              <span className="text-[7px] text-white/30 font-mono">ART {fixture.timeArt}</span>
+            )}
+            {fixture.tvArgentina && fixture.tvArgentina.length > 0 && (
+              <>
+                {fixture.timeArt && <span className="text-white/10">|</span>}
+                <span className="text-[7px] text-blue-400/60">{fixture.tvArgentina.join(", ")}</span>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Score Row */}
         <div className={cn("flex items-center justify-between px-3 py-2.5", isSet ? "bg-green-500/5" : "")}>

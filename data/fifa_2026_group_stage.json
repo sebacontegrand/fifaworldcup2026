@@ -1,6 +1,10 @@
 {
   "tournament": "FIFA World Cup 2026",
-  "host_countries": ["Canada", "Mexico", "United States"],
+  "host_countries": [
+    "Canada",
+    "Mexico",
+    "United States"
+  ],
   "start_date": "2026-06-11",
   "end_date": "2026-07-19",
   "total_matches": 104,
@@ -17,7 +21,14 @@
       "away_team": "South Africa",
       "stadium": "Mexico City Stadium",
       "city": "Mexico City",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 2,
@@ -30,7 +41,11 @@
       "away_team": "Czechia",
       "stadium": "Estadio Guadalajara",
       "city": "Zapopan",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 3,
@@ -43,7 +58,13 @@
       "away_team": "Bosnia and Herzegovina",
       "stadium": "Toronto Stadium",
       "city": "Toronto",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 4,
@@ -56,7 +77,12 @@
       "away_team": "Paraguay",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 5,
@@ -69,7 +95,12 @@
       "away_team": "Switzerland",
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "01:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 6,
@@ -82,7 +113,11 @@
       "away_team": "Morocco",
       "stadium": "New York New Jersey Stadium",
       "city": "New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "14:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 7,
@@ -95,20 +130,33 @@
       "away_team": "Scotland",
       "stadium": "Boston Stadium",
       "city": "Boston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 8,
       "stage": "Group Stage",
       "group": "D",
-      "date": "2026-06-13",
+      "date": "2026-06-14",
       "time_local": "21:00 PT",
       "time_utc": "04:00 UTC (Jun 14)",
       "home_team": "Australia",
       "away_team": "Turkiye",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "20:00",
+      "tv_argentina": [
+        "DSports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 9,
@@ -121,7 +169,12 @@
       "away_team": "Curacao",
       "stadium": "Houston Stadium",
       "city": "Houston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "23:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 10,
@@ -134,7 +187,11 @@
       "away_team": "Japan",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "13:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 11,
@@ -147,7 +204,12 @@
       "away_team": "Ecuador",
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports 2",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 12,
@@ -160,7 +222,14 @@
       "away_team": "Tunisia",
       "stadium": "Estadio Monterrey",
       "city": "Guadalupe",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 13,
@@ -173,7 +242,12 @@
       "away_team": "Cape Verde",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 14,
@@ -186,7 +260,11 @@
       "away_team": "Egypt",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 15,
@@ -199,7 +277,12 @@
       "away_team": "Uruguay",
       "stadium": "Miami Stadium",
       "city": "Miami",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports 2",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 16,
@@ -212,7 +295,15 @@
       "away_team": "New Zealand",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "TV P\u00fablica",
+        "Disney+"
+      ]
     },
     {
       "match_number": 17,
@@ -225,7 +316,12 @@
       "away_team": "Senegal",
       "stadium": "New York New Jersey Stadium",
       "city": "New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "01:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 18,
@@ -238,7 +334,11 @@
       "away_team": "Norway",
       "stadium": "Boston Stadium",
       "city": "Boston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "14:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 19,
@@ -251,7 +351,14 @@
       "away_team": "Algeria",
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 20,
@@ -264,7 +371,12 @@
       "away_team": "Jordan",
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "20:00",
+      "tv_argentina": [
+        "DSports 2",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 21,
@@ -277,7 +389,12 @@
       "away_team": "DR Congo",
       "stadium": "Houston Stadium",
       "city": "Houston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "23:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 22,
@@ -290,7 +407,12 @@
       "away_team": "Croatia",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "13:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 23,
@@ -303,7 +425,13 @@
       "away_team": "Panama",
       "stadium": "Toronto Stadium",
       "city": "Toronto",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 24,
@@ -316,7 +444,11 @@
       "away_team": "Colombia",
       "stadium": "Mexico City Stadium",
       "city": "Mexico City",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 25,
@@ -329,7 +461,12 @@
       "away_team": "South Africa",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 26,
@@ -342,7 +479,13 @@
       "away_team": "Bosnia and Herzegovina",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Disney+"
+      ]
     },
     {
       "match_number": 27,
@@ -355,7 +498,13 @@
       "away_team": "Qatar",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 28,
@@ -368,7 +517,12 @@
       "away_team": "South Korea",
       "stadium": "Estadio Guadalajara",
       "city": "Zapopan",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "21:30",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 29,
@@ -381,7 +535,11 @@
       "away_team": "Morocco",
       "stadium": "Boston Stadium",
       "city": "Boston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "00:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 30,
@@ -394,7 +552,12 @@
       "away_team": "Australia",
       "stadium": "Seattle Stadium",
       "city": "Seattle",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "14:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 31,
@@ -407,7 +570,14 @@
       "away_team": "Haiti",
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 32,
@@ -420,7 +590,11 @@
       "away_team": "Paraguay",
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "21:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 33,
@@ -433,7 +607,11 @@
       "away_team": "Sweden",
       "stadium": "Houston Stadium",
       "city": "Houston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "01:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 34,
@@ -446,7 +624,14 @@
       "away_team": "Ivory Coast",
       "stadium": "Toronto Stadium",
       "city": "Toronto",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "13:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 35,
@@ -459,7 +644,11 @@
       "away_team": "Curacao",
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 36,
@@ -472,7 +661,13 @@
       "away_team": "Japan",
       "stadium": "Estadio Monterrey",
       "city": "Guadalupe",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 37,
@@ -485,7 +680,12 @@
       "away_team": "Saudi Arabia",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 38,
@@ -498,7 +698,15 @@
       "away_team": "Iran",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "14:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "TV P\u00fablica",
+        "Disney+"
+      ]
     },
     {
       "match_number": 39,
@@ -511,7 +719,11 @@
       "away_team": "Cape Verde",
       "stadium": "Miami Stadium",
       "city": "Miami",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "18:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 40,
@@ -524,7 +736,12 @@
       "away_team": "Egypt",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "21:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 41,
@@ -537,7 +754,11 @@
       "away_team": "Austria",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "00:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 42,
@@ -550,7 +771,14 @@
       "away_team": "Iraq",
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "14:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 43,
@@ -563,7 +791,13 @@
       "away_team": "Senegal",
       "stadium": "New York New Jersey Stadium",
       "city": "New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": [
+        "DSports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 44,
@@ -576,7 +810,12 @@
       "away_team": "Algeria",
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "20:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 45,
@@ -589,7 +828,11 @@
       "away_team": "Uzbekistan",
       "stadium": "Houston Stadium",
       "city": "Houston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "23:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 46,
@@ -602,7 +845,12 @@
       "away_team": "Ghana",
       "stadium": "Boston Stadium",
       "city": "Boston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 47,
@@ -615,7 +863,11 @@
       "away_team": "Croatia",
       "stadium": "Toronto Stadium",
       "city": "Toronto",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports 2"
+      ]
     },
     {
       "match_number": 48,
@@ -628,7 +880,13 @@
       "away_team": "DR Congo",
       "stadium": "Estadio Guadalajara",
       "city": "Zapopan",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 49,
@@ -641,7 +899,12 @@
       "away_team": "Canada",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "19:00",
+      "tv_argentina": [
+        "DSports+",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 50,
@@ -654,7 +917,11 @@
       "away_team": "Qatar",
       "stadium": "Seattle Stadium",
       "city": "Seattle",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 51,
@@ -667,7 +934,12 @@
       "away_team": "Brazil",
       "stadium": "Miami Stadium",
       "city": "Miami",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": [
+        "DSports+",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 52,
@@ -680,7 +952,11 @@
       "away_team": "Haiti",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": [
+        "DSports 2"
+      ]
     },
     {
       "match_number": 53,
@@ -693,7 +969,14 @@
       "away_team": "Mexico",
       "stadium": "Mexico City Stadium",
       "city": "Mexico City",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "17:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 54,
@@ -706,7 +989,12 @@
       "away_team": "South Korea",
       "stadium": "Estadio Monterrey",
       "city": "Guadalupe",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "20:00",
+      "tv_argentina": [
+        "DSports+",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 55,
@@ -719,7 +1007,12 @@
       "away_team": "Germany",
       "stadium": "New York New Jersey Stadium",
       "city": "New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "20:00",
+      "tv_argentina": [
+        "DSports",
+        "TV P\u00fablica"
+      ]
     },
     {
       "match_number": 56,
@@ -732,7 +1025,12 @@
       "away_team": "Ivory Coast",
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "23:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 57,
@@ -745,7 +1043,13 @@
       "away_team": "Sweden",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "23:00",
+      "tv_argentina": [
+        "DSports 2",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 58,
@@ -758,7 +1062,14 @@
       "away_team": "Netherlands",
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 59,
@@ -771,7 +1082,11 @@
       "away_team": "USA",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": [
+        "DSports 2"
+      ]
     },
     {
       "match_number": 60,
@@ -784,7 +1099,11 @@
       "away_team": "Australia",
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "21:00",
+      "tv_argentina": [
+        "DSports 2"
+      ]
     },
     {
       "match_number": 61,
@@ -797,7 +1116,14 @@
       "away_team": "France",
       "stadium": "Boston Stadium",
       "city": "Boston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "21:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "Disney+"
+      ]
     },
     {
       "match_number": 62,
@@ -810,7 +1136,12 @@
       "away_team": "Iraq",
       "stadium": "Toronto Stadium",
       "city": "Toronto",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "00:00",
+      "tv_argentina": [
+        "DSports+",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 63,
@@ -823,7 +1154,11 @@
       "away_team": "Saudi Arabia",
       "stadium": "Houston Stadium",
       "city": "Houston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "00:00",
+      "tv_argentina": [
+        "DSports+"
+      ]
     },
     {
       "match_number": 64,
@@ -836,7 +1171,13 @@
       "away_team": "Spain",
       "stadium": "Estadio Guadalajara",
       "city": "Zapopan",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "18:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "TV P\u00fablica"
+      ]
     },
     {
       "match_number": 65,
@@ -849,7 +1190,11 @@
       "away_team": "Iran",
       "stadium": "Seattle Stadium",
       "city": "Seattle",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "18:00",
+      "tv_argentina": [
+        "DSports"
+      ]
     },
     {
       "match_number": 66,
@@ -862,7 +1207,11 @@
       "away_team": "Belgium",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "20:30",
+      "tv_argentina": [
+        "DSports 2"
+      ]
     },
     {
       "match_number": 67,
@@ -875,7 +1224,12 @@
       "away_team": "England",
       "stadium": "New York New Jersey Stadium",
       "city": "New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "20:30",
+      "tv_argentina": [
+        "DSports+",
+        "TyC Sports"
+      ]
     },
     {
       "match_number": 68,
@@ -888,7 +1242,11 @@
       "away_team": "Ghana",
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "23:00",
+      "tv_argentina": [
+        "DSports+"
+      ]
     },
     {
       "match_number": 69,
@@ -901,7 +1259,15 @@
       "away_team": "Portugal",
       "stadium": "Miami Stadium",
       "city": "Miami",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "23:00",
+      "tv_argentina": [
+        "DSports",
+        "TyC Sports",
+        "Telef\u00e9",
+        "TV P\u00fablica",
+        "Disney+"
+      ]
     },
     {
       "match_number": 70,
@@ -914,7 +1280,9 @@
       "away_team": "Uzbekistan",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": null,
+      "tv_argentina": null
     },
     {
       "match_number": 71,
@@ -927,7 +1295,9 @@
       "away_team": "Austria",
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
-      "country": "USA"
+      "country": "USA",
+      "time_art": null,
+      "tv_argentina": null
     },
     {
       "match_number": 72,
@@ -940,7 +1310,9 @@
       "away_team": "Argentina",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": null,
+      "tv_argentina": null
     },
     {
       "match_number": 73,
@@ -953,7 +1325,9 @@
       "away_team": "TBD",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": []
     },
     {
       "match_number": 74,
@@ -966,7 +1340,9 @@
       "away_team": "TBD",
       "stadium": "Houston Stadium",
       "city": "Houston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:30",
+      "tv_argentina": []
     },
     {
       "match_number": 75,
@@ -979,7 +1355,9 @@
       "away_team": "TBD",
       "stadium": "Boston Stadium",
       "city": "Boston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": []
     },
     {
       "match_number": 76,
@@ -992,7 +1370,9 @@
       "away_team": "TBD",
       "stadium": "Estadio Monterrey",
       "city": "Guadalupe",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "14:00",
+      "tv_argentina": []
     },
     {
       "match_number": 77,
@@ -1005,7 +1385,9 @@
       "away_team": "TBD",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "18:00",
+      "tv_argentina": []
     },
     {
       "match_number": 78,
@@ -1018,7 +1400,9 @@
       "away_team": "TBD",
       "stadium": "New York New Jersey Stadium",
       "city": "New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "14:00",
+      "tv_argentina": []
     },
     {
       "match_number": 79,
@@ -1031,7 +1415,9 @@
       "away_team": "TBD",
       "stadium": "Mexico City Stadium",
       "city": "Mexico City",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "22:00",
+      "tv_argentina": []
     },
     {
       "match_number": 80,
@@ -1044,7 +1430,9 @@
       "away_team": "TBD",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "13:00",
+      "tv_argentina": []
     },
     {
       "match_number": 81,
@@ -1057,7 +1445,9 @@
       "away_team": "TBD",
       "stadium": "Seattle Stadium",
       "city": "Seattle",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "21:00",
+      "tv_argentina": []
     },
     {
       "match_number": 82,
@@ -1070,7 +1460,9 @@
       "away_team": "TBD",
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": []
     },
     {
       "match_number": 83,
@@ -1083,7 +1475,9 @@
       "away_team": "TBD",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "20:00",
+      "tv_argentina": []
     },
     {
       "match_number": 84,
@@ -1096,7 +1490,9 @@
       "away_team": "TBD",
       "stadium": "Toronto Stadium",
       "city": "Toronto",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "16:00",
+      "tv_argentina": []
     },
     {
       "match_number": 85,
@@ -1109,7 +1505,9 @@
       "away_team": "TBD",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "00:00",
+      "tv_argentina": []
     },
     {
       "match_number": 86,
@@ -1122,7 +1520,9 @@
       "away_team": "TBD",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "19:00",
+      "tv_argentina": []
     },
     {
       "match_number": 87,
@@ -1135,7 +1535,9 @@
       "away_team": "TBD",
       "stadium": "Miami Stadium",
       "city": "Miami",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:30",
+      "tv_argentina": []
     },
     {
       "match_number": 88,
@@ -1148,7 +1550,9 @@
       "away_team": "TBD",
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "15:00",
+      "tv_argentina": []
     },
     {
       "match_number": 89,
@@ -1161,7 +1565,9 @@
       "away_team": "TBD",
       "stadium": "Houston Stadium",
       "city": "Houston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "18:00",
+      "tv_argentina": []
     },
     {
       "match_number": 90,
@@ -1174,7 +1580,9 @@
       "away_team": "TBD",
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "14:00",
+      "tv_argentina": []
     },
     {
       "match_number": 91,
@@ -1187,7 +1595,9 @@
       "away_team": "TBD",
       "stadium": "New York New Jersey Stadium",
       "city": "New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": []
     },
     {
       "match_number": 92,
@@ -1200,7 +1610,9 @@
       "away_team": "TBD",
       "stadium": "Mexico City Stadium",
       "city": "Mexico City",
-      "country": "Mexico"
+      "country": "Mexico",
+      "time_art": "21:00",
+      "tv_argentina": []
     },
     {
       "match_number": 93,
@@ -1213,7 +1625,9 @@
       "away_team": "TBD",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": []
     },
     {
       "match_number": 94,
@@ -1226,7 +1640,9 @@
       "away_team": "TBD",
       "stadium": "Seattle Stadium",
       "city": "Seattle",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "21:00",
+      "tv_argentina": []
     },
     {
       "match_number": 95,
@@ -1239,7 +1655,9 @@
       "away_team": "TBD",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "13:00",
+      "tv_argentina": []
     },
     {
       "match_number": 96,
@@ -1252,7 +1670,9 @@
       "away_team": "TBD",
       "stadium": "BC Place",
       "city": "Vancouver",
-      "country": "Canada"
+      "country": "Canada",
+      "time_art": "17:00",
+      "tv_argentina": []
     },
     {
       "match_number": 97,
@@ -1265,7 +1685,9 @@
       "away_team": "TBD",
       "stadium": "Boston Stadium",
       "city": "Boston",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "17:00",
+      "tv_argentina": []
     },
     {
       "match_number": 98,
@@ -1278,7 +1700,9 @@
       "away_team": "TBD",
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": []
     },
     {
       "match_number": 99,
@@ -1291,7 +1715,9 @@
       "away_team": "TBD",
       "stadium": "Miami Stadium",
       "city": "Miami",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "18:00",
+      "tv_argentina": []
     },
     {
       "match_number": 100,
@@ -1304,7 +1730,9 @@
       "away_team": "TBD",
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "22:00",
+      "tv_argentina": []
     },
     {
       "match_number": 101,
@@ -1317,7 +1745,9 @@
       "away_team": "TBD",
       "stadium": "Dallas Stadium",
       "city": "Dallas",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": []
     },
     {
       "match_number": 102,
@@ -1330,7 +1760,9 @@
       "away_team": "TBD",
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": []
     },
     {
       "match_number": 103,
@@ -1343,7 +1775,9 @@
       "away_team": "TBD",
       "stadium": "Miami Stadium",
       "city": "Miami",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "18:00",
+      "tv_argentina": []
     },
     {
       "match_number": 104,
@@ -1356,7 +1790,9 @@
       "away_team": "TBD",
       "stadium": "New York New Jersey Stadium",
       "city": "East Rutherford, New Jersey",
-      "country": "USA"
+      "country": "USA",
+      "time_art": "16:00",
+      "tv_argentina": []
     }
   ]
 }

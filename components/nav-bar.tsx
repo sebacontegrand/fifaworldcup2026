@@ -259,7 +259,7 @@ export function NavBar() {
                 </button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] border-l border-white/10 bg-background/90 backdrop-blur-2xl p-6 flex flex-col justify-between">
-                <div>
+                <div className="min-h-0 overflow-y-auto -mx-2 px-2">
                   <SheetHeader className="mb-6">
                     <SheetTitle className="text-left text-xs font-black uppercase tracking-widest text-muted-foreground">
                       Tournament Menu

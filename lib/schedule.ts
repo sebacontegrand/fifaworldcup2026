@@ -15,6 +15,8 @@ export interface ScheduleMatch {
   homeTeamFlag: string | null
   awayTeamFlag: string | null
   mapped: boolean
+  timeArt: string | null
+  tvArgentina: string[] | null
 }
 
 export interface DaySchedule {
@@ -145,6 +147,8 @@ export function getScheduleByDay(): DaySchedule[] {
       homeTeamFlag: home?.flag ?? null,
       awayTeamFlag: away?.flag ?? null,
       mapped: !!home && !!away,
+      timeArt: m.time_art ?? null,
+      tvArgentina: m.tv_argentina ?? null,
     }
   })
 
