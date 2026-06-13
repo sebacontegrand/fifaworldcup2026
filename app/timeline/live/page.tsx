@@ -374,7 +374,7 @@ export default function LiveResultsPage() {
                 <span className="text-xl sm:text-2xl font-black text-green-400">{matchDTO.scoreB}</span>
                 <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[9px] ml-1">Fact</Badge>
               </div>
-            ) : (
+            ) : isAdmin ? (
               <>
                 <Input type="number" min="0"
                   key={`oA_${overrideKey}`}
@@ -388,13 +388,15 @@ export default function LiveResultsPage() {
                   onChange={(e) => fixture.homeTeamId && fixture.awayTeamId && handleScoreChange(fixture.homeTeamId, fixture.awayTeamId, "B", e.target.value)}
                   className="w-10 sm:w-12 h-9 sm:h-10 text-center text-base sm:text-lg font-bold bg-zinc-900 border-white/10" placeholder="-" />
               </>
+            ) : (
+              <span className="text-white/20 font-black text-xs sm:text-sm">VS</span>
             )}
           </div>
 
           <div className="flex items-center justify-end gap-1 sm:gap-2 w-[90px] sm:w-[130px]">
             <span className="text-xs sm:text-sm font-bold truncate text-right">{fixture.awayTeam}</span>
             {fixture.awayTeamId && <img src={getFlagImageUrl(fixture.awayTeamId, 28)} alt="" className="h-6 w-6 object-contain" />}
-            {isSet && !matchDTO?.isFact && fixture.homeTeamId && fixture.awayTeamId && (
+            {isSet && !matchDTO?.isFact && isAdmin && fixture.homeTeamId && fixture.awayTeamId && (
               <Button variant="ghost" size="icon" onClick={() => handleClearResult(fixture.homeTeamId!, fixture.awayTeamId!)} className="h-5 w-5 text-white/20 hover:text-red-400">
                 <RotateCcw className="h-2.5 w-2.5" />
               </Button>
