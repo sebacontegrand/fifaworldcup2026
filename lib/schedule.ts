@@ -5,6 +5,7 @@ export interface ScheduleMatch {
   matchNumber: number
   date: string
   time: string
+  kickoffUTC: Date | null
   groupId: string
   stadium: string
   homeTeam: string
@@ -97,6 +98,35 @@ function formatDateLabel(dateStr: string): string {
   })
 }
 
+function parseUTCFromSchedule(dateStr: string, timeUTC: string | undefined): Date | null {
+  if (!timeUTC) return null
+
+  const cleaned = timeUTC.replace(/\./g, "").trim()
+
+  const dateOverride = cleaned.match(/\(([A-Z][a-z]+)\s+(\d+)\)/)
+  let effectiveDate = dateStr
+  if (dateOverride) {
+    const months: Record<string, string> = {
+      Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+      Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12",
+    }
+    const m = months[dateOverride[1]]
+    const d = dateOverride[2].padStart(2, "0")
+    if (m) {
+      const y = dateStr.split("-")[0]
+      effectiveDate = `${y}-${m}-${d}`
+    }
+  }
+
+  const timeMatch = cleaned.match(/(\d+):(\d+)\s*UTC/)
+  if (!timeMatch) return null
+
+  const hours = parseInt(timeMatch[1])
+  const minutes = parseInt(timeMatch[2])
+
+  return new Date(`${effectiveDate}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00Z`)
+}
+
 export function getScheduleByDay(): DaySchedule[] {
   const matches: ScheduleMatch[] = scheduleData.matches.map((m: any) => {
     const home = lookupTeam(m.home_team)
@@ -105,6 +135,7 @@ export function getScheduleByDay(): DaySchedule[] {
       matchNumber: m.match_number,
       date: m.date,
       time: m.time_local || m.time,
+      kickoffUTC: parseUTCFromSchedule(m.date, m.time_utc),
       groupId: m.group,
       stadium: m.stadium,
       homeTeam: m.home_team,
@@ -153,7 +184,7 @@ function parseTimeToDate(dateStr: string, timeStr: string): Date {
 }
 
 export function getMatchKickoff(match: ScheduleMatch): Date {
-  return parseTimeToDate(match.date, match.time)
+  return match.kickoffUTC ?? parseTimeToDate(match.date, match.time)
 }
 
 export function isMatchLocked(match: ScheduleMatch): boolean {
