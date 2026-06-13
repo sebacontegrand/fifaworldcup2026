@@ -16,7 +16,7 @@ export function CafecitoButton() {
         srcSet="https://cdn.cafecito.app/imgs/buttons/button_2.png 1x, https://cdn.cafecito.app/imgs/buttons/button_2_2x.png 2x"
         src="https://cdn.cafecito.app/imgs/buttons/button_2.png"
         alt="Invítame un café en Cafecito"
-        className="h-8 w-auto"
+        className="h-6 sm:h-8 w-auto"
       />
     </a>
   )

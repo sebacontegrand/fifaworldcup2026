@@ -147,7 +147,7 @@ export function NavBar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-md shadow-[0_1px_30px_rgba(0,0,0,0.2)]">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-1 px-3 sm:px-6 py-3 sm:py-4">
         <Link href="/" className="flex items-center gap-3 shrink-0 group">
           <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-accent via-primary to-cyan p-[1px] shadow-lg transition-transform duration-300 group-hover:scale-105">
             <div className="flex h-full w-full items-center justify-center rounded-xl bg-background/90 backdrop-blur-sm">
@@ -229,12 +229,12 @@ export function NavBar() {
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={simulate}
               disabled={isRunning}
               className={cn(
-                "group relative flex items-center gap-2 rounded-full px-4 py-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-300 overflow-hidden cursor-pointer",
+                "group relative flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-300 overflow-hidden cursor-pointer",
                 isRunning 
                   ? "bg-secondary text-muted-foreground border border-border/50 cursor-not-allowed" 
                   : "bg-gradient-to-r from-primary/10 to-primary/20 hover:from-primary/20 hover:to-primary/30 text-primary border border-primary/35 hover:scale-[1.02] hover:shadow-[0_0_15px_oklch(0.85_0.22_155_/_0.15)]"
@@ -248,6 +248,8 @@ export function NavBar() {
                 <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary animate-pulse-neon" />
               )}
             </button>
+
+            <CafecitoButton />
 
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
