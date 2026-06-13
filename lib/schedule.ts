@@ -22,6 +22,12 @@ export interface DaySchedule {
   matches: ScheduleMatch[]
 }
 
+const nameNormalization: Record<string, string | null> = {
+  Czechia: "Czech Republic",
+  USA: "United States",
+  Turkiye: "Turkey",
+}
+
 const spanishToEnglish: Record<string, string | null> = {
   Alemania: "Germany",
   "Arabia Saudí": "Saudi Arabia",
@@ -69,6 +75,8 @@ for (const t of teamsData as { id: string; name: string; flag: string }[]) {
 }
 
 function toEnglish(name: string): string | null {
+  const normalized = nameNormalization[name]
+  if (normalized !== undefined) return normalized
   const mapped = spanishToEnglish[name]
   if (mapped === undefined) return name
   return mapped
@@ -96,7 +104,7 @@ export function getScheduleByDay(): DaySchedule[] {
     return {
       matchNumber: m.match_number,
       date: m.date,
-      time: m.time,
+      time: m.time_local || m.time,
       groupId: m.group,
       stadium: m.stadium,
       homeTeam: m.home_team,

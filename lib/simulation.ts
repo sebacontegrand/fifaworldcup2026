@@ -800,7 +800,10 @@ export function getTeamByName(name: string): Team {
     "paraguay": "Paraguay",
     "australia": "Australia",
     "austria": "Austria",
-    "argentina": "Argentina"
+    "argentina": "Argentina",
+    "czechia": "Czech Republic",
+    "usa": "United States",
+    "turkiye": "Turkey"
   }
 
   const englishName = spanishMap[rawLower] || name
@@ -858,6 +861,8 @@ export function getTeamsByGroup(): Record<string, Team[]> {
   const addedTeams = new Set<string>()
 
   matchesData.matches.forEach((match) => {
+    if (!match.group) return
+
     const groupName = match.group
     if (!groups[groupName]) groups[groupName] = []
 
