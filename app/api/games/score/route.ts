@@ -12,6 +12,8 @@ export async function POST(req: Request) {
   const body = await req.json()
   const { gameType, difficulty, score, totalPossible } = body
 
+  console.log(`[games/score] user=${session.user.id} gameType=${gameType} difficulty=${difficulty} score=${score} totalPossible=${totalPossible}`)
+
   if (!gameType || !["trivia_flag", "trivia_kit", "trivia_player", "sort_teams", "sort_players"].includes(gameType)) {
     return NextResponse.json({ error: "Invalid gameType" }, { status: 400 })
   }
