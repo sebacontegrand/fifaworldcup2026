@@ -4,15 +4,20 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 
 async function ensureUser(session: { user: { id: string; name?: string | null; email?: string | null; image?: string | null } }) {
-  await prisma.user.upsert({
-    where: { id: session.user.id },
-    create: {
-      id: session.user.id,
-      name: session.user.name ?? null,
-      image: session.user.image ?? null,
-    },
-    update: {},
-  })
+  const exists = await prisma.user.findUnique({ where: { id: session.user.id }, select: { id: true } })
+  if (exists) return
+
+  const email = session.user.email ?? `user_${session.user.id}@placeholder.wc2026`
+  try {
+    await prisma.user.create({
+      data: { id: session.user.id, name: session.user.name ?? null, email, image: session.user.image ?? null },
+    })
+  } catch {
+    const fallbackEmail = `user_${session.user.id}_${Date.now()}@placeholder.wc2026`
+    await prisma.user.create({
+      data: { id: session.user.id, name: session.user.name ?? null, email: fallbackEmail, image: session.user.image ?? null },
+    })
+  }
 }
 
 export async function POST(req: Request) {
