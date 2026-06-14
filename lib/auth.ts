@@ -34,6 +34,14 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token }) {
             if (session.user) {
+                // Resolve correct user ID from email (handles stale JWT after DB reset)
+                if (session.user.email) {
+                    const dbUser = await prismaForAuth.user.findUnique({ where: { email: session.user.email }, select: { id: true } })
+                    if (dbUser) {
+                        session.user.id = dbUser.id
+                        return session
+                    }
+                }
                 session.user.id = token.id as string
             }
             return session

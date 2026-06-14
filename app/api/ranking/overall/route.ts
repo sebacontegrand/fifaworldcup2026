@@ -9,6 +9,7 @@ const GAMES_WEIGHT = 0.15
 export async function GET() {
   const users = await prisma.user.findMany({
     select: { id: true, name: true, image: true },
+    where: { email: { not: { contains: "@placeholder.wc2026" } } },
   })
 
   const connectionScores = await prisma.connectionScore.groupBy({
