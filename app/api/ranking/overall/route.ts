@@ -32,7 +32,7 @@ export async function GET() {
 
   const gameScores = await prisma.gameScore.groupBy({
     by: ["userId"],
-    _max: { score: true },
+    _sum: { score: true },
     _count: { id: true },
   })
 
@@ -44,7 +44,7 @@ export async function GET() {
   const csMap = new Map(connectionScores.map((c) => [c.userId, { bestScore: c._max.score ?? 0, gamesPlayed: c._count.id }]))
   const gpMap = new Map(guessPoints.map((g) => [g.userId, { totalPoints: g._sum.points ?? 0, totalGuesses: g._count.id }]))
   const ppMap = new Map(poolPayouts.map((p) => [p.userId, { totalPayout: p._sum.payout ?? 0, totalBets: p._count.id }]))
-  const gsMap = new Map(gameScores.map((g) => [g.userId, { bestScore: g._max.score ?? 0, totalGames: g._count.id }]))
+  const gsMap = new Map(gameScores.map((g) => [g.userId, { totalScore: g._sum.score ?? 0, totalGames: g._count.id }]))
   const adjMap = new Map(adjustments.map((a) => [a.userId, a.rankingAdjustment]))
 
   let maxBestScore = 0
@@ -60,7 +60,7 @@ export async function GET() {
     if (cs && cs.bestScore > maxBestScore) maxBestScore = cs.bestScore
     if (gp && gp.totalPoints > maxTotalPoints) maxTotalPoints = gp.totalPoints
     if (pp && pp.totalPayout > maxTotalPayout) maxTotalPayout = pp.totalPayout
-    if (gs && gs.bestScore > maxGameScore) maxGameScore = gs.bestScore
+    if (gs && gs.totalScore > maxGameScore) maxGameScore = gs.totalScore
   }
 
   const leaderboard = users
@@ -73,7 +73,7 @@ export async function GET() {
       const rawConnection = cs ? cs.bestScore : 0
       const rawPrediction = gp ? gp.totalPoints : 0
       const rawPool = pp ? pp.totalPayout : 0
-      const rawGame = gs ? gs.bestScore : 0
+      const rawGame = gs ? gs.totalScore : 0
 
       const connectionSkill = maxBestScore > 0 ? (rawConnection / maxBestScore) * 100 : 0
       const predictionSkill = maxTotalPoints > 0 ? (rawPrediction / maxTotalPoints) * 100 : 0
@@ -93,7 +93,7 @@ export async function GET() {
         connection: { bestScore: rawConnection, skill: Math.round(connectionSkill * 100) / 100, gamesPlayed: cs?.gamesPlayed ?? 0 },
         prediction: { totalPoints: rawPrediction, skill: Math.round(predictionSkill * 100) / 100, totalGuesses: gp?.totalGuesses ?? 0 },
         pool: { totalPayout: rawPool, skill: Math.round(poolSkill * 100) / 100, totalBets: pp?.totalBets ?? 0 },
-        games: { bestScore: rawGame, skill: Math.round(gameSkill * 100) / 100, totalGames: gs?.totalGames ?? 0 },
+        games: { totalScore: rawGame, skill: Math.round(gameSkill * 100) / 100, totalGames: gs?.totalGames ?? 0 },
       }
     })
     .sort((a, b) => b.overallScore - a.overallScore)
