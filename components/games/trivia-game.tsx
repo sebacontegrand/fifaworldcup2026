@@ -63,13 +63,13 @@ export function TriviaGame({ gameType, difficulty }: TriviaGameProps) {
         score,
         totalPossible: totalQuestions * 30,
       }),
-    }).catch(() => {})
+    }).catch((e) => console.error("Failed to save game score:", e))
     if (score > 0) {
       fetch("/api/chips/earn", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: score, source: "game" }),
-      }).catch(() => {})
+      }).catch((e) => console.error("Failed to earn chips:", e))
     }
   }, [isComplete, gameType, difficulty, score, totalQuestions])
 

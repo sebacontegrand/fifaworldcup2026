@@ -87,13 +87,13 @@ export function SortGame({ target, criterion, difficulty }: SortGameProps) {
         score: totalScore,
         totalPossible: totalRounds * 100,
       }),
-    }).catch(() => {})
+    }).catch((e) => console.error("Failed to save game score:", e))
     if (totalScore > 0) {
       fetch("/api/chips/earn", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: totalScore, source: "game" }),
-      }).catch(() => {})
+      }).catch((e) => console.error("Failed to earn chips:", e))
     }
   }, [isComplete, target, difficulty, totalScore, totalRounds])
 
