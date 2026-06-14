@@ -9,7 +9,6 @@ async function ensureUser(session: { user: { id: string; name?: string | null; e
     create: {
       id: session.user.id,
       name: session.user.name ?? null,
-      email: session.user.email ?? null,
       image: session.user.image ?? null,
     },
     update: {},
