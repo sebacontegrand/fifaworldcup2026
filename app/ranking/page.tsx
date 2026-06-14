@@ -22,7 +22,6 @@ interface OverallEntry {
   prediction: { totalPoints: number; skill: number; totalGuesses: number }
   pool: { totalPayout: number; skill: number; totalBets: number }
   games: { bestScore: number; skill: number; totalGames: number }
-  chips: { lifetimeEarnings: number; skill: number }
 }
 
 interface OverallLeaderboardData {
@@ -138,7 +137,7 @@ export default function RankingPage() {
             <span className="text-yellow-400">Overall</span> Rankings
           </h1>
           <p className="text-sm text-muted-foreground">
-            Weighted composite — Connections ×20%, Predictions ×25%, Pool ×30%, Games ×15%, Chips ×10%.
+            Weighted composite — Connections ×20%, Predictions ×30%, Pool ×35%, Games ×15%.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={fetchOverallLeaderboard} disabled={loading} className="border-white/10">
@@ -163,7 +162,6 @@ export default function RankingPage() {
                   <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden sm:table-cell">Pred.</th>
                   <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden md:table-cell">Pool</th>
                   <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden md:table-cell">Games</th>
-                  <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40 hidden md:table-cell">Chips</th>
                   {showAdmin && <th className="text-right px-4 sm:px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Adj.</th>}
                 </tr>
               </thead>
@@ -213,9 +211,6 @@ export default function RankingPage() {
                       </td>
                       <td className="px-4 sm:px-6 py-4 text-right text-white/60 font-bold hidden md:table-cell tabular-nums">
                         {entry.games.skill.toFixed(0)}
-                      </td>
-                      <td className="px-4 sm:px-6 py-4 text-right text-cyan-400 font-bold hidden md:table-cell tabular-nums">
-                        {entry.chips.skill.toFixed(0)}
                       </td>
                       {showAdmin && (
                         <td className="px-4 sm:px-6 py-4 text-right">
