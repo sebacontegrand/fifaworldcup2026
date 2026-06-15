@@ -97,6 +97,11 @@ function findMatchDTO(matches: MatchDTO[], teamAId: string | null, teamBId: stri
   )
 }
 
+function scoresNeedSwap(matchDTO: MatchDTO | undefined, homeTeamId: string | null): boolean {
+  if (!matchDTO || !matchDTO.teamAId || !homeTeamId) return false
+  return matchDTO.teamAId !== homeTeamId
+}
+
 export default function LiveResultsPage() {
   const { data: session } = useSession()
   const { tournamentState, updateMatchResult, simulate, isRunning, resetConfig, result } = useSimulation()
@@ -216,9 +221,10 @@ export default function LiveResultsPage() {
   }, [fetchMatches, fetchLeaderboard])
 
   const handleUnlockFact = (teamAId: string, teamBId: string, matchDTO: MatchDTO) => {
+    const swap = matchDTO.teamAId !== teamAId
     updateMatchResult(teamAId, teamBId, {
-      scoreA: matchDTO.scoreA ?? 0,
-      scoreB: matchDTO.scoreB ?? 0,
+      scoreA: swap ? (matchDTO.scoreB ?? 0) : (matchDTO.scoreA ?? 0),
+      scoreB: swap ? (matchDTO.scoreA ?? 0) : (matchDTO.scoreB ?? 0),
     } as any)
     setUnlockedFacts(prev => ({ ...prev, [matchDTO.id]: true }))
   }
@@ -299,14 +305,15 @@ export default function LiveResultsPage() {
     guessInputs.current[matchId][side === "A" ? "scoreA" : "scoreB"] = value
   }
 
-  const handleSubmitGuess = (matchId: string) => {
+  const handleSubmitGuess = (matchId: string, matchDTO: MatchDTO | undefined, fixture: ScheduleMatch) => {
     const inputs = guessInputs.current[matchId]
     if (!inputs) return
     const parsedA = parseInt(inputs.scoreA)
     const parsedB = parseInt(inputs.scoreB)
     if (isNaN(parsedA) || isNaN(parsedB)) return
     chipReward.current = (parsedA === 1 && parsedB === 0) || (parsedA === 0 && parsedB === 1) ? 200 : 600
-    saveGuessToServer(matchId, parsedA, parsedB)
+    const swap = matchDTO && fixture.homeTeamId ? matchDTO.teamAId !== fixture.homeTeamId : false
+    saveGuessToServer(matchId, swap ? parsedB : parsedA, swap ? parsedA : parsedB)
   }
 
   const handleQuickPick = (matchId: string, homeWins: boolean) => {
@@ -399,9 +406,13 @@ export default function LiveResultsPage() {
           <div className="flex items-center gap-2 sm:gap-3">
             {matchDTO?.isFact && !unlockedFacts[matchDTO.id] ? (
               <div className="flex items-center gap-2">
-                <span className="text-xl sm:text-2xl font-black text-green-400">{matchDTO.scoreA}</span>
+                <span className="text-xl sm:text-2xl font-black text-green-400">
+                  {scoresNeedSwap(matchDTO, fixture.homeTeamId) ? matchDTO.scoreB : matchDTO.scoreA}
+                </span>
                 <span className="text-white/20 font-black text-xs sm:text-sm">VS</span>
-                <span className="text-xl sm:text-2xl font-black text-green-400">{matchDTO.scoreB}</span>
+                <span className="text-xl sm:text-2xl font-black text-green-400">
+                  {scoresNeedSwap(matchDTO, fixture.homeTeamId) ? matchDTO.scoreA : matchDTO.scoreB}
+                </span>
                 <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[9px] ml-1">Fact</Badge>
               </div>
             ) : isAdmin ? (
@@ -534,7 +545,7 @@ export default function LiveResultsPage() {
                     ) : hasGuess ? (
                       <CheckCircle2 className="h-3 w-3 text-green-400/70 shrink-0" />
                     ) : null}
-                    <Button size="sm" onClick={() => handleSubmitGuess(guessKey)}
+                    <Button size="sm" onClick={() => handleSubmitGuess(guessKey, matchDTO, fixture)}
                       disabled={savingGuess === guessKey}
                       className="h-7 text-[10px] bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-2.5">
                       {savingGuess === guessKey ? "Saving..." : "Save"}
@@ -602,7 +613,8 @@ export default function LiveResultsPage() {
                       if (a == null || b == null || isNaN(a) || isNaN(b)) return
                       updateMatchResult(fixture.homeTeamId!, fixture.awayTeamId!, { scoreA: a, scoreB: b } as any)
                       delete overrideInputs.current[overrideKey]
-                      handleAdminSubmitFact(matchDTO.id, a, b)
+                      const swap = matchDTO.teamAId !== fixture.homeTeamId
+                      handleAdminSubmitFact(matchDTO.id, swap ? b : a, swap ? a : b)
                     }}
                     className="h-6 text-[9px] bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest px-2.5">
                     {submittingAdminId === matchDTO.id ? (
