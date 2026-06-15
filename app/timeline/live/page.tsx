@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Activity, RotateCcw, Play, CheckCircle2, ChevronRight, Trophy, Save, User, Lock, Share2, ShieldCheck } from "lucide-react"
+import { Activity, RotateCcw, Play, CheckCircle2, ChevronRight, Trophy, Save, User, Lock, Share2, ShieldCheck, Goal } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -120,6 +120,29 @@ export default function LiveResultsPage() {
   const [submittingAdminId, setSubmittingAdminId] = useState<string | null>(null)
   const [unlockedFacts, setUnlockedFacts] = useState<Record<string, boolean>>({})
 
+  interface GoalEntry { playerName: string; teamId: string; minute: string; isOwnGoal: boolean }
+  const goalScorers = useRef<Record<string, GoalEntry[]>>({})
+
+  const addGoal = (matchId: string, teamId: string) => {
+    if (!goalScorers.current[matchId]) goalScorers.current[matchId] = []
+    goalScorers.current[matchId] = [...goalScorers.current[matchId], { playerName: "", teamId, minute: "", isOwnGoal: false }]
+    forceRender()
+  }
+
+  const updateGoal = (matchId: string, idx: number, field: keyof GoalEntry, value: string | boolean) => {
+    const list = goalScorers.current[matchId]
+    if (!list) return
+    list[idx] = { ...list[idx], [field]: value }
+    forceRender()
+  }
+
+  const removeGoal = (matchId: string, idx: number) => {
+    const list = goalScorers.current[matchId]
+    if (!list) return
+    goalScorers.current[matchId] = list.filter((_, i) => i !== idx)
+    forceRender()
+  }
+
   const fetchMatches = useCallback(async () => {
     try {
       const res = await fetch("/api/matches")
@@ -142,11 +165,14 @@ export default function LiveResultsPage() {
 
   const handleAdminSubmitFact = useCallback(async (matchId: string, scoreA: number, scoreB: number) => {
     setSubmittingAdminId(matchId)
+    const goals = (goalScorers.current[matchId] || [])
+      .filter((g) => g.playerName.trim() && g.minute !== "")
+      .map((g) => ({ playerName: g.playerName.trim(), teamId: g.teamId, minute: parseInt(g.minute), isOwnGoal: g.isOwnGoal }))
     try {
       const res = await fetch(`/api/matches/${matchId}/result`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scoreA, scoreB }),
+        body: JSON.stringify({ scoreA, scoreB, goals }),
       })
       if (res.ok) {
         toast.success("Official result saved and prediction points recalculated!")
@@ -407,6 +433,54 @@ export default function LiveResultsPage() {
             )}
           </div>
         </div>
+
+        {/* Goal Scorers (admin only, when editing scores) */}
+        {isAdmin && matchDTO && !matchDTO?.isFact && unlockedFacts[matchDTO.id] !== false && fixture.homeTeamId && fixture.awayTeamId && (
+          <div className="px-3 py-2 border-t border-red-500/10 space-y-1.5">
+            <span className="text-[9px] text-red-400/40 font-bold uppercase tracking-wider">Goal Scorers</span>
+            {(goalScorers.current[matchDTO.id] || []).map((g, i) => (
+              <div key={i} className="flex items-center gap-1.5 flex-wrap">
+                <Input
+                  value={g.playerName}
+                  onChange={(e) => updateGoal(matchDTO.id, i, "playerName", e.target.value)}
+                  placeholder="Player name"
+                  className="w-28 h-7 text-[11px] bg-zinc-900 border-white/10"
+                />
+                <select
+                  value={g.teamId}
+                  onChange={(e) => updateGoal(matchDTO.id, i, "teamId", e.target.value)}
+                  className="h-7 text-[11px] bg-zinc-900 border border-white/10 rounded-md px-1 text-white/70"
+                >
+                  <option value={fixture.homeTeamId}>{fixture.homeTeam?.split(" ").pop()}</option>
+                  <option value={fixture.awayTeamId}>{fixture.awayTeam?.split(" ").pop()}</option>
+                </select>
+                <Input
+                  type="number" min="0" max="120"
+                  value={g.minute}
+                  onChange={(e) => updateGoal(matchDTO.id, i, "minute", e.target.value)}
+                  placeholder="min"
+                  className="w-12 h-7 text-[11px] text-center bg-zinc-900 border-white/10"
+                />
+                <label className="flex items-center gap-1 text-[10px] text-white/40 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={g.isOwnGoal}
+                    onChange={(e) => updateGoal(matchDTO.id, i, "isOwnGoal", e.target.checked)}
+                    className="accent-red-500"
+                  />
+                  OG
+                </label>
+                <button onClick={() => removeGoal(matchDTO.id, i)} className="text-red-400/60 hover:text-red-400 text-xs font-bold px-1">&times;</button>
+              </div>
+            ))}
+            <button
+              onClick={() => addGoal(matchDTO.id, fixture.homeTeamId!)}
+              className="text-[10px] text-blue-400/60 hover:text-blue-400 font-bold uppercase tracking-wider"
+            >
+              + Add Goal Scorer
+            </button>
+          </div>
+        )}
 
         {/* Prediction Row */}
         {session?.user && !matchDTO?.isFact && matchDTO && (
@@ -669,6 +743,8 @@ export default function LiveResultsPage() {
             </CardContent>
           </Card>
 
+          <TopScorersCard />
+
           {session?.user && leaderboard && leaderboard.leaderboard.length > 0 && (
             <Card className="bg-card/50 backdrop-blur-md border-white/10 overflow-hidden">
               <CardHeader className="bg-white/5 border-b border-white/5 px-4 py-3">
@@ -785,6 +861,48 @@ function LeaderboardPanel({ leaderboard, onRefresh }: { leaderboard: Leaderboard
         </div>
       )}
     </div>
+  )
+}
+
+function TopScorersCard() {
+  const [scorers, setScorers] = useState<{ player: string; goals: number }[] | null>(null)
+
+  useEffect(() => {
+    fetch("/api/matches/goalscorers")
+      .then((r) => r.json())
+      .then(setScorers)
+      .catch(() => {})
+  }, [])
+
+  if (!scorers || scorers.length === 0) return null
+
+  return (
+    <Card className="bg-card/50 backdrop-blur-md border-white/10 overflow-hidden">
+      <CardHeader className="bg-white/5 border-b border-white/5 px-4 py-3">
+        <CardTitle className="text-xs flex items-center gap-2">
+          <Goal className="h-3.5 w-3.5 text-cyan-400" />
+          Top Scorers
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="divide-y divide-white/5">
+          {scorers.slice(0, 10).map((s, i) => (
+            <div key={s.player} className="flex items-center justify-between px-4 py-2 text-[11px]">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className={cn(
+                  "w-4 text-center font-bold shrink-0",
+                  i === 0 ? "text-yellow-400" : i === 1 ? "text-zinc-300" : i === 2 ? "text-amber-600" : "text-white/30"
+                )}>
+                  {i + 1}
+                </span>
+                <span className="truncate text-white/80">{s.player}</span>
+              </div>
+              <span className="font-black text-cyan-400 tabular-nums">{s.goals}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 

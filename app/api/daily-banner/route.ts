@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { generateAnalysis } from "@/lib/ai/groq"
+import { getTeamByName } from "@/lib/simulation"
 import scheduleData from "@/data/fifa_2026_group_stage.json"
 
 interface ScheduleMatch {
@@ -31,8 +32,8 @@ type FactMatch = {
 }
 
 interface MatchResultItem {
-  teamA: string | null
-  teamB: string | null
+  teamA: string
+  teamB: string
   scoreA: number
   scoreB: number
 }
@@ -78,16 +79,34 @@ export async function GET() {
     (m) => m.teamAId && m.teamBId && m.scoreA !== null && m.scoreB !== null
   ) as FactMatch[]
 
-  const yesterdayResults: FactMatch[] = []
+  interface SchedResult {
+    homeId: string
+    awayId: string
+    homeName: string
+    awayName: string
+    homeScore: number
+    awayScore: number
+  }
+  const yesterdayResults: SchedResult[] = []
   for (const s of schedMatches) {
+    const homeTeam = getTeamByName(s.home_team)
+    const awayTeam = getTeamByName(s.away_team)
+    const matchedIds = [homeTeam.id, awayTeam.id]
     const found = factMatches.find((f) => {
-      const homeNorm = s.home_team.toLowerCase().trim()
-      const awayNorm = s.away_team.toLowerCase().trim()
-      const fAName = (f.teamAName ?? "").toLowerCase().trim()
-      const fBName = (f.teamBName ?? "").toLowerCase().trim()
-      return (homeNorm === fAName && awayNorm === fBName) || (homeNorm === fBName && awayNorm === fAName)
+      return f.teamAId && f.teamBId && matchedIds.includes(f.teamAId) && matchedIds.includes(f.teamBId)
     })
-    if (found) yesterdayResults.push(found)
+    if (found) {
+      const homeScore = found.teamAId === homeTeam.id ? found.scoreA : found.scoreB
+      const awayScore = found.teamBId === awayTeam.id ? found.scoreB : found.scoreA
+      yesterdayResults.push({
+        homeId: homeTeam.id,
+        awayId: awayTeam.id,
+        homeName: s.home_team,
+        awayName: s.away_team,
+        homeScore,
+        awayScore,
+      })
+    }
   }
 
   if (yesterdayResults.length === 0) {
@@ -101,7 +120,7 @@ export async function GET() {
 
   if (hasKey) {
     const matchLines = yesterdayResults
-      .map((m) => `${m.teamAName} ${m.scoreA}-${m.scoreB} ${m.teamBName}`)
+      .map((r) => `${r.homeName} ${r.homeScore}-${r.awayScore} ${r.awayName}`)
       .join("\n")
 
     try {
@@ -127,11 +146,11 @@ export async function GET() {
     summary = fallbackSummary()
   }
 
-  const matches = yesterdayResults.map((m) => ({
-    teamA: m.teamAName,
-    teamB: m.teamBName,
-    scoreA: m.scoreA,
-    scoreB: m.scoreB,
+  const matches = yesterdayResults.map((r) => ({
+    teamA: r.homeName,
+    teamB: r.awayName,
+    scoreA: r.homeScore,
+    scoreB: r.awayScore,
   }))
 
   const result = {

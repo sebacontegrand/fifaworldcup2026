@@ -118,7 +118,7 @@ export async function POST(
 
   const { id } = await params
   const body = await req.json()
-  const { scoreA, scoreB, reset } = body
+  const { scoreA, scoreB, reset, goals } = body
 
   const match = await prisma.match.findUnique({ where: { id } })
   if (!match) {
@@ -133,6 +133,8 @@ export async function POST(
       where: { matchId: id },
       data: { points: null },
     })
+
+    await prisma.matchGoal.deleteMany({ where: { matchId: id } })
 
     await prisma.match.update({
       where: { id },
@@ -161,6 +163,24 @@ export async function POST(
     where: { id },
     data: { scoreA, scoreB, isFact: true },
   })
+
+  // Save goal scorers (replace any existing)
+  await prisma.matchGoal.deleteMany({ where: { matchId: id } })
+  if (Array.isArray(goals)) {
+    for (const g of goals) {
+      if (g.playerName && typeof g.playerName === "string" && typeof g.minute === "number") {
+        await prisma.matchGoal.create({
+          data: {
+            matchId: id,
+            playerName: g.playerName,
+            teamId: g.teamId || "",
+            minute: g.minute,
+            isOwnGoal: !!g.isOwnGoal,
+          },
+        })
+      }
+    }
+  }
 
   // Calculate points for all guesses on this match
   const guesses = await prisma.guess.findMany({ where: { matchId: id } })
