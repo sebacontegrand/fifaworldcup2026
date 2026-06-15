@@ -7,6 +7,10 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL
 
 function calcGuessPoints(guessScoreA: number, guessScoreB: number, actualScoreA: number, actualScoreB: number): number {
   if (guessScoreA === actualScoreA && guessScoreB === actualScoreB) return 5
+  const guessDiff = guessScoreA - guessScoreB
+  const actualDiff = actualScoreA - actualScoreB
+  if (guessDiff === actualDiff) return 3
+  if ((guessDiff > 0 && actualDiff > 0) || (guessDiff < 0 && actualDiff < 0)) return 3
   if (guessScoreA === actualScoreA || guessScoreB === actualScoreB) return 2
   return 0
 }

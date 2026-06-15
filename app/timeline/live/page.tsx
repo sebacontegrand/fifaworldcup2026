@@ -53,6 +53,10 @@ function calcPoints(guessA: number, guessB: number, actualA: number, actualB: nu
   const aMatch = guessA === actualA
   const bMatch = guessB === actualB
   if (aMatch && bMatch) return 300
+  const guessDiff = guessA - guessB
+  const actualDiff = actualA - actualB
+  if (guessDiff === actualDiff) return 100
+  if ((guessDiff > 0 && actualDiff > 0) || (guessDiff < 0 && actualDiff < 0)) return 100
   if (aMatch || bMatch) return 100
   return 0
 }
