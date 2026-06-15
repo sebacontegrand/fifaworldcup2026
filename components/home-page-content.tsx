@@ -21,6 +21,7 @@ import {
 
 import { Play, Activity } from "lucide-react"
 import { TournamentCountdown } from "@/components/tournament-countdown"
+import { DailyBanner } from "@/components/daily-banner"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -62,13 +63,14 @@ export function HomePageContent() {
                     <span className="block text-glow-neon text-primary">2026</span>
                 </h1>
 
-                <div className="mt-6 mb-4">
+                <div className="mt-6 mb-4 space-y-4">
                     <div className="flex flex-col items-center gap-2">
                         <span className="text-[10px] uppercase tracking-[0.25em] text-white/30 font-semibold">
                             Tournament Starts In
                         </span>
                         <TournamentCountdown />
                     </div>
+                    <DailyBanner />
                 </div>
 
                 <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">

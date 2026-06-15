@@ -279,7 +279,7 @@ export default function LiveResultsPage() {
     const parsedA = parseInt(inputs.scoreA)
     const parsedB = parseInt(inputs.scoreB)
     if (isNaN(parsedA) || isNaN(parsedB)) return
-    chipReward.current = (parsedA === 1 && parsedB === 0) || (parsedA === 0 && parsedB === 1) ? 200 : 400
+    chipReward.current = (parsedA === 1 && parsedB === 0) || (parsedA === 0 && parsedB === 1) ? 200 : 600
     saveGuessToServer(matchId, parsedA, parsedB)
   }
 
@@ -568,7 +568,7 @@ export default function LiveResultsPage() {
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
             {session?.user
-              ? "Pick a winner or enter exact scores. Exact result = 300 chips, correct winner = 100 chips. Quick Pick (1-0/0-1) = 200 chips, Full Score = 400 chips."
+              ? "Pick a winner or enter exact scores. Exact result = 300 chips, correct winner = 100 chips. Quick Pick (1-0/0-1) = 200 chips, Full Score = 600 chips."
               : "Sign in to predict and compete. Tap a team to Quick Pick!"}
           </p>
         </div>
