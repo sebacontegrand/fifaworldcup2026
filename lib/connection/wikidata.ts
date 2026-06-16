@@ -32,8 +32,8 @@ async function sparqlQuery(query: string): Promise<any[]> {
 }
 
 export async function searchWikidataPlayers(query: string): Promise<{ id: string; label: string }[]> {
-  const url = `${WIKIDATA_API}?action=wbsearchentities&search=${encodeURIComponent(query)}&language=en&format=json&limit=8`
-  const res = await fetch(url, { headers: { "User-Agent": "2026FIFAWC/1.0" } })
+  const url = `/api/wikidata?action=search&query=${encodeURIComponent(query)}`
+  const res = await fetch(url)
   if (!res.ok) return []
   const data = await res.json()
   return (data.search ?? []).filter(
@@ -92,8 +92,8 @@ export async function fetchPlayerFromWikidata(wikidataId: string): Promise<Playe
 }
 
 export async function resolveWikidataLabel(wikidataId: string): Promise<string | null> {
-  const url = `${WIKIDATA_API}?action=wbsearchentities&search=&language=en&format=json&ids=${wikidataId}`
-  const res = await fetch(url, { headers: { "User-Agent": "2026FIFAWC/1.0" } })
+  const url = `/api/wikidata?action=label&id=${wikidataId}`
+  const res = await fetch(url)
   if (!res.ok) return null
   const data = await res.json()
   return data.entities?.[wikidataId]?.labels?.en?.value ?? null
