@@ -7,7 +7,7 @@
     "group": "A",
     "fifaRanking": 14,
     "confederation": "CONCACAF",
-    "eloRating": 1805,
+    "eloRating": 1881,
     "topPlayers": [
       {
         "name": "Edson Alvarez",
@@ -50,7 +50,7 @@
     "group": "A",
     "fifaRanking": 57,
     "confederation": "CAF",
-    "eloRating": 1570,
+    "eloRating": 1511,
     "topPlayers": [
       {
         "name": "Percy Tau",
@@ -93,7 +93,7 @@
     "group": "A",
     "fifaRanking": 22,
     "confederation": "AFC",
-    "eloRating": 1748,
+    "eloRating": 1786,
     "topPlayers": [
       {
         "name": "Son Heung-min",
@@ -136,7 +136,7 @@
     "group": "B",
     "fifaRanking": 40,
     "confederation": "CONCACAF",
-    "eloRating": 1650,
+    "eloRating": 1767,
     "topPlayers": [
       {
         "name": "Alphonso Davies",
@@ -179,7 +179,7 @@
     "group": "B",
     "fifaRanking": 44,
     "confederation": "AFC",
-    "eloRating": 1600,
+    "eloRating": 1447,
     "topPlayers": [
       {
         "name": "Akram Afif",
@@ -222,7 +222,7 @@
     "group": "B",
     "fifaRanking": 19,
     "confederation": "UEFA",
-    "eloRating": 1770,
+    "eloRating": 1865,
     "topPlayers": [
       {
         "name": "Granit Xhaka",
@@ -265,7 +265,7 @@
     "group": "C",
     "fifaRanking": 5,
     "confederation": "CONMEBOL",
-    "eloRating": 1920,
+    "eloRating": 1978,
     "topPlayers": [
       {
         "name": "Vinicius Junior",
@@ -308,7 +308,7 @@
     "group": "C",
     "fifaRanking": 13,
     "confederation": "CAF",
-    "eloRating": 1810,
+    "eloRating": 1840,
     "topPlayers": [
       {
         "name": "Achraf Hakimi",
@@ -351,7 +351,7 @@
     "group": "C",
     "fifaRanking": 86,
     "confederation": "CONCACAF",
-    "eloRating": 1420,
+    "eloRating": 1536,
     "topPlayers": [
       {
         "name": "Duckens Nazon",
@@ -394,7 +394,7 @@
     "group": "C",
     "fifaRanking": 52,
     "confederation": "UEFA",
-    "eloRating": 1595,
+    "eloRating": 1794,
     "topPlayers": [
       {
         "name": "John McGinn",
@@ -437,7 +437,7 @@
     "group": "D",
     "fifaRanking": 11,
     "confederation": "CONCACAF",
-    "eloRating": 1825,
+    "eloRating": 1780,
     "topPlayers": [
       {
         "name": "Christian Pulisic",
@@ -480,7 +480,7 @@
     "group": "D",
     "fifaRanking": 55,
     "confederation": "CONMEBOL",
-    "eloRating": 1580,
+    "eloRating": 1780,
     "topPlayers": [
       {
         "name": "Miguel Almiron",
@@ -523,7 +523,7 @@
     "group": "D",
     "fifaRanking": 24,
     "confederation": "AFC",
-    "eloRating": 1740,
+    "eloRating": 1839,
     "topPlayers": [
       {
         "name": "Jackson Irvine",
@@ -566,7 +566,7 @@
     "group": "E",
     "fifaRanking": 3,
     "confederation": "UEFA",
-    "eloRating": 1940,
+    "eloRating": 1939,
     "topPlayers": [
       {
         "name": "Florian Wirtz",
@@ -609,7 +609,7 @@
     "group": "E",
     "fifaRanking": 82,
     "confederation": "CONCACAF",
-    "eloRating": 1440,
+    "eloRating": 1427,
     "topPlayers": [
       {
         "name": "Rangelo Janga",
@@ -652,7 +652,7 @@
     "group": "E",
     "fifaRanking": 38,
     "confederation": "CAF",
-    "eloRating": 1660,
+    "eloRating": 1743,
     "topPlayers": [
       {
         "name": "Sebastien Haller",
@@ -695,7 +695,7 @@
     "group": "E",
     "fifaRanking": 31,
     "confederation": "CONMEBOL",
-    "eloRating": 1695,
+    "eloRating": 1890,
     "topPlayers": [
       {
         "name": "Moises Caicedo",
@@ -738,7 +738,7 @@
     "group": "F",
     "fifaRanking": 7,
     "confederation": "UEFA",
-    "eloRating": 1900,
+    "eloRating": 1944,
     "topPlayers": [
       {
         "name": "Virgil van Dijk",
@@ -781,7 +781,7 @@
     "group": "F",
     "fifaRanking": 15,
     "confederation": "AFC",
-    "eloRating": 1800,
+    "eloRating": 1910,
     "topPlayers": [
       {
         "name": "Takefusa Kubo",
@@ -824,7 +824,7 @@
     "group": "F",
     "fifaRanking": 36,
     "confederation": "CAF",
-    "eloRating": 1670,
+    "eloRating": 1585,
     "topPlayers": [
       {
         "name": "Youssef Msakni",
@@ -867,7 +867,7 @@
     "group": "G",
     "fifaRanking": 6,
     "confederation": "UEFA",
-    "eloRating": 1910,
+    "eloRating": 1879,
     "topPlayers": [
       {
         "name": "Kevin De Bruyne",
@@ -910,7 +910,7 @@
     "group": "G",
     "fifaRanking": 33,
     "confederation": "CAF",
-    "eloRating": 1685,
+    "eloRating": 1711,
     "topPlayers": [
       {
         "name": "Mohamed Salah",
@@ -953,7 +953,7 @@
     "group": "G",
     "fifaRanking": 21,
     "confederation": "AFC",
-    "eloRating": 1755,
+    "eloRating": 1756,
     "topPlayers": [
       {
         "name": "Mehdi Taremi",
@@ -996,7 +996,7 @@
     "group": "G",
     "fifaRanking": 93,
     "confederation": "OFC",
-    "eloRating": 1390,
+    "eloRating": 1578,
     "topPlayers": [
       {
         "name": "Chris Wood",
@@ -1039,7 +1039,7 @@
     "group": "H",
     "fifaRanking": 2,
     "confederation": "UEFA",
-    "eloRating": 1960,
+    "eloRating": 2129,
     "topPlayers": [
       {
         "name": "Lamine Yamal",
@@ -1082,7 +1082,7 @@
     "group": "H",
     "fifaRanking": 62,
     "confederation": "CAF",
-    "eloRating": 1530,
+    "eloRating": 1606,
     "topPlayers": [
       {
         "name": "Garry Rodrigues",
@@ -1125,7 +1125,7 @@
     "group": "H",
     "fifaRanking": 56,
     "confederation": "AFC",
-    "eloRating": 1575,
+    "eloRating": 1598,
     "topPlayers": [
       {
         "name": "Salem Al-Dawsari",
@@ -1168,7 +1168,7 @@
     "group": "H",
     "fifaRanking": 10,
     "confederation": "CONMEBOL",
-    "eloRating": 1830,
+    "eloRating": 1870,
     "topPlayers": [
       {
         "name": "Federico Valverde",
@@ -1211,7 +1211,7 @@
     "group": "I",
     "fifaRanking": 1,
     "confederation": "UEFA",
-    "eloRating": 1985,
+    "eloRating": 2063,
     "topPlayers": [
       {
         "name": "Kylian Mbappe",
@@ -1254,7 +1254,7 @@
     "group": "I",
     "fifaRanking": 18,
     "confederation": "CAF",
-    "eloRating": 1780,
+    "eloRating": 1860,
     "topPlayers": [
       {
         "name": "Sadio Mane",
@@ -1297,7 +1297,7 @@
     "group": "I",
     "fifaRanking": 46,
     "confederation": "UEFA",
-    "eloRating": 1620,
+    "eloRating": 1914,
     "topPlayers": [
       {
         "name": "Erling Haaland",
@@ -1340,7 +1340,7 @@
     "group": "J",
     "fifaRanking": 4,
     "confederation": "CONMEBOL",
-    "eloRating": 1930,
+    "eloRating": 2115,
     "topPlayers": [
       {
         "name": "Lionel Messi",
@@ -1383,7 +1383,7 @@
     "group": "J",
     "fifaRanking": 35,
     "confederation": "CAF",
-    "eloRating": 1675,
+    "eloRating": 1772,
     "topPlayers": [
       {
         "name": "Riyad Mahrez",
@@ -1426,7 +1426,7 @@
     "group": "J",
     "fifaRanking": 23,
     "confederation": "UEFA",
-    "eloRating": 1745,
+    "eloRating": 1830,
     "topPlayers": [
       {
         "name": "David Alaba",
@@ -1469,7 +1469,7 @@
     "group": "J",
     "fifaRanking": 68,
     "confederation": "AFC",
-    "eloRating": 1500,
+    "eloRating": 1680,
     "topPlayers": [
       {
         "name": "Musa Al-Taamari",
@@ -1512,7 +1512,7 @@
     "group": "K",
     "fifaRanking": 8,
     "confederation": "UEFA",
-    "eloRating": 1890,
+    "eloRating": 1989,
     "topPlayers": [
       {
         "name": "Cristiano Ronaldo",
@@ -1555,7 +1555,7 @@
     "group": "K",
     "fifaRanking": 64,
     "confederation": "AFC",
-    "eloRating": 1520,
+    "eloRating": 1714,
     "topPlayers": [
       {
         "name": "Eldor Shomurodov",
@@ -1598,7 +1598,7 @@
     "group": "K",
     "fifaRanking": 9,
     "confederation": "CONMEBOL",
-    "eloRating": 1840,
+    "eloRating": 1982,
     "topPlayers": [
       {
         "name": "Luis Diaz",
@@ -1641,7 +1641,7 @@
     "group": "L",
     "fifaRanking": 4,
     "confederation": "UEFA",
-    "eloRating": 1935,
+    "eloRating": 2024,
     "topPlayers": [
       {
         "name": "Jude Bellingham",
@@ -1684,7 +1684,7 @@
     "group": "L",
     "fifaRanking": 12,
     "confederation": "UEFA",
-    "eloRating": 1815,
+    "eloRating": 1912,
     "topPlayers": [
       {
         "name": "Luka Modric",
@@ -1727,7 +1727,7 @@
     "group": "L",
     "fifaRanking": 48,
     "confederation": "CAF",
-    "eloRating": 1610,
+    "eloRating": 1510,
     "topPlayers": [
       {
         "name": "Mohammed Kudus",
@@ -1770,7 +1770,7 @@
     "group": "L",
     "fifaRanking": 59,
     "confederation": "CONCACAF",
-    "eloRating": 1555,
+    "eloRating": 1730,
     "topPlayers": [
       {
         "name": "Eric Davis",
@@ -1813,7 +1813,7 @@
     "group": "A",
     "fifaRanking": 36,
     "confederation": "UEFA",
-    "eloRating": 1650,
+    "eloRating": 1712,
     "topPlayers": [
       {
         "name": "Patrik Schick",
@@ -1856,7 +1856,7 @@
     "group": "B",
     "fifaRanking": 74,
     "confederation": "UEFA",
-    "eloRating": 1505,
+    "eloRating": 1616,
     "topPlayers": [
       {
         "name": "Edin Dzeko",
@@ -1899,7 +1899,7 @@
     "group": "D",
     "fifaRanking": 42,
     "confederation": "UEFA",
-    "eloRating": 1630,
+    "eloRating": 1849,
     "topPlayers": [
       {
         "name": "Hakan Calhanoglu",
@@ -1942,7 +1942,7 @@
     "group": "F",
     "fifaRanking": 27,
     "confederation": "UEFA",
-    "eloRating": 1710,
+    "eloRating": 1755,
     "topPlayers": [
       {
         "name": "Alexander Isak",
@@ -1985,7 +1985,7 @@
     "group": "I",
     "fifaRanking": 70,
     "confederation": "AFC",
-    "eloRating": 1420,
+    "eloRating": 1607,
     "topPlayers": [
       {
         "name": "Aymen Hussein",
@@ -2028,7 +2028,7 @@
     "group": "K",
     "fifaRanking": 64,
     "confederation": "CAF",
-    "eloRating": 1480,
+    "eloRating": 1652,
     "topPlayers": [
       {
         "name": "Cedric Bakambu",
