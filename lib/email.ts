@@ -13,7 +13,10 @@ export async function sendMatchResultNotifications(
   actualScoreA: number,
   actualScoreB: number,
 ): Promise<void> {
-  if (!process.env.RESEND_API_KEY) return
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("[email] RESEND_API_KEY not set — skipping notification emails")
+    return
+  }
 
   const match = await prisma.match.findUnique({ where: { id: matchId } })
   if (!match) return
