@@ -108,7 +108,13 @@ export default function LiveResultsPage() {
 
   const scheduleDays = useMemo(() => getScheduleByDay(), [])
   const dayValues = useMemo(() => scheduleDays.map((d) => d.date), [scheduleDays])
-  const defaultTab = dayValues[0] ?? "leaderboard"
+  const defaultTab = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10)
+    for (const d of dayValues) {
+      if (d >= today) return d
+    }
+    return dayValues[dayValues.length - 1] ?? "leaderboard"
+  }, [dayValues])
 
   const [matches, setMatches] = useState<MatchDTO[]>([])
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
