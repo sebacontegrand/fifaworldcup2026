@@ -112,7 +112,12 @@ export default function LiveResultsPage() {
   const [matches, setMatches] = useState<MatchDTO[]>([])
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
   const [savingGuess, setSavingGuess] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("leaderboard")
+  const [activeTab, setActiveTab] = useState(() => {
+    const today = new Date().toISOString().slice(0, 10)
+    const days = getScheduleByDay().map((d) => d.date)
+    for (const d of days) { if (d >= today) return d }
+    return days[days.length - 1] ?? "leaderboard"
+  })
   const [renderTick, setRenderTick] = useState(0)
   const forceRender = useCallback(() => setRenderTick((t) => t + 1), [])
   const [now, setNow] = useState(Date.now())
@@ -247,16 +252,7 @@ export default function LiveResultsPage() {
   }, [fetchMatches, fetchLeaderboard])
 
   useEffect(() => {
-    if (factMatchesExist) {
-      setActiveTab("leaderboard")
-    } else {
-      const today = new Date().toISOString().slice(0, 10)
-      let found: string | null = null
-      for (const d of dayValues) {
-        if (d >= today) { found = d; break }
-      }
-      setActiveTab(found ?? dayValues[dayValues.length - 1] ?? "leaderboard")
-    }
+    if (factMatchesExist) setActiveTab("leaderboard")
   }, [factMatchesExist])
 
   const chipReward = useRef<number>(0)
