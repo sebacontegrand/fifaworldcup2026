@@ -86,6 +86,8 @@ export interface KnockoutMatch {
   teamB: string | null
   winner: string | null
   date?: string
+  scoreA?: number
+  scoreB?: number
 }
 
 export function getGroupMatchDate(group: string, matchIndex: number): Date {
@@ -1174,6 +1176,8 @@ function simulateKnockout(
             teamB: teamB.id,
             winner: winnerId,
             date: getKnockoutMatchDate(roundNames[r], m).toISOString(),
+            scoreA: result.scoreA,
+            scoreB: result.scoreB,
           })
 
           results[winnerId] = resultKeys[r]

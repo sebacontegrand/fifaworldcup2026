@@ -18,6 +18,15 @@ const BASE_COLUMN_GAP = 60
 const MOBILE_COLUMN_GAP = 40
 const ROW_GAP = 6
 const TEAM_ROW_HEIGHT = 26
+const HEADER_HEIGHT = 28
+
+const ROUND_LABELS: Record<string, string> = {
+  "Round of 32": "R32",
+  "Round of 16": "R16",
+  "Quarter-Finals": "QF",
+  "Semi-Finals": "SF",
+  "Final": "Final",
+}
 
 const ROUND_COLORS: Record<string, string> = {
   "Round of 32": "from-blue-500/20 to-blue-600/10 border-blue-500/30",
@@ -49,7 +58,8 @@ interface MatchLayout {
 
 function computeLayout(
   roundDefs: { round: string; matches: { matchId: number }[] }[],
-  isMobile: boolean
+  isMobile: boolean,
+  headerOffset = 0
 ): { layouts: MatchLayout[]; bracketWidth: number; bracketHeight: number } {
   const layouts: MatchLayout[] = []
   const MW = isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH
@@ -65,12 +75,12 @@ function computeLayout(
   }
 
   const totalR32Matches = roundDefs[0]?.matches.length ?? 16
-  const bracketHeight = totalR32Matches * (MATCH_HEIGHT + ROW_GAP) - ROW_GAP + MATCH_HEIGHT
+  const bracketHeight = totalR32Matches * (MATCH_HEIGHT + ROW_GAP) - ROW_GAP + MATCH_HEIGHT + headerOffset
 
   for (let r = 0; r < roundDefs.length; r++) {
     const x = r * (MW + CG)
     for (let m = 0; m < roundDefs[r].matches.length; m++) {
-      const centerY = getCenterY(r, m)
+      const centerY = getCenterY(r, m) + headerOffset
       layouts.push({
         matchId: roundDefs[r].matches[m].matchId,
         roundIdx: r,
@@ -216,7 +226,7 @@ export function BracketCrossings({
   const edges = useMemo(() => buildBracketEdges(), [])
 
   const { layouts, bracketWidth, bracketHeight } = useMemo(
-    () => computeLayout(rounds, isMobile),
+    () => computeLayout(rounds, isMobile, HEADER_HEIGHT),
     [rounds, isMobile]
   )
 
@@ -266,6 +276,18 @@ export function BracketCrossings({
     return map
   }, [advancingIds, rounds, layouts])
 
+  // Round header positions
+  const roundHeaders = useMemo(() => {
+    const MW = isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH
+    const CG = isMobile ? MOBILE_COLUMN_GAP : BASE_COLUMN_GAP
+    return rounds.map((r, i) => ({
+      round: r.round,
+      label: ROUND_LABELS[r.round] ?? r.round,
+      x: i * (MW + CG),
+      color: ROUND_BADGE_COLORS[r.round] ?? "text-white/40",
+    }))
+  }, [rounds, isMobile])
+
   // Reset selection
   const clearSelection = useCallback(() => {
     setSelectedTeamId(null)
@@ -301,31 +323,47 @@ export function BracketCrossings({
       {/* Controls bar */}
       <div className="flex items-center gap-2 sm:gap-3 mb-4 flex-wrap">
         <div className="flex items-center gap-2">
-          <Filter className="h-3.5 w-3.5 text-white/40" />
+          <Filter className="h-3 w-3 text-white/40" />
           <span className="text-[10px] font-bold uppercase tracking-wider text-white/40 hidden sm:inline">
-            Group:
+            Group
           </span>
-          <select
-            value={selectedGroup ?? ""}
-            onChange={(e) => setSelectedGroup(e.target.value || null)}
-            className="rounded-md border border-white/10 bg-black/40 px-2 py-1 text-xs text-white/80"
-          >
-            <option value="">All Groups</option>
-            {allGroups.map((g) => (
-              <option key={g} value={g}>Group {g}</option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={selectedGroup ?? ""}
+              onChange={(e) => setSelectedGroup(e.target.value || null)}
+              className="appearance-none rounded-md border border-white/10 bg-zinc-900/80 px-2.5 py-1.5 pr-6 text-[11px] font-bold text-white/70 uppercase tracking-wider cursor-pointer hover:border-white/20 focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
+            >
+              <option value="">All Groups</option>
+              {allGroups.map((g) => (
+                <option key={g} value={g}>Group {g}</option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-white/30">
+              <svg width="8" height="5" viewBox="0 0 8 5" fill="none">
+                <path d="M1 1L4 4L7 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
         </div>
 
-        <label className="flex items-center gap-1.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={showOpponents}
-            onChange={(e) => setShowOpponents(e.target.checked)}
-            className="rounded border-white/20"
-          />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-white/40 hidden sm:inline">
-            Show Opponent Pools
+        <label className="flex items-center gap-1.5 cursor-pointer group">
+          <div className="relative flex items-center justify-center">
+            <input
+              type="checkbox"
+              checked={showOpponents}
+              onChange={(e) => setShowOpponents(e.target.checked)}
+              className="peer sr-only"
+            />
+            <div className="h-4 w-4 rounded border border-white/20 bg-zinc-900/80 peer-checked:bg-cyan-500/20 peer-checked:border-cyan-500/40 transition-colors flex items-center justify-center">
+              {showOpponents && (
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                  <path d="M1.5 4L3 5.5L6.5 2" stroke="rgb(6,182,212)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </div>
+          </div>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-white/40 group-hover:text-white/60 transition-colors hidden sm:inline">
+            Opponent Pools
           </span>
         </label>
 
@@ -374,6 +412,22 @@ export function BracketCrossings({
             transformOrigin: "top left",
           }}
         >
+          {/* Round Column Headers */}
+          {roundHeaders.map((h) => (
+            <div
+              key={h.round}
+              className="absolute top-0 flex items-end justify-center z-20"
+              style={{ left: h.x, width: isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH, height: HEADER_HEIGHT }}
+            >
+              <span className={cn(
+                "text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-t-md",
+                h.color,
+              )}>
+                {h.label}
+              </span>
+            </div>
+          ))}
+
           {/* SVG Connectors Layer */}
           <svg
             ref={svgRef}
@@ -397,7 +451,7 @@ export function BracketCrossings({
 
               return (
                 <motion.path
-                  key={conn.matchId}
+                  key={`${conn.matchId}-${selectedTeamId ?? "none"}`}
                   d={conn.path}
                   fill="none"
                   stroke={isHighlighted ? "rgba(6,182,212,0.6)" : "rgba(255,255,255,0.08)"}
@@ -408,7 +462,10 @@ export function BracketCrossings({
                     opacity: isHighlighted ? 1 : 0.4,
                   }}
                   initial={{ pathLength: 0, opacity: 0 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  transition={isHighlighted
+                    ? { duration: 0.6, ease: "easeInOut", delay: 0.1 }
+                    : { duration: 0.4, ease: "easeInOut" }
+                  }
                 />
               )
             })}
@@ -436,6 +493,7 @@ export function BracketCrossings({
             if (!passesGroupFilter) return null
 
             const MW = isMobile ? MOBILE_MATCH_WIDTH : BASE_MATCH_WIDTH
+            const hasScore = match.winner && match.scoreA !== undefined
 
             return (
               <motion.div
@@ -478,7 +536,31 @@ export function BracketCrossings({
                   onHover={setHoveredTeamId}
                   position="top"
                   isMobile={isMobile}
+                  score={hasScore ? match.scoreA : undefined}
                 />
+
+                {/* Score divider */}
+                {hasScore && (
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex items-center gap-0.5">
+                    <span className={cn(
+                      "text-[10px] font-black font-mono leading-none px-1 rounded-sm",
+                      match.winner === match.teamA
+                        ? "text-primary bg-primary/15"
+                        : "text-white/30 bg-white/5"
+                    )}>
+                      {match.scoreA}
+                    </span>
+                    <span className="text-[7px] text-white/20 font-mono">:</span>
+                    <span className={cn(
+                      "text-[10px] font-black font-mono leading-none px-1 rounded-sm",
+                      match.winner === match.teamB
+                        ? "text-primary bg-primary/15"
+                        : "text-white/30 bg-white/5"
+                    )}>
+                      {match.scoreB}
+                    </span>
+                  </div>
+                )}
 
                 {/* Team B */}
                 <TeamRowContent
@@ -492,6 +574,7 @@ export function BracketCrossings({
                   onHover={setHoveredTeamId}
                   position="bottom"
                   isMobile={isMobile}
+                  score={hasScore ? match.scoreB : undefined}
                 />
               </motion.div>
             )
@@ -594,6 +677,7 @@ function TeamRowContent({
   onHover,
   position,
   isMobile,
+  score,
 }: {
   team: Team | null
   isWinner: boolean
@@ -605,6 +689,7 @@ function TeamRowContent({
   onHover: (id: string | null) => void
   position: "top" | "bottom"
   isMobile?: boolean
+  score?: number
 }) {
   const probKeyMap: Record<string, keyof TeamProbability> = {
     "Round of 32": "roundOf16",
@@ -651,6 +736,17 @@ function TeamRowContent({
       >
         {team?.name || "TBD"}
       </span>
+      {score !== undefined && (
+        <span
+          className={cn(
+            "flex-shrink-0 font-mono font-black tabular-nums mr-0.5",
+            isMobile ? "text-[9px]" : "text-[10px]",
+            isWinner ? "text-primary" : "text-white/30",
+          )}
+        >
+          {score}
+        </span>
+      )}
       {prob !== undefined && (
         <span
           className={cn(
@@ -669,6 +765,22 @@ function TeamRowContent({
 
 // ─── Crossing Detail Panel ────────────────────────────────────────────
 
+interface CrossingMatch {
+  teamA: string | null
+  teamB: string | null
+  winner: string | null
+  scoreA?: number
+  scoreB?: number
+}
+
+const ROUND_ACCENT: Record<string, string> = {
+  "Round of 32": "border-l-blue-500",
+  "Round of 16": "border-l-cyan-500",
+  "Quarter-Finals": "border-l-purple-500",
+  "Semi-Finals": "border-l-amber-500",
+  "Final": "border-l-gold",
+}
+
 function CrossingDetail({
   team,
   path,
@@ -680,24 +792,24 @@ function CrossingDetail({
   path: TeamPathInfo
   crossings: { round: string; possibleOpponents: string[]; matchId: number }[]
   teams: Record<string, Team>
-  findMatch: (matchId: number) => { teamA: string | null; teamB: string | null; winner: string | null } | null
+  findMatch: (matchId: number) => CrossingMatch | null
 }) {
   if (!team) return null
 
   return (
     <div className="mt-6 rounded-xl border border-cyan-500/20 bg-gradient-to-b from-cyan-500/5 to-transparent p-5 animate-in fade-in slide-in-from-bottom-3 duration-300">
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-5">
         <img
           src={getFlagImageUrl(team.id, 32)}
           alt={team.code}
           className="h-8 w-8 object-contain"
         />
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-lg font-black uppercase tracking-tight text-cyan-300">
               {team.name}
             </span>
-            <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300">
+            <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300 whitespace-nowrap">
               {path.isChampion ? "Champion" : path.reachedRound || "Round of 32"}
             </span>
           </div>
@@ -714,26 +826,62 @@ function CrossingDetail({
             ? match.teamA === team.id ? match.teamB : match.teamA
             : null
 
+          const hasScore = match && match.scoreA !== undefined && match.winner
+          const scoreA = match?.scoreA
+          const scoreB = match?.scoreB
+          const crossWinner = match?.winner
+
           return (
             <div
               key={cross.round}
-              className="rounded-lg border border-white/10 bg-black/30 p-3"
+              className={cn(
+                "rounded-lg border border-white/10 bg-black/30 p-3 border-l-[3px]",
+                ROUND_ACCENT[cross.round] ?? "border-l-white/10"
+              )}
             >
-              <div className="text-[9px] font-black uppercase tracking-wider text-white/40 mb-2">
-                {cross.round}
+              {/* Round name */}
+              <div className={cn(
+                "text-[9px] font-black uppercase tracking-wider mb-3 pb-2 border-b border-white/5",
+                ROUND_BADGE_COLORS[cross.round] ?? "text-white/40"
+              )}>
+                {ROUND_LABELS[cross.round] ?? cross.round}
               </div>
+
+              {/* Score display */}
+              {hasScore && (
+                <div className="flex items-center justify-center gap-2 mb-3 py-1.5 rounded bg-white/5">
+                  <span className={cn(
+                    "text-sm font-black font-mono tabular-nums",
+                    crossWinner === team.id ? "text-cyan-300" : "text-white/40"
+                  )}>
+                    {match!.teamA === team.id ? scoreA : scoreB}
+                  </span>
+                  <span className="text-[10px] font-bold text-white/20">-</span>
+                  <span className={cn(
+                    "text-sm font-black font-mono tabular-nums",
+                    crossWinner && crossWinner !== team.id ? "text-green-400" : "text-white/40"
+                  )}>
+                    {match!.teamA === team.id ? scoreB : scoreA}
+                  </span>
+                </div>
+              )}
 
               {/* Actual opponent */}
               {actualOpponent && teams[actualOpponent] && (
-                <div className="flex items-center gap-1.5 mb-2 rounded bg-green-500/10 px-2 py-1">
-                  <span className="text-[9px] font-bold uppercase text-green-400 mr-1">vs</span>
+                <div className="flex items-center gap-2 mb-3 rounded bg-green-500/10 px-2.5 py-1.5 border border-green-500/15">
+                  <span className="text-[8px] font-black uppercase tracking-wider text-green-400 shrink-0">
+                    vs
+                  </span>
                   <img
                     src={getFlagImageUrl(actualOpponent, 16)}
                     alt={teams[actualOpponent].code}
-                    className="h-3 w-3 object-contain"
+                    className="h-4 w-4 object-contain"
                   />
-                  <span className="text-xs font-bold text-white/80">
+                  <span className="text-[11px] font-bold text-white/80 truncate">
                     {teams[actualOpponent].name}
+                  </span>
+                  <span className="text-[8px] font-mono text-white/30 ml-auto">
+                    {teams[actualOpponent].group}
                   </span>
                 </div>
               )}
@@ -741,19 +889,19 @@ function CrossingDetail({
               {/* Possible opponents pool */}
               {cross.possibleOpponents.length > 0 && (
                 <div>
-                  <div className="text-[8px] font-bold uppercase tracking-wider text-white/30 mb-1">
-                    Possible opponents ({cross.possibleOpponents.length})
+                  <div className="text-[8px] font-bold uppercase tracking-wider text-white/30 mb-1.5">
+                    Pool ({cross.possibleOpponents.length})
                   </div>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="grid grid-cols-2 gap-1">
                     {cross.possibleOpponents.map((oppId) => {
                       const opp = teams[oppId]
                       if (!opp || oppId === team.id) return null
                       const isActual = oppId === actualOpponent
                       return (
-                        <span
+                        <div
                           key={oppId}
                           className={cn(
-                            "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[9px] font-bold",
+                            "flex items-center gap-1 rounded px-1.5 py-1 text-[9px] font-bold truncate",
                             isActual
                               ? "bg-green-500/20 text-green-300"
                               : "bg-white/5 text-white/50",
@@ -762,13 +910,20 @@ function CrossingDetail({
                           <img
                             src={getFlagImageUrl(oppId, 12)}
                             alt={opp.code}
-                            className="h-2.5 w-2.5 object-contain"
+                            className="h-3 w-3 object-contain shrink-0"
                           />
-                          {opp.code}
-                        </span>
+                          <span className="truncate">{opp.code}</span>
+                        </div>
                       )
                     })}
                   </div>
+                </div>
+              )}
+
+              {/* No opponent info */}
+              {!actualOpponent && cross.possibleOpponents.length === 0 && (
+                <div className="text-[10px] text-white/20 italic">
+                  Yet to be determined
                 </div>
               )}
             </div>
