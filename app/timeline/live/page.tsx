@@ -108,18 +108,11 @@ export default function LiveResultsPage() {
 
   const scheduleDays = useMemo(() => getScheduleByDay(), [])
   const dayValues = useMemo(() => scheduleDays.map((d) => d.date), [scheduleDays])
-  const defaultTab = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10)
-    for (const d of dayValues) {
-      if (d >= today) return d
-    }
-    return dayValues[dayValues.length - 1] ?? "leaderboard"
-  }, [dayValues])
 
   const [matches, setMatches] = useState<MatchDTO[]>([])
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
   const [savingGuess, setSavingGuess] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState(defaultTab)
+  const [activeTab, setActiveTab] = useState("leaderboard")
   const [renderTick, setRenderTick] = useState(0)
   const forceRender = useCallback(() => setRenderTick((t) => t + 1), [])
   const [now, setNow] = useState(Date.now())
@@ -257,7 +250,12 @@ export default function LiveResultsPage() {
     if (factMatchesExist) {
       setActiveTab("leaderboard")
     } else {
-      setActiveTab(defaultTab)
+      const today = new Date().toISOString().slice(0, 10)
+      let found: string | null = null
+      for (const d of dayValues) {
+        if (d >= today) { found = d; break }
+      }
+      setActiveTab(found ?? dayValues[dayValues.length - 1] ?? "leaderboard")
     }
   }, [factMatchesExist])
 
