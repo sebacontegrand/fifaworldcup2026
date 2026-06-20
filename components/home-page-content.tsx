@@ -22,6 +22,7 @@ import {
 import { Play, Activity } from "lucide-react"
 import { TournamentCountdown } from "@/components/tournament-countdown"
 import { DailyBanner } from "@/components/daily-banner"
+import { LiveGroupStandings } from "@/components/live-group-standings"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -115,6 +116,9 @@ export function HomePageContent() {
                     </div>
                 </div>
             </section>
+
+            {/* Live Group Standings (always visible, independent of simulation) */}
+            <LiveGroupStandings />
 
             {/* Loading State */}
             {isRunning && (
