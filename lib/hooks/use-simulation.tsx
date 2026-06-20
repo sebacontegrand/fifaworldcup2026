@@ -37,7 +37,9 @@ async function mergeFactResultsWithOverrides(
 
     return {
       ...tournamentState,
-      matchOverrides: { ...factOverrides, ...tournamentState.matchOverrides },
+      // Fresh fact results win over stale saved overrides.
+      // User-sim overrides for matches WITHOUT fact results are preserved.
+      matchOverrides: { ...tournamentState.matchOverrides, ...factOverrides },
     }
   } catch {
     return tournamentState
@@ -91,36 +93,56 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const loaded = useRef(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Load from DB on mount
+  // Load from DB on mount — strip stale fact overrides so they never pollute auto-saves
   useEffect(() => {
     let cancelled = false
 
-    fetch("/api/simulation/config")
-      .then(r => r.json())
-      .then(async data => {
-        if (cancelled) return
+    ;(async () => {
+      const [configRes, matchesRes] = await Promise.all([
+        fetch("/api/simulation/config"),
+        fetch("/api/matches"),
+      ])
 
-        let newConfig = INITIAL_CONFIG
-        if (data.config && Object.keys(data.config).length > 0) {
-          newConfig = { ...INITIAL_CONFIG, ...data.config, teamSettings: { ...INITIAL_CONFIG.teamSettings, ...data.config.teamSettings } }
+      if (cancelled) return
+
+      const data = await configRes.json()
+      const matches: FactMatch[] = await matchesRes.json()
+
+      let newConfig = INITIAL_CONFIG
+      if (data.config && Object.keys(data.config).length > 0) {
+        newConfig = { ...INITIAL_CONFIG, ...data.config, teamSettings: { ...INITIAL_CONFIG.teamSettings, ...data.config.teamSettings } }
+      }
+      setConfig(newConfig)
+
+      // Build set of current fact result keys so we can strip stale ones from saved state
+      const currentFactKeys = new Set<string>()
+      for (const m of matches) {
+        if (m.isFact && m.teamAId && m.teamBId && m.scoreA !== null && m.scoreB !== null) {
+          currentFactKeys.add(`${m.teamAId}_${m.teamBId}`)
         }
-        setConfig(newConfig)
+      }
 
-        let newState = INITIAL_TOURNAMENT_STATE
-        if (data.tournamentState && Object.keys(data.tournamentState).length > 0) {
-          newState = { ...INITIAL_TOURNAMENT_STATE, ...data.tournamentState, matchOverrides: { ...data.tournamentState.matchOverrides } }
+      let newState = INITIAL_TOURNAMENT_STATE
+      if (data.tournamentState && Object.keys(data.tournamentState).length > 0) {
+        const savedOverrides = data.tournamentState.matchOverrides || {}
+        const cleanOverrides: Record<string, MatchOverride> = {}
+        for (const [key, override] of Object.entries(savedOverrides)) {
+          // Keep only user-set overrides (keys NOT matching a current fact result).
+          // Stale fact overrides (key matches a current fact → will come from fresh fetch) or
+          // cleared facts (key doesn't match any current fact → stale) are both dropped.
+          if (!currentFactKeys.has(key)) {
+            cleanOverrides[key] = override as MatchOverride
+          }
         }
+        newState = { ...INITIAL_TOURNAMENT_STATE, ...data.tournamentState, matchOverrides: cleanOverrides }
+      }
+      if (!cancelled) setTournamentState(newState)
 
-        // Merge fact results from DB into match overrides
-        const mergedState = await mergeFactResultsWithOverrides(newState)
-        if (!cancelled) setTournamentState(mergedState)
-
-        if (data.currentTournamentDate) {
-          setCurrentTournamentDate(data.currentTournamentDate)
-        }
-        loaded.current = true
-      })
-      .catch(() => { loaded.current = true })
+      if (data.currentTournamentDate) {
+        setCurrentTournamentDate(data.currentTournamentDate)
+      }
+      loaded.current = true
+    })()
 
     return () => { cancelled = true }
   }, [])
@@ -142,10 +164,10 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const simulate = useCallback(() => {
     setIsRunning(true)
 
-    // Merge latest fact results from DB, then run simulation
+    // Merge latest fact results from DB locally — do NOT store in tournamentState
+    // so stale facts never get auto-saved to the DB config
     ;(async () => {
       const mergedState = await mergeFactResultsWithOverrides(tournamentState)
-      setTournamentState(mergedState)
 
       // Use setTimeout to allow the UI to update with loading state before heavy calculation
       setTimeout(() => {
