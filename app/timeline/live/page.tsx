@@ -340,9 +340,10 @@ export default function LiveResultsPage() {
     const matchDTO = findMatchDTO(matches, fixture.homeTeamId, fixture.awayTeamId)
     const guess = matchDTO?.guess
     const guessKey = matchDTO?.id ?? fixture.matchNumber.toString()
+    const guessNeedSwap = scoresNeedSwap(matchDTO, fixture.homeTeamId)
     const gInputs = guessInputs.current[guessKey] ?? {
-      scoreA: guess?.scoreA?.toString() ?? "",
-      scoreB: guess?.scoreB?.toString() ?? "",
+      scoreA: guess ? (guessNeedSwap ? guess.scoreB?.toString() : guess.scoreA?.toString()) ?? "" : "",
+      scoreB: guess ? (guessNeedSwap ? guess.scoreA?.toString() : guess.scoreB?.toString()) ?? "" : "",
     }
     const hasGuess = !!guess
 
@@ -497,7 +498,7 @@ export default function LiveResultsPage() {
               <div className="flex items-center justify-between px-3 py-2 bg-white/[0.02] border-t border-white/5">
                 <span className="text-[9px] text-red-400/50 font-medium uppercase tracking-wider">Locked</span>
                 {hasGuess ? (
-                  <span className="text-xs text-white/40">Predicted: <span className="text-white/70 font-bold">{guess.scoreA}-{guess.scoreB}</span></span>
+                  <span className="text-xs text-white/40">Predicted: <span className="text-white/70 font-bold">{guessNeedSwap ? guess.scoreB : guess.scoreA}-{guessNeedSwap ? guess.scoreA : guess.scoreB}</span></span>
                 ) : (
                   <span className="text-xs text-white/20">No prediction</span>
                 )}
@@ -528,12 +529,12 @@ export default function LiveResultsPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Score</span>
                   <div className="flex items-center gap-2">
-                    <Input type="number" min="0" defaultValue={guess?.scoreA?.toString() ?? ""}
+                    <Input type="number" min="0" defaultValue={gInputs.scoreA}
                       ref={(el) => { guessInputRefs.current[`${guessKey}_A`] = el }}
                       onChange={(e) => handleGuessChange(guessKey, "A", e.target.value)}
                       className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90" placeholder="-" />
                     <span className="text-yellow-500/40 font-black text-xs">:</span>
-                    <Input type="number" min="0" defaultValue={guess?.scoreB?.toString() ?? ""}
+                    <Input type="number" min="0" defaultValue={gInputs.scoreB}
                       ref={(el) => { guessInputRefs.current[`${guessKey}_B`] = el }}
                       onChange={(e) => handleGuessChange(guessKey, "B", e.target.value)}
                       className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90" placeholder="-" />
@@ -560,7 +561,7 @@ export default function LiveResultsPage() {
             <span className="text-[9px] text-green-400/60 font-medium uppercase tracking-wider">Result</span>
             {guess ? (
               <div className="flex items-center gap-2 text-xs">
-                <span className="text-white/50">{guess.scoreA}-{guess.scoreB}</span>
+                <span className="text-white/50">{guessNeedSwap ? guess.scoreB : guess.scoreA}-{guessNeedSwap ? guess.scoreA : guess.scoreB}</span>
                 <span className={cn("font-bold",
                   matchDTO.scoreA != null && matchDTO.scoreB != null
                     ? calcPoints(guess.scoreA, guess.scoreB, matchDTO.scoreA, matchDTO.scoreB) >= 300
