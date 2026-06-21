@@ -1,6 +1,10 @@
 {
   "tournament": "FIFA World Cup 2026",
-  "host_countries": ["Canada", "Mexico", "United States"],
+  "host_countries": [
+    "Canada",
+    "Mexico",
+    "United States"
+  ],
   "start_date": "2026-06-11",
   "end_date": "2026-07-19",
   "total_matches": 104,
@@ -103,7 +107,7 @@
       "group": "D",
       "date": "2026-06-14",
       "time_local": "21:00 PT",
-      "time_utc": "04:00 UTC (Jun 14)",
+      "time_utc": "04:00 UTC (Jun 15)",
       "home_team": "Australia",
       "away_team": "Turkiye",
       "stadium": "BC Place",
@@ -415,7 +419,7 @@
       "group": "D",
       "date": "2026-06-19",
       "time_local": "21:00 PT",
-      "time_utc": "03:00 UTC (Jun 20)",
+      "time_utc": "04:00 UTC (Jun 20)",
       "home_team": "Turkiye",
       "away_team": "Paraguay",
       "stadium": "San Francisco Bay Area Stadium",
@@ -454,7 +458,7 @@
       "group": "E",
       "date": "2026-06-20",
       "time_local": "19:00 CDT",
-      "time_utc": "03:00 UTC (Jun 21)",
+      "time_utc": "00:00 UTC (Jun 21)",
       "home_team": "Ecuador",
       "away_team": "Curacao",
       "stadium": "Kansas City Stadium",
