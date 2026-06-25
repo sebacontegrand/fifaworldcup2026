@@ -3,6 +3,7 @@
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { BracketView } from "@/components/bracket-view"
 import { BracketCrossings } from "@/components/bracket-crossings"
+import { BracketRoadToFinal } from "@/components/bracket-road-to-final"
 import { SimulationAnalytics } from "@/components/simulation-analytics"
 import { getFlagImageUrl } from "@/lib/team-flags"
 import { Badge } from "@/components/ui/badge"
@@ -166,7 +167,7 @@ function GroupTable({
 
 export default function BracketPage() {
     const { result, isRunning, simulate } = useSimulation()
-    const [viewMode, setViewMode] = useState<"classic" | "crossings">("classic")
+    const [viewMode, setViewMode] = useState<"classic" | "crossings" | "road">("classic")
 
     const groupKeys = result
         ? Object.keys(result.groupStandings).sort()
@@ -295,6 +296,18 @@ export default function BracketPage() {
                             <GitBranch className="h-3 w-3" />
                             Crossing Paths
                         </button>
+                        <button
+                            onClick={() => setViewMode("road")}
+                            className={cn(
+                                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all",
+                                viewMode === "road"
+                                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+                                    : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10"
+                            )}
+                        >
+                            <Trophy className="h-3 w-3" />
+                            Road to Final
+                        </button>
                     </div>
 
                     {/* ═══ Knockout Bracket ═══ */}
@@ -317,7 +330,7 @@ export default function BracketPage() {
                                     teams={teamMap}
                                     teamProbabilities={result.teamProbabilities}
                                 />
-                            ) : (
+                            ) : viewMode === "crossings" ? (
                                 <BracketCrossings
                                     rounds={result.knockoutBracket}
                                     teams={teamMap}
@@ -325,6 +338,8 @@ export default function BracketPage() {
                                     bracketSeeding={result.bracketSeeding}
                                     advancingIds={result.advancingIds}
                                 />
+                            ) : (
+                                <BracketRoadToFinal teams={teamMap} />
                             )}
                         </div>
                     </section>
