@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useRef, useEffect, useState } from "react"
 import { useMyTeam } from "@/lib/hooks/use-my-team"
 import { useSimulation } from "@/lib/hooks/use-simulation"
 import { getFlagImageUrl } from "@/lib/team-flags"
@@ -11,20 +11,28 @@ import {
   R32_MATCHES,
   type TeamSource,
 } from "@/lib/bracket-seeding"
-import { AlertCircle, Flag, Trophy, ChevronRight } from "lucide-react"
+import { AlertCircle, Flag, Trophy } from "lucide-react"
 
 interface BracketRoadToFinalProps {
   teams: Record<string, Team>
   className?: string
 }
 
-const ROUND_PROB_KEYS: { round: string; probKey: keyof TeamProbability; label: string }[] = [
-  { round: "Round of 32", probKey: "roundOf32", label: "Round of 32" },
-  { round: "Round of 16", probKey: "roundOf16", label: "Round of 16" },
-  { round: "Quarter-Finals", probKey: "quarterFinal", label: "Quarter-Finals" },
-  { round: "Semi-Finals", probKey: "semiFinal", label: "Semi-Finals" },
-  { round: "Final", probKey: "final", label: "Final" },
+const ROUND_DEFS: { round: string; probKey: keyof TeamProbability; label: string; width: number }[] = [
+  { round: "Round of 32", probKey: "roundOf32", label: "R32", width: 155 },
+  { round: "Round of 16", probKey: "roundOf16", label: "R16", width: 160 },
+  { round: "Quarter-Finals", probKey: "quarterFinal", label: "QF", width: 170 },
+  { round: "Semi-Finals", probKey: "semiFinal", label: "SF", width: 175 },
+  { round: "Final", probKey: "final", label: "Final", width: 175 },
 ]
+
+const CHAMPION_WIDTH = 140
+const COL_GAP = 10
+const CONNECTOR_COLOR = "rgba(6, 182, 212, 0.2)"
+const CONNECTOR_COLOR_OPP = "rgba(255, 255, 255, 0.08)"
+const ROW_H = 28
+const LABEL_H = 40
+const CARD_PAD = 8
 
 export function BracketRoadToFinal({ teams, className }: BracketRoadToFinalProps) {
   const { selectedTeam } = useMyTeam()
@@ -61,6 +69,8 @@ export function BracketRoadToFinal({ teams, className }: BracketRoadToFinalProps
   return <RoadToFinalContent teamId={selectedTeam} result={result} teams={teams} />
 }
 
+// ─── Main Content ────────────────────────────────────────────────────
+
 function RoadToFinalContent({
   teamId,
   result,
@@ -72,13 +82,27 @@ function RoadToFinalContent({
 }) {
   const team = teams[teamId]
   const probs = result.teamProbabilities[teamId]
-
   const teamGroup = team?.group
 
   const opponentPools = useMemo(() => {
     if (!teamGroup) return null
     return buildOpponentPools(teamGroup, teams)
   }, [teamGroup, teams])
+
+  const roundOpponents = useMemo(() => {
+    const pools: Record<string, { id: string; prob: number }[]> = {}
+    for (const def of ROUND_DEFS) {
+      const all = opponentPools?.[def.round] ?? []
+      pools[def.round] = all
+        .map((id) => ({
+          id,
+          prob: result.teamProbabilities[id]?.[def.probKey] ?? 0,
+        }))
+        .filter((o) => o.prob > 0)
+        .sort((a, b) => b.prob - a.prob)
+    }
+    return pools
+  }, [opponentPools, result.teamProbabilities])
 
   if (!team || !probs) {
     return (
@@ -92,56 +116,253 @@ function RoadToFinalContent({
     )
   }
 
-  const champGivenFinal = probs.final > 0
-    ? Math.round((probs.champion / probs.final) * 1000) / 10
-    : 0
+  const champGivenFinal =
+    probs.final > 0 ? Math.round((probs.champion / probs.final) * 1000) / 10 : 0
 
   return (
-    <div className="space-y-6 py-4">
-      <TeamHeader
+    <div className={cn("py-4", "space-y-4")}>
+      <TeamHeader team={team} probs={probs} champGivenFinal={champGivenFinal} />
+
+      {/* ── Bracket Columns ── */}
+      <HorizontalBracket
         team={team}
         probs={probs}
-        champGivenFinal={champGivenFinal}
-      />
-
-      <div className="relative">
-        <div className="absolute left-[23px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-500/40 via-cyan-500/20 to-transparent" />
-
-        <div className="space-y-4">
-          {ROUND_PROB_KEYS.map((roundDef, idx) => {
-            const reachProb = probs[roundDef.probKey]
-            const allOpponents = opponentPools?.[roundDef.round] ?? []
-            const opponents = allOpponents.filter((oppId) => {
-              const oppProb = result.teamProbabilities[oppId]?.[roundDef.probKey]
-              return oppProb !== undefined && oppProb > 0
-            })
-
-            return (
-              <RoundStep
-                key={roundDef.round}
-                roundDef={roundDef}
-                idx={idx}
-                isLast={idx === ROUND_PROB_KEYS.length - 1}
-                team={team}
-                reachProb={reachProb}
-                opponents={opponents}
-                teams={teams}
-                teamProbabilities={result.teamProbabilities}
-                probKey={roundDef.probKey}
-              />
-            )
-          })}
-        </div>
-      </div>
-
-      <ChampionCard
-        team={team}
-        champProb={probs.champion}
+        roundOpponents={roundOpponents}
+        teams={teams}
         champGivenFinal={champGivenFinal}
       />
     </div>
   )
 }
+
+// ─── Horizontal Bracket Layout ───────────────────────────────────────
+
+const MAX_OPPONENTS = 7
+
+function HorizontalBracket({
+  team,
+  probs,
+  roundOpponents,
+  teams,
+  champGivenFinal,
+}: {
+  team: Team
+  probs: TeamProbability
+  roundOpponents: Record<string, { id: string; prob: number }[]>
+  teams: Record<string, Team>
+  champGivenFinal: number
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [svgSize, setSvgSize] = useState({ w: 0, h: 0 })
+
+  const totalWidth =
+    ROUND_DEFS.reduce((s, d) => s + d.width, 0) +
+    (ROUND_DEFS.length - 1) * COL_GAP +
+    16
+
+  const colLefts = useMemo(() => {
+    const lefts: number[] = []
+    let x = 8
+    for (let i = 0; i < ROUND_DEFS.length; i++) {
+      lefts.push(x)
+      x += ROUND_DEFS[i].width + COL_GAP
+    }
+    return lefts
+  }, [])
+
+  const oppCounts = useMemo(
+    () => ROUND_DEFS.map((d) => Math.min(roundOpponents[d.round]?.length ?? 0, MAX_OPPONENTS)),
+    [roundOpponents]
+  )
+
+  const myTeamY = LABEL_H + CARD_PAD + ROW_H / 2
+  const firstOppY = LABEL_H + CARD_PAD + ROW_H + 1 + ROW_H / 2
+
+  useEffect(() => {
+    if (!containerRef.current) return
+    const ro = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (!entry) return
+      setSvgSize({ w: entry.contentRect.width, h: entry.contentRect.height })
+    })
+    ro.observe(containerRef.current)
+    const rect = containerRef.current.getBoundingClientRect()
+    setSvgSize({ w: rect.width, h: rect.height })
+    return () => ro.disconnect()
+  }, [])
+
+  const connectorPaths = useMemo(() => {
+    const paths: string[] = []
+    for (let i = 0; i < ROUND_DEFS.length - 1; i++) {
+      const x1 = colLefts[i] + ROUND_DEFS[i].width
+      const x2 = colLefts[i + 1]
+      const midX = (x1 + x2) / 2
+
+      paths.push(`M ${x1} ${myTeamY} L ${x2} ${myTeamY}`)
+
+      const n = oppCounts[i]
+      if (n > 0) {
+        const lastOppY = firstOppY + (n - 1) * ROW_H
+        paths.push(`M ${x1} ${lastOppY} L ${midX} ${lastOppY} L ${midX} ${myTeamY}`)
+      }
+    }
+    return paths
+  }, [colLefts, myTeamY, firstOppY, oppCounts])
+
+  const totalH = LABEL_H + CARD_PAD + ROW_H + 1 + Math.max(...oppCounts, 1) * ROW_H + CARD_PAD + 12
+
+  return (
+    <div className="overflow-x-auto pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      <div
+        ref={containerRef}
+        className="relative"
+        style={{ minWidth: totalWidth, height: totalH }}
+      >
+        {/* SVG connectors */}
+        {svgSize.w > 0 && (
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            width={svgSize.w}
+            height={svgSize.h}
+            style={{ overflow: "visible" }}
+          >
+            {connectorPaths.map((d, i) => {
+              const isMainLine = !d.includes("L")
+              return (
+                <path
+                  key={i}
+                  d={d}
+                  stroke={isMainLine ? CONNECTOR_COLOR : CONNECTOR_COLOR_OPP}
+                  strokeWidth={isMainLine ? 2 : 1}
+                  fill="none"
+                  strokeLinecap="round"
+                />
+              )
+            })}
+          </svg>
+        )}
+
+        {/* Rounds */}
+        {ROUND_DEFS.map((def, idx) => {
+          const reachProb = probs[def.probKey]
+          const opps = roundOpponents[def.round] ?? []
+          const shown = opps.slice(0, MAX_OPPONENTS)
+          const rest = opps.length - MAX_OPPONENTS
+
+          return (
+            <div
+              key={def.round}
+              className="absolute top-0 flex flex-col"
+              style={{ left: colLefts[idx], width: def.width }}
+            >
+              <div className="text-center mb-1.5">
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-400/70">
+                  {def.label}
+                </span>
+              </div>
+
+              <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/[0.04] overflow-hidden">
+                <div className="flex items-center gap-1.5 px-2 py-1.5 bg-cyan-500/10 border-b border-cyan-500/10">
+                  <img
+                    src={getFlagImageUrl(team.id, 20)}
+                    alt={team.code}
+                    className="h-4 w-4 object-contain flex-shrink-0"
+                  />
+                  <span className="text-[10px] font-bold text-cyan-300 truncate leading-none">
+                    {team.code}
+                  </span>
+                  <span className="text-[8px] font-mono text-cyan-300/50 ml-auto flex-shrink-0 tabular-nums">
+                    {reachProb}%
+                  </span>
+                </div>
+
+                {shown.length === 0 ? (
+                  <div className="px-2 py-2">
+                    <span className="text-[9px] text-white/20 italic">TBD</span>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-white/[0.03]">
+                    {shown.map((opp) => {
+                      const oppTeam = teams[opp.id]
+                      return (
+                        <div
+                          key={opp.id}
+                          className="flex items-center gap-1.5 px-2 py-1 hover:bg-white/[0.02] transition-colors"
+                        >
+                          <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                            {oppTeam ? (
+                              <img
+                                src={getFlagImageUrl(oppTeam.id, 16)}
+                                alt={oppTeam.code}
+                                className="h-3.5 w-3.5 object-contain"
+                              />
+                            ) : (
+                              <span className="text-[8px]">❓</span>
+                            )}
+                          </div>
+                          <span className="text-[9px] text-white/50 truncate leading-none flex-1">
+                            {oppTeam?.code || opp.id}
+                          </span>
+                          <span className="text-[7px] font-mono text-white/20 flex-shrink-0 tabular-nums">
+                            {opp.prob}%
+                          </span>
+                        </div>
+                      )
+                    })}
+                    {rest > 0 && (
+                      <div className="px-2 py-1 text-[8px] text-white/20 italic text-center">
+                        +{rest} more
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+
+        {/* Champion */}
+        <div
+          className="absolute top-0 flex flex-col"
+          style={{
+            left: colLefts[ROUND_DEFS.length - 1] + ROUND_DEFS[ROUND_DEFS.length - 1].width + COL_GAP,
+            width: CHAMPION_WIDTH,
+          }}
+        >
+          <div className="text-center mb-1.5">
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gold">
+              Champion
+            </span>
+          </div>
+
+          <div
+            className="flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-gold/30 bg-gradient-to-b from-gold/[0.06] to-gold/[0.02] p-3"
+            style={{ marginTop: myTeamY - LABEL_H - CARD_PAD }}
+          >
+            <img
+              src={getFlagImageUrl(team.id, 48)}
+              alt={team.code}
+              className="h-10 w-10 object-contain drop-shadow-lg"
+            />
+            <span className="text-[11px] font-black uppercase tracking-wider text-gold text-center leading-tight">
+              {team.code}
+            </span>
+            <span className="text-[10px] font-mono text-gold/60 tabular-nums">
+              {probs.champion}%
+            </span>
+            {champGivenFinal > 0 && (
+              <span className="text-[7px] text-gold/30 text-center leading-tight">
+                {champGivenFinal}% if Final
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Team Header ─────────────────────────────────────────────────────
 
 function TeamHeader({
   team,
@@ -195,152 +416,6 @@ function ProbBadge({
   )
 }
 
-function RoundStep({
-  roundDef,
-  idx,
-  isLast,
-  team,
-  reachProb,
-  opponents,
-  teams,
-  teamProbabilities,
-  probKey,
-}: {
-  roundDef: { round: string; probKey: keyof TeamProbability; label: string }
-  idx: number
-  isLast: boolean
-  team: Team
-  reachProb: number
-  opponents: string[]
-  teams: Record<string, Team>
-  teamProbabilities: Record<string, TeamProbability>
-  probKey: keyof TeamProbability
-}) {
-  const isFinal = isLast
-
-  return (
-    <div className="relative pl-12">
-      <div
-        className={cn(
-          "absolute left-[15px] top-4 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center",
-          isFinal
-            ? "border-gold bg-gold/20"
-            : "border-cyan-500/50 bg-cyan-500/10"
-        )}
-      >
-        <div
-          className={cn(
-            "w-2 h-2 rounded-full",
-            isFinal ? "bg-gold" : "bg-cyan-400"
-          )}
-        />
-      </div>
-
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                "text-xs font-black uppercase tracking-wider",
-                isFinal ? "text-gold" : "text-cyan-300"
-              )}
-            >
-              {roundDef.label}
-            </span>
-          </div>
-          <span className="text-[10px] font-mono text-white/30">
-            {reachProb}% to reach
-          </span>
-        </div>
-
-        <div className="flex items-start gap-3">
-          <div className="flex items-center gap-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 min-w-0 flex-1">
-            <img
-              src={getFlagImageUrl(team.id, 20)}
-              alt={team.code}
-              className="h-5 w-5 object-contain flex-shrink-0"
-            />
-            <span className="text-xs font-bold text-cyan-300 truncate">
-              {team.name}
-            </span>
-            <span className="text-[10px] font-mono text-cyan-300/50 ml-auto flex-shrink-0">
-              {reachProb}%
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <ChevronRight className="h-4 w-4 text-white/20" />
-          </div>
-
-          <div className="flex-1 space-y-1.5 min-w-0">
-            {opponents.length === 0 ? (
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2">
-                <span className="text-xs text-white/30 italic">Path TBD</span>
-              </div>
-            ) : (
-              opponents.map((oppId) => {
-                const opp = teams[oppId]
-                const oppProb = teamProbabilities[oppId]?.[probKey]
-                return (
-                  <div
-                    key={oppId}
-                    className="flex items-center gap-2 rounded-lg bg-white/[0.03] border border-white/5 px-3 py-1.5"
-                  >
-                    <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                      {opp ? (
-                        <img
-                          src={getFlagImageUrl(opp.id, 20)}
-                          alt={opp.code}
-                          className="h-4 w-4 object-contain"
-                        />
-                      ) : (
-                        <span className="text-[10px]">❓</span>
-                      )}
-                    </div>
-                    <span className="text-[11px] font-medium text-white/70 truncate flex-1">
-                      {opp?.name || oppId}
-                    </span>
-                    <span className="text-[9px] font-mono text-white/30 flex-shrink-0">
-                      {oppProb !== undefined ? `${oppProb}%` : "—"}
-                    </span>
-                  </div>
-                )
-              })
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ChampionCard({
-  team,
-  champProb,
-  champGivenFinal,
-}: {
-  team: Team
-  champProb: number
-  champGivenFinal: number
-}) {
-  return (
-    <div className="rounded-xl border-2 border-gold/20 bg-gradient-to-b from-gold/5 to-transparent p-6 text-center">
-      <Trophy className="mx-auto mb-2 h-8 w-8 text-gold" />
-      <div className="text-lg font-black uppercase tracking-tight text-gold">
-        {champProb}% Champion
-      </div>
-      <div className="mt-1 text-xs text-white/40">
-        {team.name} win the World Cup
-      </div>
-      {champGivenFinal > 0 && (
-        <div className="mt-2 text-[10px] text-white/30">
-          {champGivenFinal}% chance to win the final if they reach it
-        </div>
-      )}
-    </div>
-  )
-}
-
 // ─── Opponent Pool Computation ──────────────────────────────────────────
 
 function getTeamsFromSource(
@@ -376,32 +451,23 @@ function getTeamsFromSource(
 }
 
 function getR32MatchForGroupWinner(group: string) {
-  return R32_MATCHES.find((m) => {
-    const a =
-      m.sourceA.type === "group_winner" && m.sourceA.group === group
-    const b =
-      m.sourceB.type === "group_winner" && m.sourceB.group === group
-    return a || b
-  }) ?? null
+  return (
+    R32_MATCHES.find((m) => {
+      const a = m.sourceA.type === "group_winner" && m.sourceA.group === group
+      const b = m.sourceB.type === "group_winner" && m.sourceB.group === group
+      return a || b
+    }) ?? null
+  )
 }
 
-function getTeamSideInMatch(
-  matchId: number,
-  group: string
-): "A" | "B" | null {
+function getTeamSideInMatch(matchId: number, group: string): "A" | "B" | null {
   const slot = ALL_BRACKET_MATCHES.find((m) => m.matchId === matchId)
   if (!slot) return null
-  const isA =
-    slot.sourceA.type === "group_winner" && slot.sourceA.group === group
-  const isB =
-    slot.sourceB.type === "group_winner" && slot.sourceB.group === group
+  const isA = slot.sourceA.type === "group_winner" && slot.sourceA.group === group
+  const isB = slot.sourceB.type === "group_winner" && slot.sourceB.group === group
   if (isA) return "A"
   if (isB) return "B"
   return null
-}
-
-function getOpponentSide(source: TeamSource, side: "A" | "B"): TeamSource {
-  return side === "A" ? source : source
 }
 
 interface OpponentPoolMap {
@@ -420,20 +486,11 @@ function buildOpponentPools(
 
   const pools: OpponentPoolMap = {}
 
-  // R32: opponent is the other side of the R32 match
-  const r32OpponentSource =
-    teamSide === "A" ? r32Match.sourceB : r32Match.sourceA
-  pools["Round of 32"] = dedupe(
-    getTeamsFromSource(r32OpponentSource, teams, new Set())
-  )
+  const r32OpponentSource = teamSide === "A" ? r32Match.sourceB : r32Match.sourceA
+  pools["Round of 32"] = dedupe(getTeamsFromSource(r32OpponentSource, teams, new Set()))
 
-  // Build edge chain: childMatchId → { parentMatchId, childSide }
-  const childToParent = new Map<
-    number,
-    { parentMatchId: number; childSide: string }
-  >()
-  const allSlots = ALL_BRACKET_MATCHES
-  for (const slot of allSlots) {
+  const childToParent = new Map<number, { parentMatchId: number; childSide: string }>()
+  for (const slot of ALL_BRACKET_MATCHES) {
     const extract = (source: TeamSource, side: string) => {
       if (source.type === "winner_of") {
         childToParent.set(source.matchId, {
@@ -458,21 +515,16 @@ function buildOpponentPools(
     const parent = childToParent.get(currentMatchId)
     if (!parent) break
 
-    const parentSlot = allSlots.find(
+    const parentSlot = ALL_BRACKET_MATCHES.find(
       (s) => s.matchId === parent.parentMatchId
     )
     if (!parentSlot) break
 
     const opponentChildSide = parent.childSide === "A" ? "B" : "A"
     const opponentSource =
-      opponentChildSide === "A"
-        ? parentSlot.sourceA
-        : parentSlot.sourceB
+      opponentChildSide === "A" ? parentSlot.sourceA : parentSlot.sourceB
 
-    pools[rd.round] = dedupe(
-      getTeamsFromSource(opponentSource, teams, new Set())
-    )
-
+    pools[rd.round] = dedupe(getTeamsFromSource(opponentSource, teams, new Set()))
     currentMatchId = parent.parentMatchId
   }
 
