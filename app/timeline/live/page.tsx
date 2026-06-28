@@ -31,6 +31,8 @@ interface MatchDTO {
   scoreB: number | null
   isFact: boolean
   guess: { scoreA: number; scoreB: number } | null
+  kickoffUTC: string | null
+  venue: string | null
 }
 
 interface LeaderboardEntry {
@@ -113,6 +115,10 @@ export default function LiveResultsPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
   const [savingGuess, setSavingGuess] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState(() => dayValues[0] ?? "leaderboard")
+  const [phase, setPhase] = useState<"group" | "knockout">("knockout")
+
+  const groupMatches = matches.filter(m => m.round === "group")
+  const knockoutMatches = matches.filter(m => m.round !== "group").sort((a, b) => a.matchOrder - b.matchOrder)
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10)
@@ -460,8 +466,8 @@ export default function LiveResultsPage() {
                   onChange={(e) => updateGoal(matchDTO.id, i, "teamId", e.target.value)}
                   className="h-7 text-[11px] bg-zinc-900 border border-white/10 rounded-md px-1 text-white/70"
                 >
-                  <option value={fixture.homeTeamId}>{fixture.homeTeam?.split(" ").pop()}</option>
-                  <option value={fixture.awayTeamId}>{fixture.awayTeam?.split(" ").pop()}</option>
+                  <option value={fixture.homeTeamId || ""}>{fixture.homeTeam?.split(" ").pop()}</option>
+                  <option value={fixture.awayTeamId || ""}>{fixture.awayTeam?.split(" ").pop()}</option>
                 </select>
                 <Input
                   type="number" min="0" max="120"
@@ -628,6 +634,234 @@ export default function LiveResultsPage() {
     )
   }
 
+  const renderKnockoutMatchCard = (matchDTO: MatchDTO) => {
+    const locked = matchDTO.kickoffUTC ? new Date(matchDTO.kickoffUTC) <= new Date() : false
+    const kickoff = matchDTO.kickoffUTC ? new Date(matchDTO.kickoffUTC) : null
+    const countdown = kickoff ? getCountdown(kickoff) : "TBD"
+    const overrideKey = matchDTO.teamAId && matchDTO.teamBId ? `${matchDTO.teamAId}_${matchDTO.teamBId}` : ""
+    const override = overrideKey ? tournamentState.matchOverrides[overrideKey] : undefined
+    const isSet = !!override
+    const guess = matchDTO.guess
+    const guessKey = matchDTO.id
+    const gInputs = guessInputs.current[guessKey] ?? {
+      scoreA: guess?.scoreA?.toString() ?? "",
+      scoreB: guess?.scoreB?.toString() ?? "",
+    }
+    const hasGuess = !!guess
+    
+    // Convert UTC Date to time string (HH:MM)
+    const timeString = kickoff ? kickoff.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "TBD"
+
+    return (
+      <div key={matchDTO.id} className={cn(
+        "rounded-xl border bg-card overflow-hidden transition-all",
+        locked ? "border-white/5 opacity-70" : "border-white/10"
+      )}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.02]">
+          <div className="flex items-center gap-2">
+            <Badge className="bg-white/5 text-white/40 border-white/10 text-[8px] sm:text-[9px] px-1.5 py-0">
+              Round of 32
+            </Badge>
+            {locked && (
+              <Badge className="bg-red-500/10 text-red-400 border-red-500/20 text-[8px] px-1.5 py-0 gap-0.5">
+                <Lock className="h-2.5 w-2.5" /> Locked
+              </Badge>
+            )}
+            {!locked && !matchDTO.isFact && (
+              <span className="text-[9px] text-yellow-400/60 font-mono tabular-nums">{countdown}</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] text-white/30">{timeString} | {matchDTO.venue ?? "TBD"}</span>
+          </div>
+        </div>
+
+        {/* Score Row */}
+        <div className={cn("flex items-center justify-between px-3 py-2.5", isSet ? "bg-green-500/5" : "")}>
+          <div className="flex items-center gap-2 w-[90px] sm:w-[130px]">
+            {matchDTO.teamAId && <img src={getFlagImageUrl(matchDTO.teamAId, 28)} alt="" className="h-6 w-6 object-contain" />}
+            <span className="text-xs sm:text-sm font-bold truncate">{matchDTO.teamAName}</span>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            {matchDTO.isFact && !unlockedFacts[matchDTO.id] ? (
+              <div className="flex items-center gap-2">
+                <span className="text-xl sm:text-2xl font-black text-green-400">
+                  {matchDTO.scoreA}
+                </span>
+                <span className="text-white/20 font-black text-xs sm:text-sm">VS</span>
+                <span className="text-xl sm:text-2xl font-black text-green-400">
+                  {matchDTO.scoreB}
+                </span>
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[9px] ml-1">Fact</Badge>
+              </div>
+            ) : isAdmin ? (
+              <>
+                <Input type="number" min="0"
+                  key={`oA_${overrideKey}`}
+                  defaultValue={override?.scoreA?.toString() ?? ""}
+                  onChange={(e) => matchDTO.teamAId && matchDTO.teamBId && handleScoreChange(matchDTO.teamAId, matchDTO.teamBId, "A", e.target.value)}
+                  className="w-10 sm:w-12 h-9 sm:h-10 text-center text-base sm:text-lg font-bold bg-zinc-900 border-white/10" placeholder="-" />
+                <span className="text-white/20 font-black text-xs sm:text-sm">VS</span>
+                <Input type="number" min="0"
+                  key={`oB_${overrideKey}`}
+                  defaultValue={override?.scoreB?.toString() ?? ""}
+                  onChange={(e) => matchDTO.teamAId && matchDTO.teamBId && handleScoreChange(matchDTO.teamAId, matchDTO.teamBId, "B", e.target.value)}
+                  className="w-10 sm:w-12 h-9 sm:h-10 text-center text-base sm:text-lg font-bold bg-zinc-900 border-white/10" placeholder="-" />
+              </>
+            ) : (
+              <span className="text-white/20 font-black text-xs sm:text-sm">VS</span>
+            )}
+          </div>
+
+          <div className="flex items-center justify-end gap-1 sm:gap-2 w-[90px] sm:w-[130px]">
+            <span className="text-xs sm:text-sm font-bold truncate text-right">{matchDTO.teamBName}</span>
+            {matchDTO.teamBId && <img src={getFlagImageUrl(matchDTO.teamBId, 28)} alt="" className="h-6 w-6 object-contain" />}
+            {isSet && !matchDTO.isFact && isAdmin && matchDTO.teamAId && matchDTO.teamBId && (
+              <Button variant="ghost" size="icon" onClick={() => handleClearResult(matchDTO.teamAId!, matchDTO.teamBId!)} className="h-5 w-5 text-white/20 hover:text-red-400">
+                <RotateCcw className="h-2.5 w-2.5" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Prediction Row */}
+        {session?.user && !matchDTO.isFact && (
+          <>
+            {locked ? (
+              <div className="flex items-center justify-between px-3 py-2 bg-white/[0.02] border-t border-white/5">
+                <span className="text-[9px] text-red-400/50 font-medium uppercase tracking-wider">Locked</span>
+                {hasGuess ? (
+                  <span className="text-xs text-white/40">Predicted: <span className="text-white/70 font-bold">{guess.scoreA}-{guess.scoreB}</span></span>
+                ) : (
+                  <span className="text-xs text-white/20">No prediction</span>
+                )}
+              </div>
+            ) : (
+              <div className="px-3 py-2 bg-yellow-500/[0.03] border-t border-yellow-500/10 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Pick winner</span>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => handleQuickPick(guessKey, true)}
+                      className={cn("px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
+                        !isNaN(parseInt(gInputs.scoreA)) && !isNaN(parseInt(gInputs.scoreB)) && parseInt(gInputs.scoreA) > parseInt(gInputs.scoreB)
+                          ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
+                          : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50")}>
+                      {matchDTO.teamAId && <img src={getFlagImageUrl(matchDTO.teamAId, 20)} alt="" className="h-4 w-4 object-contain inline mr-1" />}{matchDTO.teamAName}
+                    </button>
+                    <span className="text-white/20 text-xs">vs</span>
+                    <button onClick={() => handleQuickPick(guessKey, false)}
+                      className={cn("px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
+                        !isNaN(parseInt(gInputs.scoreA)) && !isNaN(parseInt(gInputs.scoreB)) && parseInt(gInputs.scoreB) > parseInt(gInputs.scoreA)
+                          ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-300"
+                          : "bg-zinc-800/50 border-white/10 text-white/60 hover:bg-zinc-700/50")}>
+                      {matchDTO.teamBId && <img src={getFlagImageUrl(matchDTO.teamBId, 20)} alt="" className="h-4 w-4 object-contain inline mr-1" />}{matchDTO.teamBName}
+                    </button>
+                    {savingGuess === guessKey && <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] text-yellow-400/60 font-medium uppercase tracking-wider">Score</span>
+                  <div className="flex items-center gap-2">
+                    <Input type="number" min="0" defaultValue={gInputs.scoreA}
+                      ref={(el) => { guessInputRefs.current[`${guessKey}_A`] = el }}
+                      onChange={(e) => handleGuessChange(guessKey, "A", e.target.value)}
+                      className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90" placeholder="-" />
+                    <span className="text-yellow-500/40 font-black text-xs">:</span>
+                    <Input type="number" min="0" defaultValue={gInputs.scoreB}
+                      ref={(el) => { guessInputRefs.current[`${guessKey}_B`] = el }}
+                      onChange={(e) => handleGuessChange(guessKey, "B", e.target.value)}
+                      className="w-11 sm:w-14 h-8 text-center text-xs sm:text-sm font-bold bg-zinc-900/50 border-yellow-500/20 text-yellow-200/90" placeholder="-" />
+                    {savingGuess === guessKey ? (
+                      <Save className="h-3 w-3 text-yellow-500/50 animate-pulse shrink-0" />
+                    ) : hasGuess ? (
+                      <CheckCircle2 className="h-3 w-3 text-green-400/70 shrink-0" />
+                    ) : null}
+                    <Button size="sm" onClick={() => handleSubmitGuess(guessKey, matchDTO, {} as any)}
+                      disabled={savingGuess === guessKey}
+                      className="h-7 text-[10px] bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-2.5">
+                      {savingGuess === guessKey ? "Saving..." : "Save"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Fact result */}
+        {session?.user && matchDTO.isFact && (
+          <div className="flex items-center justify-between px-3 py-2 bg-green-500/[0.03] border-t border-green-500/10">
+            <span className="text-[9px] text-green-400/60 font-medium uppercase tracking-wider">Result</span>
+            {guess ? (
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-white/50">{guess.scoreA}-{guess.scoreB}</span>
+                <span className={cn("font-bold",
+                  matchDTO.scoreA != null && matchDTO.scoreB != null
+                    ? calcPoints(guess.scoreA, guess.scoreB, matchDTO.scoreA, matchDTO.scoreB) >= 300
+                      ? "text-yellow-400" : "text-green-400"
+                    : "text-white/30")}>
+                  {matchDTO.scoreA != null && matchDTO.scoreB != null
+                    ? `${calcPoints(guess.scoreA, guess.scoreB, matchDTO.scoreA, matchDTO.scoreB)} chips` : "?"}
+                </span>
+              </div>
+            ) : (
+              <span className="text-xs text-white/30">No prediction</span>
+            )}
+          </div>
+        )}
+
+        {/* Admin */}
+        {isAdmin && (
+          <div className="flex items-center justify-between px-3 py-2 bg-red-500/[0.03] border-t border-red-500/10">
+            <span className="text-[9px] text-red-400/60 font-bold uppercase tracking-wider flex items-center gap-1">
+              <ShieldCheck className="h-3.5 w-3.5" /> Admin Panel
+            </span>
+            <div className="flex items-center gap-2">
+              {matchDTO.isFact && !unlockedFacts[matchDTO.id] ? (
+                <Button variant="ghost" size="sm"
+                  onClick={() => matchDTO.teamAId && matchDTO.teamBId && handleUnlockFact(matchDTO.teamAId, matchDTO.teamBId, matchDTO)}
+                  className="h-6 text-[9px] text-red-400 hover:text-red-300 hover:bg-red-500/10 font-bold uppercase tracking-wider px-2">
+                  Modify Official Result
+                </Button>
+              ) : (
+                <>
+                  {unlockedFacts[matchDTO.id] && (
+                    <Button variant="ghost" size="sm"
+                      onClick={() => matchDTO.teamAId && matchDTO.teamBId && handleCancelUnlock(matchDTO.teamAId, matchDTO.teamBId, matchDTO.id)}
+                      className="h-6 text-[9px] text-white/40 hover:text-white font-bold uppercase tracking-wider px-2">Cancel</Button>
+                  )}
+                  {unlockedFacts[matchDTO.id] && (
+                    <Button variant="ghost" size="sm"
+                      onClick={() => handleAdminDeleteFact(matchDTO.id)} disabled={submittingAdminId === matchDTO.id}
+                      className="h-6 text-[9px] text-red-400 hover:text-red-300 hover:bg-red-500/10 font-bold uppercase tracking-wider px-2">Delete</Button>
+                  )}
+                  <Button size="sm"
+                    disabled={submittingAdminId === matchDTO.id}
+                    onClick={() => {
+                      const local = overrideInputs.current[overrideKey]
+                      const a = local?.scoreA ? parseInt(local.scoreA) : (override?.scoreA ?? undefined)
+                      const b = local?.scoreB ? parseInt(local.scoreB) : (override?.scoreB ?? undefined)
+                      if (a == null || b == null || isNaN(a) || isNaN(b)) return
+                      updateMatchResult(matchDTO.teamAId!, matchDTO.teamBId!, { scoreA: a, scoreB: b } as any)
+                      delete overrideInputs.current[overrideKey]
+                      handleAdminSubmitFact(matchDTO.id, a, b)
+                    }}
+                    className="h-6 text-[9px] bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest px-2.5">
+                    {submittingAdminId === matchDTO.id ? (
+                      <div className="h-3 w-3 border-2 border-white/20 border-t-white animate-spin rounded-full" />
+                    ) : unlockedFacts[matchDTO.id] ? "Save Updated Result" : "Submit Official Result"}
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   const handleShare = async () => {
     const url = window.location.href
     if (navigator.share) {
@@ -669,9 +903,25 @@ export default function LiveResultsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         <div className="lg:col-span-8 space-y-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-white/5 border border-white/10 p-1 mb-4 flex-wrap gap-0.5 h-auto min-h-9 w-full justify-start">
-              {scheduleDays.map((day) => {
+          <div className="flex bg-white/5 border border-white/10 rounded-full p-1 w-fit mb-4">
+            <button
+              onClick={() => setPhase("group")}
+              className={cn("px-4 py-1.5 rounded-full text-xs font-bold transition-colors", phase === "group" ? "bg-zinc-800 text-white" : "text-white/40 hover:text-white")}
+            >
+              Group Stage
+            </button>
+            <button
+              onClick={() => setPhase("knockout")}
+              className={cn("px-4 py-1.5 rounded-full text-xs font-bold transition-colors", phase === "knockout" ? "bg-zinc-800 text-green-400" : "text-white/40 hover:text-white")}
+            >
+              Knockout Stage
+            </button>
+          </div>
+
+          {phase === "group" ? (
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="bg-white/5 border border-white/10 p-1 mb-4 flex-wrap gap-0.5 h-auto min-h-9 w-full justify-start">
+                {scheduleDays.map((day) => {
                 const d = new Date(day.date + "T12:00:00")
                 const month = d.toLocaleDateString("en-US", { month: "short" })
                 const num = d.getDate()
@@ -705,6 +955,34 @@ export default function LiveResultsPage() {
               </TabsContent>
             ))}
           </Tabs>
+          ) : (
+            <div className="space-y-8">
+              {Object.entries(
+                knockoutMatches.reduce((acc, m) => {
+                  const d = m.kickoffUTC ? m.kickoffUTC.split("T")[0] : "TBD"
+                  if (!acc[d]) acc[d] = []
+                  acc[d].push(m)
+                  return acc
+                }, {} as Record<string, MatchDTO[]>)
+              ).map(([date, matchesForDate]) => {
+                const dateLabel = date === "TBD" ? "To Be Determined" : new Date(date + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
+                return (
+                  <div key={date} className="space-y-3">
+                    <h3 className="text-sm font-bold text-white/50 border-b border-white/10 pb-1">{dateLabel}</h3>
+                    <div className="grid grid-cols-1 gap-3">
+                      {matchesForDate.map(m => renderKnockoutMatchCard(m))}
+                    </div>
+                  </div>
+                )
+              })}
+              {!session?.user && knockoutMatches.length > 0 && (
+                <div className="text-center py-8 text-white/30 border border-dashed border-white/10 rounded-xl">
+                  <p className="text-sm font-bold mb-1">Sign in to make predictions</p>
+                  <p className="text-xs">Quick Pick or Full Score — compete with your office!</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-24">

@@ -32,6 +32,8 @@ export async function GET() {
     scoreB: m.scoreB,
     isFact: m.isFact,
     guess: (m as any).guesses?.[0] ?? null,
+    kickoffUTC: m.kickoffUTC?.toISOString() ?? null,
+    venue: m.venue ?? null,
   }))
 
   return NextResponse.json(data)

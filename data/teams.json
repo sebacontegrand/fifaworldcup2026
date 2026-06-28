@@ -40,7 +40,8 @@
       "primary": "#006847",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "rsa",
@@ -83,7 +84,8 @@
       "primary": "#007A4D",
       "secondary": "#FFB81C",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "kor",
@@ -126,7 +128,8 @@
       "primary": "#CC1631",
       "secondary": "#000000",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "can",
@@ -169,7 +172,8 @@
       "primary": "#FF0000",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "qat",
@@ -212,7 +216,8 @@
       "primary": "#8D1B3D",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "sui",
@@ -255,7 +260,8 @@
       "primary": "#E31620",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "bra",
@@ -298,7 +304,8 @@
       "primary": "#fed100",
       "secondary": "#009b3a",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "mar",
@@ -341,7 +348,8 @@
       "primary": "#C1272D",
       "secondary": "#006233",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "hai",
@@ -384,7 +392,8 @@
       "primary": "#00209F",
       "secondary": "#D21034",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "sco",
@@ -427,7 +436,8 @@
       "primary": "#004B87",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "usa",
@@ -470,7 +480,8 @@
       "primary": "#FFFFFF",
       "secondary": "#002868",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "par",
@@ -513,7 +524,8 @@
       "primary": "#D52B1E",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "aus",
@@ -556,7 +568,8 @@
       "primary": "#FFCD00",
       "secondary": "#008751",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "ger",
@@ -599,7 +612,8 @@
       "primary": "#FFFFFF",
       "secondary": "#000000",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "cur",
@@ -642,7 +656,8 @@
       "primary": "#00205B",
       "secondary": "#FECC00",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "civ",
@@ -685,7 +700,8 @@
       "primary": "#FF8200",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "ecu",
@@ -728,7 +744,8 @@
       "primary": "#FFD100",
       "secondary": "#0033A0",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "ned",
@@ -771,7 +788,8 @@
       "primary": "#F36C21",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "jpn",
@@ -814,7 +832,8 @@
       "primary": "#00008B",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "tun",
@@ -857,7 +876,8 @@
       "primary": "#E70013",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "bel",
@@ -900,7 +920,8 @@
       "primary": "#E4032E",
       "secondary": "#000000",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "egy",
@@ -943,7 +964,8 @@
       "primary": "#CE1126",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "irn",
@@ -986,7 +1008,8 @@
       "primary": "#FFFFFF",
       "secondary": "#DA291C",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "nzl",
@@ -1029,7 +1052,8 @@
       "primary": "#FFFFFF",
       "secondary": "#000000",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "esp",
@@ -1072,7 +1096,8 @@
       "primary": "#AA151B",
       "secondary": "#F1BF00",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "cpv",
@@ -1115,7 +1140,8 @@
       "primary": "#003893",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "ksa",
@@ -1158,7 +1184,8 @@
       "primary": "#FFFFFF",
       "secondary": "#006C35",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "uru",
@@ -1201,7 +1228,8 @@
       "primary": "#75AADB",
       "secondary": "#000000",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "fra",
@@ -1244,7 +1272,8 @@
       "primary": "#002395",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "sen",
@@ -1287,7 +1316,8 @@
       "primary": "#FFFFFF",
       "secondary": "#00853F",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "nor",
@@ -1330,7 +1360,8 @@
       "primary": "#EF2B2D",
       "secondary": "#00205B",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "arg",
@@ -1373,7 +1404,8 @@
       "primary": "#74ACDF",
       "secondary": "#FFFFFF",
       "pattern": "stripes"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "alg",
@@ -1416,7 +1448,8 @@
       "primary": "#FFFFFF",
       "secondary": "#006233",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "aut",
@@ -1459,7 +1492,8 @@
       "primary": "#ED2939",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "jor",
@@ -1502,7 +1536,8 @@
       "primary": "#FFFFFF",
       "secondary": "#CE1126",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "por",
@@ -1545,7 +1580,8 @@
       "primary": "#E42518",
       "secondary": "#006600",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "uzb",
@@ -1588,7 +1624,8 @@
       "primary": "#003580",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "col",
@@ -1631,7 +1668,8 @@
       "primary": "#FCD116",
       "secondary": "#003893",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "eng",
@@ -1674,7 +1712,8 @@
       "primary": "#FFFFFF",
       "secondary": "#000040",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "cro",
@@ -1717,7 +1756,8 @@
       "primary": "#FFFFFF",
       "secondary": "#FF0000",
       "pattern": "checkered"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "gha",
@@ -1760,7 +1800,8 @@
       "primary": "#FFFFFF",
       "secondary": "#000000",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "pan",
@@ -1803,7 +1844,8 @@
       "primary": "#DA121A",
       "secondary": "#00247D",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "cze",
@@ -1846,7 +1888,8 @@
       "primary": "#D7141A",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "bih",
@@ -1889,7 +1932,8 @@
       "primary": "#002395",
       "secondary": "#FFCC00",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "tur",
@@ -1932,7 +1976,8 @@
       "primary": "#E30A17",
       "secondary": "#FFFFFF",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "swe",
@@ -1975,7 +2020,8 @@
       "primary": "#FFE800",
       "secondary": "#005BAC",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   },
   {
     "id": "irq",
@@ -2018,7 +2064,8 @@
       "primary": "#FFFFFF",
       "secondary": "#007A33",
       "pattern": "solid"
-    }
+    },
+    "status": "eliminated"
   },
   {
     "id": "cod",
@@ -2061,6 +2108,7 @@
       "primary": "#007FFF",
       "secondary": "#F7D618",
       "pattern": "solid"
-    }
+    },
+    "status": "qualified"
   }
 ]

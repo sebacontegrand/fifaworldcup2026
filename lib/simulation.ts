@@ -13,6 +13,16 @@ import {
 // ─── Types ───────────────────────────────────────────────────────────
 export type KitPattern = "solid" | "stripes" | "checkered"
 
+export type TournamentPhase = 
+  | 'group_stage'
+  | 'round_of_32'
+  | 'round_of_16'
+  | 'quarter_final'
+  | 'semi_final'
+  | 'final';
+
+export type TeamStatus = 'eliminated' | 'qualified' | 'champion';
+
 export interface KitColors {
   primary: string
   secondary: string
@@ -34,6 +44,7 @@ export interface Team {
   kit: KitColors
   topPlayers: { name: string; position: string; club: string; age: number }[]
   stats: { worldCupAppearances: number; bestFinish: string; recentForm: string }
+  status?: TeamStatus
 }
 
 export interface MatchResult {
@@ -645,7 +656,7 @@ export function simulateMatch(
 
 // ─── Group Stage Simulation ──────────────────────────────────────────
 
-const MOCK_TEAMS: Record<string, Omit<Team, "id" | "name" | "group">> = {
+const MOCK_TEAMS: Record<string, Omit<Team, "id" | "name" | "group" | "kit">> = {
   "czech republic": {
     code: "CZE",
     flag: "🇨🇿",
@@ -836,6 +847,7 @@ export function getTeamByName(name: string): Team {
       attackStrength: mockConfig.attackStrength,
       defenseStrength: mockConfig.defenseStrength,
       eloSigma: mockConfig.eloSigma,
+      kit: { primary: "#ffffff", secondary: "#000000", pattern: "solid" },
       topPlayers: mockConfig.topPlayers,
       stats: mockConfig.stats
     }
@@ -853,6 +865,7 @@ export function getTeamByName(name: string): Team {
     attackStrength: 0,
     defenseStrength: 0,
     eloSigma: 50,
+    kit: { primary: "#ffffff", secondary: "#000000", pattern: "solid" },
     topPlayers: [],
     stats: { worldCupAppearances: 5, bestFinish: "Round of 16", recentForm: "DDW" }
   }

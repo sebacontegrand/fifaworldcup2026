@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 
-// Argentina (UTC-3): June 11, 14:30 → UTC: June 11, 17:30
-const TOURNAMENT_START = new Date("2026-06-11T17:30:00Z").getTime()
+// June 28, 2026, 12:00 UTC (Approximate start of R32)
+const TOURNAMENT_START = new Date("2026-06-28T12:00:00Z").getTime()
 
 function calcTimeLeft() {
   const now = Date.now()
@@ -46,7 +46,7 @@ export function TournamentCountdown() {
     return (
       <div className="flex flex-col items-center">
         <span className="text-lg font-black uppercase tracking-wider text-primary animate-pulse-neon">
-          Tournament Underway
+          Knockout Stage Underway
         </span>
       </div>
     )

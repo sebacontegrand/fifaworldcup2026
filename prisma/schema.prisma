@@ -95,7 +95,9 @@ model Match {
   scoreA     Int?    // real result (null = not played)
   scoreB     Int?
   isFact     Boolean @default(false)
-
+  kickoffUTC DateTime? // UTC kickoff time
+  venue      String?   // Stadium/City
+  
   guesses           Guess[]
   bets              Bet[]
   goals             MatchGoal[]

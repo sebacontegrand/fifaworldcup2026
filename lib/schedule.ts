@@ -1,6 +1,23 @@
 import scheduleData from "@/data/fifa_2026_group_stage.json"
 import teamsData from "@/data/teams.json"
 
+export interface KnockoutFixture {
+  id: string
+  round: string
+  matchOrder: number
+  teamAId: string | null
+  teamBId: string | null
+  teamAName: string | null
+  teamBName: string | null
+  date: string
+  timeUTC: string
+  venue: string
+  scoreA: number | null
+  scoreB: number | null
+  isFact: boolean
+  guess: { scoreA: number; scoreB: number } | null
+}
+
 export interface ScheduleMatch {
   matchNumber: number
   date: string

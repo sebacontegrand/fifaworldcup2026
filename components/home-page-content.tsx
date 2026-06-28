@@ -19,10 +19,11 @@ import {
     Cell,
 } from "recharts"
 
-import { Play, Activity } from "lucide-react"
+import { Play, Activity, ChevronDown, Calendar, Star } from "lucide-react"
 import { TournamentCountdown } from "@/components/tournament-countdown"
 import { DailyBanner } from "@/components/daily-banner"
 import { LiveGroupStandings } from "@/components/live-group-standings"
+import { BracketView } from "@/components/bracket-view"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -67,7 +68,7 @@ export function HomePageContent() {
                 <div className="mt-6 mb-4 space-y-4">
                     <div className="flex flex-col items-center gap-2">
                         <span className="text-[10px] uppercase tracking-[0.25em] text-white/30 font-semibold">
-                            Tournament Starts In
+                            Round of 32 Starts In
                         </span>
                         <TournamentCountdown />
                     </div>
@@ -117,8 +118,88 @@ export function HomePageContent() {
                 </div>
             </section>
 
-            {/* Live Group Standings (always visible, independent of simulation) */}
-            <LiveGroupStandings />
+            {/* Knockout Bracket View */}
+            {result && result.knockoutBracket && (
+                <section className="mb-12">
+                    <h2 className="mb-4 text-lg font-bold uppercase tracking-wider text-foreground">
+                        ⚽ Round of 32 — Desde el 28 de junio
+                    </h2>
+                    <div className="rounded-xl border border-border/50 bg-card p-6 shadow-2xl relative overflow-hidden">
+                        <BracketView
+                            rounds={result.knockoutBracket}
+                            teams={teamMap}
+                            teamProbabilities={result.teamProbabilities}
+                        />
+                    </div>
+                </section>
+            )}
+
+            {/* Knockout Dates & News */}
+            <section className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="rounded-xl border border-border/50 bg-card p-6">
+                    <div className="flex items-center gap-2 mb-4 text-primary">
+                        <Calendar className="h-5 w-5" />
+                        <h2 className="text-sm font-bold uppercase tracking-wider">
+                            Fase Eliminatoria
+                        </h2>
+                    </div>
+                    <ul className="space-y-3 text-sm text-muted-foreground">
+                        <li className="flex justify-between border-b border-white/5 pb-2">
+                            <span className="font-semibold text-white">Round of 32</span>
+                            <span>28 Jun – 3 Jul</span>
+                        </li>
+                        <li className="flex justify-between border-b border-white/5 pb-2">
+                            <span className="font-semibold text-white">Round of 16</span>
+                            <span>5 Jul – 8 Jul</span>
+                        </li>
+                        <li className="flex justify-between border-b border-white/5 pb-2">
+                            <span className="font-semibold text-white">Cuartos de Final</span>
+                            <span>10 Jul – 11 Jul</span>
+                        </li>
+                        <li className="flex justify-between border-b border-white/5 pb-2">
+                            <span className="font-semibold text-white">Semifinales</span>
+                            <span>14 Jul – 15 Jul</span>
+                        </li>
+                        <li className="flex justify-between">
+                            <span className="font-semibold text-gold">Final</span>
+                            <span className="text-gold">19 Jul (New Jersey)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div className="rounded-xl border border-border/50 bg-card p-6">
+                    <div className="flex items-center gap-2 mb-4 text-gold">
+                        <Star className="h-5 w-5" />
+                        <h2 className="text-sm font-bold uppercase tracking-wider">
+                            Tournament Highlights
+                        </h2>
+                    </div>
+                    <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+                        <p>
+                            <strong className="text-white">Lionel Messi</strong>: Líder de goles con 18 en total en su carrera mundialista (récord histórico). En este torneo: al menos 5 goles en la fase de grupos.
+                        </p>
+                        <p>
+                            <strong className="text-white">Golden Boot Race</strong>: Jonathan David (Canadá) y Erling Haaland (Noruega) están en la pelea cerrada por ser el máximo goleador.
+                        </p>
+                        <p>
+                            <strong className="text-white">Lamine Yamal</strong>: La joven estrella de España ya marcó su primer gol en un Mundial.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* Archived Group Standings */}
+            <section className="mb-12">
+                <details className="group rounded-xl border border-border/50 bg-card p-4 transition-all open:bg-card/80">
+                    <summary className="flex cursor-pointer items-center justify-between font-semibold text-muted-foreground marker:content-none hover:text-white">
+                        <span className="text-sm uppercase tracking-wider">Resultados Finales — Fase de Grupos</span>
+                        <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+                    </summary>
+                    <div className="mt-6">
+                        <LiveGroupStandings />
+                    </div>
+                </details>
+            </section>
 
             {/* Loading State */}
             {isRunning && (

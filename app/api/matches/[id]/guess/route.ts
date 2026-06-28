@@ -90,12 +90,17 @@ export async function POST(
     return NextResponse.json({ error: "Match result is already confirmed" }, { status: 400 })
   }
 
-  const schedMatch = findScheduleMatch(match.teamAName, match.teamBName)
-  if (schedMatch) {
-    const kickoff = parseUTCDate(schedMatch)
-    if (kickoff && kickoff <= new Date()) {
-      return NextResponse.json({ error: "Match has already started — predictions are locked" }, { status: 400 })
-    }
+  let kickoff: Date | null = null
+
+  if (match.round === "group") {
+    const schedMatch = findScheduleMatch(match.teamAName, match.teamBName)
+    if (schedMatch) kickoff = parseUTCDate(schedMatch)
+  } else {
+    kickoff = match.kickoffUTC ?? null
+  }
+
+  if (kickoff && kickoff <= new Date()) {
+    return NextResponse.json({ error: "Match has already started — predictions are locked" }, { status: 400 })
   }
 
   const guess = await prisma.guess.upsert({
