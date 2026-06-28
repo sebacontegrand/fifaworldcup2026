@@ -17,6 +17,7 @@ import { Activity, RotateCcw, Play, CheckCircle2, ChevronRight, Trophy, Save, Us
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import teamsData from "@/data/teams.json"
 
 interface MatchDTO {
   id: string
@@ -90,6 +91,18 @@ function computeGroupStandings(matches: MatchDTO[]): Record<string, GroupStandin
   return result
 }
 
+function formatRound(round: string): string {
+  const map: Record<string, string> = {
+    roundOf32: "Round of 32",
+    roundOf16: "Round of 16",
+    quarterFinal: "Quarter-Finals",
+    semiFinal: "Semi-Finals",
+    final: "Final",
+    thirdPlace: "Third Place",
+  }
+  return map[round] ?? round
+}
+
 function findMatchDTO(matches: MatchDTO[], teamAId: string | null, teamBId: string | null): MatchDTO | undefined {
   if (!teamAId || !teamBId) return undefined
   return matches.find(
@@ -118,7 +131,11 @@ export default function LiveResultsPage() {
   const [phase, setPhase] = useState<"group" | "knockout">("knockout")
 
   const groupMatches = matches.filter(m => m.round === "group")
-  const knockoutMatches = matches.filter(m => m.round !== "group").sort((a, b) => a.matchOrder - b.matchOrder)
+  const knockoutMatches = matches.filter(m => m.round !== "group").sort((a, b) => {
+    const aTime = a.kickoffUTC ? new Date(a.kickoffUTC).getTime() : 9999999999999
+    const bTime = b.kickoffUTC ? new Date(b.kickoffUTC).getTime() : 9999999999999
+    return aTime - bTime
+  })
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10)
@@ -661,7 +678,7 @@ export default function LiveResultsPage() {
         <div className="flex items-center justify-between px-3 py-1.5 bg-white/[0.02]">
           <div className="flex items-center gap-2">
             <Badge className="bg-white/5 text-white/40 border-white/10 text-[8px] sm:text-[9px] px-1.5 py-0">
-              Round of 32
+              {formatRound(matchDTO.round)}
             </Badge>
             {locked && (
               <Badge className="bg-red-500/10 text-red-400 border-red-500/20 text-[8px] px-1.5 py-0 gap-0.5">
@@ -981,6 +998,11 @@ export default function LiveResultsPage() {
                   <p className="text-xs">Quick Pick or Full Score — compete with your office!</p>
                 </div>
               )}
+              {leaderboard && leaderboard.matches.length > 0 && (
+                <div className="pt-8 border-t border-white/10">
+                  <LeaderboardPanel leaderboard={leaderboard} onRefresh={fetchLeaderboard} noPadding />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1081,9 +1103,9 @@ export default function LiveResultsPage() {
   )
 }
 
-function LeaderboardPanel({ leaderboard, onRefresh }: { leaderboard: LeaderboardData | null; onRefresh: () => void }) {
+function LeaderboardPanel({ leaderboard, onRefresh, noPadding }: { leaderboard: LeaderboardData | null; onRefresh: () => void; noPadding?: boolean }) {
   return (
-    <div className="space-y-4 pt-[150px]">
+    <div className={cn("space-y-4", noPadding ? "" : "pt-[150px]")}>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg sm:text-xl font-black uppercase tracking-tight">
@@ -1194,7 +1216,6 @@ function TopScorersCard() {
   )
 }
 
-import teamsData from "@/data/teams.json"
 const groupTeamsMap: Record<string, { id: string; name: string; flag: string }> = {}
 for (const team of teamsData as { id: string; name: string; flag: string }[]) {
   groupTeamsMap[team.id] = team
