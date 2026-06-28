@@ -23,6 +23,7 @@ import { Play, Activity, ChevronDown, Calendar, Star } from "lucide-react"
 import { TournamentCountdown } from "@/components/tournament-countdown"
 import { DailyBanner } from "@/components/daily-banner"
 import { LiveGroupStandings } from "@/components/live-group-standings"
+import { ThirdPlaceTable } from "@/components/third-place-table"
 import { BracketView } from "@/components/bracket-view"
 
 const allTeams = teamsData as Team[]
@@ -195,8 +196,9 @@ export function HomePageContent() {
                         <span className="text-sm uppercase tracking-wider">Resultados Finales — Fase de Grupos</span>
                         <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
                     </summary>
-                    <div className="mt-6">
+                    <div className="mt-6 space-y-6">
                         <LiveGroupStandings />
+                        <ThirdPlaceTable />
                     </div>
                 </details>
             </section>
