@@ -26,6 +26,7 @@ import { LiveGroupStandings } from "@/components/live-group-standings"
 import { ThirdPlaceTable } from "@/components/third-place-table"
 import { TournamentChat } from "@/components/tournament-chat"
 import { BracketView } from "@/components/bracket-view"
+import { ProgressionLineChart } from "@/components/progression-line-chart"
 
 const allTeams = teamsData as Team[]
 const teamMap: Record<string, Team> = {}
@@ -127,7 +128,7 @@ export function HomePageContent() {
             {result && result.knockoutBracket && (
                 <section className="mb-12">
                     <h2 className="mb-4 text-lg font-bold uppercase tracking-wider text-foreground">
-                        ⚽ Round of 32 — Desde el 28 de junio
+                        ⚽ Round of 32 — Starting June 28
                     </h2>
                     <div className="rounded-xl border border-border/50 bg-card p-6 shadow-2xl relative overflow-hidden">
                         <BracketView
@@ -145,7 +146,7 @@ export function HomePageContent() {
                     <div className="flex items-center gap-2 mb-4 text-primary">
                         <Calendar className="h-5 w-5" />
                         <h2 className="text-sm font-bold uppercase tracking-wider">
-                            Fase Eliminatoria
+                            Knockout Phase
                         </h2>
                     </div>
                     <ul className="space-y-3 text-sm text-muted-foreground">
@@ -158,11 +159,11 @@ export function HomePageContent() {
                             <span>5 Jul – 8 Jul</span>
                         </li>
                         <li className="flex justify-between border-b border-white/5 pb-2">
-                            <span className="font-semibold text-white">Cuartos de Final</span>
+                            <span className="font-semibold text-white">Quarter-Finals</span>
                             <span>10 Jul – 11 Jul</span>
                         </li>
                         <li className="flex justify-between border-b border-white/5 pb-2">
-                            <span className="font-semibold text-white">Semifinales</span>
+                            <span className="font-semibold text-white">Semi-Finals</span>
                             <span>14 Jul – 15 Jul</span>
                         </li>
                         <li className="flex justify-between">
@@ -197,7 +198,7 @@ export function HomePageContent() {
             <section className="mb-12">
                 <details className="group rounded-xl border border-border/50 bg-card p-4 transition-all open:bg-card/80">
                     <summary className="flex cursor-pointer items-center justify-between font-semibold text-muted-foreground marker:content-none hover:text-white">
-                        <span className="text-sm uppercase tracking-wider">Resultados Finales — Fase de Grupos</span>
+                        <span className="text-sm uppercase tracking-wider">Final Results — Group Stage</span>
                         <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
                     </summary>
                     <div className="mt-6 space-y-6">
@@ -249,6 +250,11 @@ export function HomePageContent() {
 
             {result && (
                 <>
+                    {/* Round Progression Line Chart */}
+                    <section className="mb-12">
+                        <ProgressionLineChart teamProbabilities={result.teamProbabilities} />
+                    </section>
+
                     {/* Top Favorites Chart */}
                     <section className="mb-12">
                         <div className="mb-4 flex items-center justify-between">
