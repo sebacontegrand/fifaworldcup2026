@@ -60,53 +60,66 @@ export async function GET() {
     return NextResponse.json(cached)
   }
 
-  const schedMatches = (scheduleData as { matches: ScheduleMatch[] }).matches.filter(
-    (m) => m.date === yesterdayStr && m.home_team !== "TBD"
-  )
-
-  if (schedMatches.length === 0) {
-    const result = { summary: null, date: yesterdayStr, matchCount: 0, generatedAt: new Date().toISOString(), hasKey: false, matches: [] }
-    bannerCache.set(cacheKey, result as any)
-    return NextResponse.json(result)
-  }
-
-  const allMatches = await prisma.match.findMany({
+  // Fetch ALL fact matches from DB (group + knockout)
+  const allFactMatches = await prisma.match.findMany({
     where: { isFact: true, teamAId: { not: null }, teamBId: { not: null } },
-    select: { teamAId: true, teamBId: true, scoreA: true, scoreB: true, teamAName: true, teamBName: true, round: true, isFact: true },
+    select: { teamAId: true, teamBId: true, scoreA: true, scoreB: true, teamAName: true, teamBName: true, round: true, kickoffUTC: true },
   })
 
-  const factMatches: FactMatch[] = allMatches.filter(
+  const factMatches = allFactMatches.filter(
     (m) => m.teamAId && m.teamBId && m.scoreA !== null && m.scoreB !== null
-  ) as FactMatch[]
+  )
 
   interface SchedResult {
-    homeId: string
-    awayId: string
     homeName: string
     awayName: string
+    homeId: string
+    awayId: string
     homeScore: number
     awayScore: number
   }
   const yesterdayResults: SchedResult[] = []
+
+  // Group stage: cross-reference schedule JSON with DB fact matches
+  const schedMatches = (scheduleData as { matches: ScheduleMatch[] }).matches.filter(
+    (m) => m.date === yesterdayStr && m.home_team !== "TBD"
+  )
   for (const s of schedMatches) {
     const homeTeam = getTeamByName(s.home_team)
     const awayTeam = getTeamByName(s.away_team)
     const matchedIds = [homeTeam.id, awayTeam.id]
     const found = factMatches.find((f) => {
-      return f.teamAId && f.teamBId && matchedIds.includes(f.teamAId) && matchedIds.includes(f.teamBId)
+      return matchedIds.includes(f.teamAId!) && matchedIds.includes(f.teamBId!)
     })
     if (found) {
-      const homeScore = found.teamAId === homeTeam.id ? found.scoreA : found.scoreB
-      const awayScore = found.teamBId === awayTeam.id ? found.scoreB : found.scoreA
+      const homeScore = found.teamAId === homeTeam.id ? found.scoreA! : found.scoreB!
+      const awayScore = found.teamBId === awayTeam.id ? found.scoreB! : found.scoreA!
       yesterdayResults.push({
-        homeId: homeTeam.id,
-        awayId: awayTeam.id,
         homeName: s.home_team,
         awayName: s.away_team,
+        homeId: homeTeam.id,
+        awayId: awayTeam.id,
         homeScore,
         awayScore,
       })
     }
+  }
+
+  // Knockout stage: query DB matches directly by kickoffUTC
+  const knockoutYesterday = factMatches.filter((m) => {
+    if (m.round === "group") return false
+    if (!m.kickoffUTC) return false
+    return m.kickoffUTC.toISOString().split("T")[0] === yesterdayStr
+  })
+  for (const m of knockoutYesterday) {
+    yesterdayResults.push({
+      homeName: m.teamAName ?? m.teamAId!,
+      awayName: m.teamBName ?? m.teamBId!,
+      homeId: m.teamAId!,
+      awayId: m.teamBId!,
+      homeScore: m.scoreA!,
+      awayScore: m.scoreB!,
+    })
   }
 
   if (yesterdayResults.length === 0) {
@@ -115,11 +128,20 @@ export async function GET() {
     return NextResponse.json(result)
   }
 
+  // Deduplicate (a match might match both schedule JSON and DB knockout query)
+  const seen = new Set<string>()
+  const uniqueResults = yesterdayResults.filter((r) => {
+    const key = `${r.homeName}-${r.awayName}-${r.homeScore}-${r.awayScore}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+
   const hasKey = !!process.env.GROQ_API_KEY
   let summary: string
 
   if (hasKey) {
-    const matchLines = yesterdayResults
+    const matchLines = uniqueResults
       .map((r) => `${r.homeName} ${r.homeScore}-${r.awayScore} ${r.awayName}`)
       .join("\n")
 
@@ -133,7 +155,7 @@ export async function GET() {
           },
           {
             role: "user",
-            content: `Yesterday's ${yesterdayResults.length} World Cup match results:\n${matchLines}`,
+            content: `Yesterday's ${uniqueResults.length} World Cup match results:\n${matchLines}`,
           },
         ],
         { model: "fast", temperature: 0.7 }
@@ -146,7 +168,9 @@ export async function GET() {
     summary = fallbackSummary()
   }
 
-  const matches = yesterdayResults.map((r) => ({
+  const matches = uniqueResults.map((r) => ({
+    teamAId: r.homeId,
+    teamBId: r.awayId,
     teamA: r.homeName,
     teamB: r.awayName,
     scoreA: r.homeScore,
@@ -156,7 +180,7 @@ export async function GET() {
   const result = {
     summary,
     date: yesterdayStr,
-    matchCount: yesterdayResults.length,
+    matchCount: uniqueResults.length,
     generatedAt: new Date().toISOString(),
     hasKey,
     matches,

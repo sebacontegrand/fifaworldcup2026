@@ -24,6 +24,7 @@ import { TournamentCountdown } from "@/components/tournament-countdown"
 import { DailyBanner } from "@/components/daily-banner"
 import { LiveGroupStandings } from "@/components/live-group-standings"
 import { ThirdPlaceTable } from "@/components/third-place-table"
+import { TournamentChat } from "@/components/tournament-chat"
 import { BracketView } from "@/components/bracket-view"
 
 const allTeams = teamsData as Team[]
@@ -118,6 +119,9 @@ export function HomePageContent() {
                     </div>
                 </div>
             </section>
+
+            {/* Tournament Chat */}
+            <TournamentChat />
 
             {/* Knockout Bracket View */}
             {result && result.knockoutBracket && (
